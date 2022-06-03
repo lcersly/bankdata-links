@@ -1,24 +1,62 @@
-<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+<form [formGroup]="searchForm">
+  <mat-form-field appearance="fill">
+    <mat-label>Search</mat-label>
+    <input formControlName="searchString" matInput type="text">
+    <button (click)="searchControl.setValue('')" *ngIf="searchControl.value" aria-label="Clear" mat-icon-button
+            matSuffix>
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field>
 
-  <!--- Note that these columns can be defined in any order.
-        The actual rendered columns are set as a property on the row definition" -->
+  <mat-form-field appearance="fill">
+    <mat-label>Environment</mat-label>
+    <mat-select formControlName="environment" multiple>
+      <mat-option *ngFor="let env of environments" [value]="env">
+        {{env}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</form>
 
-  <!-- Name Column -->
-  <ng-container matColumnDef="name">
-    <th mat-header-cell *matHeaderCellDef> Name </th>
-    <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+<mat-list>
+  <ng-container *ngFor="let group of filteredList | keyvalue; let i = index">
+    <mat-divider *ngIf="i > 0"></mat-divider>
+    <div mat-subheader>{{group.key}}</div>
+
+    <mat-list-item *ngFor="let link of group.value">
+      <mat-icon mat-list-icon><img [src]="link.icon"></mat-icon>
+      <div mat-line><a [href]="link.url | safeUrl">{{link.name}}</a></div>
+    </mat-list-item>
+
   </ng-container>
+</mat-list>
 
-  <!-- Weight Column -->
+
+<table [dataSource]="dataSource" class="mat-elevation-z8" mat-table>
+
   <ng-container matColumnDef="url">
-    <th mat-header-cell *matHeaderCellDef> URL </th>
-    <td mat-cell *matCellDef="let element"> {{element.url}} </td>
+    <th *matHeaderCellDef mat-header-cell> URL</th>
+    <td *matCellDef="let element" mat-cell><a [href]="element.url">{{element.name}}</a></td>
   </ng-container>
 
-  <!-- Symbol Column -->
   <ng-container matColumnDef="icon">
     <th mat-header-cell *matHeaderCellDef></th>
-    <td mat-cell *matCellDef="let element"> <img [src]="element.icon"> </td>
+    <td *matCellDef="let element" mat-cell><img [src]="element.icon"></td>
+  </ng-container>
+
+  <ng-container matColumnDef="section">
+    <th *matHeaderCellDef mat-header-cell>Section</th>
+    <td *matCellDef="let element" mat-cell> {{element.section}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="environment">
+    <th *matHeaderCellDef mat-header-cell>Env</th>
+    <td *matCellDef="let element" mat-cell> {{element.environment}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="tags">
+    <th *matHeaderCellDef mat-header-cell>Tags</th>
+    <td *matCellDef="let element" mat-cell> {{element.tags}} </td>
   </ng-container>
 
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

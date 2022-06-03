@@ -6,10 +6,11 @@ import {AppComponent} from './app.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {HttpClientModule} from "@angular/common/http";
 import {LinkListComponentModule} from "./components/link-list/link-list-component.module";
+import {PipeModule} from "./pipes/pipe.module";
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
     BrowserModule,
@@ -17,6 +18,7 @@ import {LinkListComponentModule} from "./components/link-list/link-list-componen
     BrowserAnimationsModule,
     HttpClientModule,
     LinkListComponentModule,
+    PipeModule
   ],
   providers: [],
   bootstrap: [AppComponent]
