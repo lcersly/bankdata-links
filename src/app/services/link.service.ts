@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
-import {BehaviorSubject, map} from "rxjs";
-import {Link} from "../models/link.model";
-import {HttpClient} from "@angular/common/http";
+import {BehaviorSubject, map} from 'rxjs';
+import {Link} from '../models/link.model';
+import {HttpClient} from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +12,7 @@ export class LinkService {
   public links$ = new BehaviorSubject<Link[]>([])
 
   constructor(private httpClient: HttpClient) {
-    httpClient.get("/assets/bookmarks.html", {responseType: "text"})
+    httpClient.get('/assets/bookmarks.html', {responseType: 'text'})
       .pipe(
         map(htmlString => htmlString.matchAll(this.linkMatcher)),
         map(rawMatches => [...rawMatches]),

@@ -1,9 +1,9 @@
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
-import {LinkService} from "../../services/link.service";
-import {Link} from "../../models/link.model";
-import {DataSource} from "@angular/cdk/collections";
-import {Observable, ReplaySubject} from "rxjs";
-import {FormBuilder, FormControl} from "@angular/forms";
+import {LinkService} from '../../services/link.service';
+import {Link} from '../../models/link.model';
+import {DataSource} from '@angular/cdk/collections';
+import {Observable, ReplaySubject} from 'rxjs';
+import {FormBuilder, FormControl} from '@angular/forms';
 
 @Component({
   selector: 'app-link-list',
