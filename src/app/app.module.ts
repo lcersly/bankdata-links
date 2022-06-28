@@ -18,10 +18,10 @@ import {PipeModule} from './pipes/pipe.module';
     BrowserAnimationsModule,
     HttpClientModule,
     LinkListComponentModule,
-    PipeModule
+    PipeModule,
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule {
 }

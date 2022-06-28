@@ -6,20 +6,20 @@ import {ListModel, ListModelDatabase} from '../../models/list.model';
 import {Link} from '../../models/link.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ListService {
   private unsub: Unsubscribe | undefined;
-  private _data$ = new BehaviorSubject<Map<string,Link[]>>(new Map<string, Link[]>());
+  private _data$ = new BehaviorSubject<Map<string, Link[]>>(new Map<string, Link[]>());
   public data$ = this._data$.pipe(
-    map(links=>Array.from(links.values())),
-    map(links=>links.reduce((prev, cur)=>prev.concat(...cur), [])),
+    map(links => Array.from(links.values())),
+    map(links => links.reduce((prev, cur) => prev.concat(...cur), [])),
   )
 
   constructor(private readonly firestore: Firestore) {
   }
 
-  public getURL(listName: string):string{
+  public getURL(listName: string): string {
     return `list/${listName}`;
   }
 
@@ -31,12 +31,12 @@ export class ListService {
         const listMap = this._data$.getValue();
         listMap.set(listName, doc.data())
         this._data$.next(doc.data());
-      }
+      },
     );
   }
 
-  disconnect(){
-    if(this.unsub){
+  disconnect() {
+    if (this.unsub) {
       this.unsub();
     }
   }
@@ -56,5 +56,5 @@ const converter: FirestoreDataConverter<ListModel> = {
       // updatedAt: room.updatedAt?.toDate(),
       // createdAt: room.createdAt?.toDate(),
     } as ListModel;
-  }
+  },
 }

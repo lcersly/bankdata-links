@@ -6,11 +6,11 @@ import {SafePipe} from './safe.pipe';
 @NgModule({
   declarations: [SafePipe],
   exports: [
-    SafePipe
+    SafePipe,
   ],
   imports: [
-    CommonModule
-  ]
+    CommonModule,
+  ],
 })
 export class PipeModule {
 }

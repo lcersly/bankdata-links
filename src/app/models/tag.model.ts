@@ -1,8 +1,8 @@
-export interface TagModel extends TagBase{
+export interface TagModel extends TagBase {
 
 }
 
-export interface TagModelDatabase extends TagBase{
+export interface TagModelDatabase extends TagBase {
 
 }
 

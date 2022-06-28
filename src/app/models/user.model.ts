@@ -1,11 +1,11 @@
-export interface UserModel extends UserBase{
+export interface UserModel extends UserBase {
 
 }
 
-export interface UserModelDatabase extends UserBase{
+export interface UserModelDatabase extends UserBase {
 
 }
 
-interface UserBase{
+interface UserBase {
   name: string;
 }

@@ -12,6 +12,7 @@ trim_trailing_whitespace = true
 quote_type = single
 ij_typescript_force_quote_style = true
 ij_typescript_use_double_quotes = false
+ij_typescript_enforce_trailing_comma = whenmultiline
 
 
 [*.md]

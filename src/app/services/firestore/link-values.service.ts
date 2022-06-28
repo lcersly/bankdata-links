@@ -2,23 +2,23 @@ import {Injectable} from '@angular/core';
 import {Firestore} from '@angular/fire/firestore';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-export class LinkService {
-
-  public static getResourceURL(): string {
-    return 'link'
-  }
+export class LinkValuesService {
 
   constructor(private readonly firestore: Firestore) {
 
   }
 
-  private connect(): void {
+  public static getResourceURL(): string {
+    return 'linkValues';
+  }
+
+  public disconnect(): void {
 
   }
 
-  public disconnect():void{
+  private connect(): void {
 
   }
 }

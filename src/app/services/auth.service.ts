@@ -13,7 +13,7 @@ import {
 import {from, Subject} from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   public status$ = new Subject<User | null>();

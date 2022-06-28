@@ -29,7 +29,7 @@ import {PipeModule} from '../../pipes/pipe.module';
     ReactiveFormsModule,
     PipeModule,
   ],
-  exports: [LinkListComponent]
+  exports: [LinkListComponent],
 })
 export class LinkListComponentModule {
 }

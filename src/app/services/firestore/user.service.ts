@@ -5,7 +5,7 @@ import {UserModel, UserModelDatabase} from '../../models/user.model';
 import {BehaviorSubject} from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserService {
   private unsub: Unsubscribe | undefined;
@@ -15,7 +15,7 @@ export class UserService {
   constructor(private readonly firestore: Firestore) {
   }
 
-  public getURL(userId: string):string{
+  public getURL(userId: string): string {
     return `users/${userId}`;
   }
 
@@ -27,12 +27,12 @@ export class UserService {
     let userDocumentRef = doc(this.firestore, this.getURL(userId))
       .withConverter(userConverter);
     this.unsub = onSnapshot(userDocumentRef,
-      (doc) => this._data$.next(doc.data())
+      (doc) => this._data$.next(doc.data()),
     );
   }
 
-  disconnect(){
-    if(this.unsub){
+  disconnect() {
+    if (this.unsub) {
       this.unsub();
     }
   }
@@ -52,5 +52,5 @@ const userConverter: FirestoreDataConverter<UserModel> = {
       // updatedAt: room.updatedAt?.toDate(),
       // createdAt: room.createdAt?.toDate(),
     } as UserModel;
-  }
+  },
 }

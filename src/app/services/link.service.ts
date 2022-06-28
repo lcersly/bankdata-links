@@ -4,12 +4,11 @@ import {Link} from '../models/link.model';
 import {HttpClient} from '@angular/common/http';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class LinkService {
-  private linkMatcher = /<A HREF="([a-zA-Z:\/0-9.#?=]*).*ICON="(.*)">(.*)<\/A>/g
-
   public links$ = new BehaviorSubject<Link[]>([])
+  private linkMatcher = /<A HREF="([a-zA-Z:\/0-9.#?=]*).*ICON="(.*)">(.*)<\/A>/g
 
   constructor(private httpClient: HttpClient) {
     httpClient.get('/assets/bookmarks.html', {responseType: 'text'})
@@ -22,9 +21,9 @@ export class LinkService {
             icon: match[2],
             name: match[3],
             environment: ['P', 'S'][~~(Math.random() * 2)],
-            section: ['A', 'B', 'C', 'D', 'E'][~~(Math.random() * 5)]
+            section: ['A', 'B', 'C', 'D', 'E'][~~(Math.random() * 5)],
           } as Link);
-        }))
+        })),
       )
       .subscribe(data => this.links$.next(data));
   }

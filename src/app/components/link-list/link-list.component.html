@@ -40,7 +40,7 @@
   </ng-container>
 
   <ng-container matColumnDef="icon">
-    <th mat-header-cell *matHeaderCellDef></th>
+    <th *matHeaderCellDef mat-header-cell></th>
     <td *matCellDef="let element" mat-cell><img [src]="element.icon"></td>
   </ng-container>
 
@@ -59,6 +59,6 @@
     <td *matCellDef="let element" mat-cell> {{element.tags}} </td>
   </ng-container>
 
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  <tr *matHeaderRowDef="displayedColumns" mat-header-row></tr>
+  <tr *matRowDef="let row; columns: displayedColumns;" mat-row></tr>
 </table>

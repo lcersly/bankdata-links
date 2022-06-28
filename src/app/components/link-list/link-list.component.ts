@@ -9,7 +9,7 @@ import {FormBuilder, FormControl} from '@angular/forms';
   selector: 'app-link-list',
   templateUrl: './link-list.component.html',
   styleUrls: ['./link-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LinkListComponent implements OnInit {
   displayedColumns: string[] = ['icon', 'url', 'environment', 'tags', 'section'];
@@ -20,7 +20,7 @@ export class LinkListComponent implements OnInit {
   environments: Set<string> = new Set<string>();
   searchForm = this.fb.group({
     searchString: this.fb.control(''),
-    environment: this.fb.control('')
+    environment: this.fb.control(''),
   });
 
   constructor(private linkService: LinkService, private fb: FormBuilder) {

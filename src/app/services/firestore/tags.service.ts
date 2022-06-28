@@ -5,7 +5,7 @@ import {DocumentData, FirestoreDataConverter} from 'firebase/firestore';
 import {TagModel, TagModelDatabase} from '../../models/tag.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TagsService {
   private unsub: Unsubscribe | undefined;
@@ -15,7 +15,7 @@ export class TagsService {
   constructor(private readonly firestore: Firestore) {
   }
 
-  public getURL():string{
+  public getURL(): string {
     return `tags`;
   }
 
@@ -23,12 +23,12 @@ export class TagsService {
     let userDocumentRef = doc(this.firestore, this.getURL())
       .withConverter(userConverter);
     this.unsub = onSnapshot(userDocumentRef,
-      (doc) => this._data$.next(doc.data())
+      (doc) => this._data$.next(doc.data()),
     );
   }
 
-  disconnect(){
-    if(this.unsub){
+  disconnect() {
+    if (this.unsub) {
       this.unsub();
     }
   }
@@ -48,5 +48,5 @@ const userConverter: FirestoreDataConverter<TagModel> = {
       // updatedAt: room.updatedAt?.toDate(),
       // createdAt: room.createdAt?.toDate(),
     } as TagModel;
-  }
+  },
 }
