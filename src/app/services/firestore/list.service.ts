@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {doc, Firestore, onSnapshot, Unsubscribe} from '@angular/fire/firestore';
-import {BehaviorSubject, map} from 'rxjs';
+import {BehaviorSubject, first, map} from 'rxjs';
 import {DocumentData, FirestoreDataConverter} from 'firebase/firestore';
 import {ListModel, ListModelDatabase} from '../../models/list.model';
 import {Link} from '../../models/link.model';
@@ -9,12 +9,22 @@ import {Link} from '../../models/link.model';
   providedIn: 'root',
 })
 export class ListService {
-  private unsub: Unsubscribe | undefined;
-  private _data$ = new BehaviorSubject<Map<string, Link[]>>(new Map<string, Link[]>());
-  public data$ = this._data$.pipe(
-    map(links => Array.from(links.values())),
-    map(links => links.reduce((prev, cur) => prev.concat(...cur), [])),
-  )
+  public links$ = this.lists$.pipe(
+    map(lists => lists.reduce(
+      (prev, cur) => prev.concat(...cur.links),
+      [] as Link[]),
+    ),
+  );
+  private map$ = new BehaviorSubject<Map<string, { list: ListModel, unsub: Unsubscribe | null }>>(
+    new Map<string, { list: ListModel, unsub: Unsubscribe }>(),
+  );
+  public listNames$ = this.map$.pipe(
+    map(map => Array.from(map.keys())),
+  );
+  public lists$ = this.map$.pipe(
+    map(map => Array.from(map.values())),
+    map(listAndUnsubs => listAndUnsubs.map(listAndUnsub => listAndUnsub.list)),
+  );
 
   constructor(private readonly firestore: Firestore) {
   }
@@ -26,19 +36,46 @@ export class ListService {
   subscribeToList(listName: string) {
     let docRef = doc(this.firestore, this.getURL(listName))
       .withConverter(converter);
-    this.unsub = onSnapshot(docRef,
+    const unsub = onSnapshot(docRef,
       (doc) => {
-        const listMap = this._data$.getValue();
-        listMap.set(listName, doc.data())
-        this._data$.next(doc.data());
+        const listMap = this.map$.getValue();
+        const data = doc.data();
+        if (data) {
+          listMap.set(listName, {list: data, unsub: null});
+        } else {
+          listMap.delete(listName);
+        }
+        this.map$.next(listMap);
       },
     );
+    const list = this.map$.getValue().get(listName);
+    if (list) {
+      list.unsub = unsub;
+    }
+  }
+
+  unsubscribeFromList(listName: string, update = true) {
+    let map = this.map$.getValue();
+    const list = map.get(listName);
+    if (list) {
+      if (list.unsub) {
+        list.unsub();
+      }
+      map.delete(listName);
+
+      if (update) {
+        this.map$.next(map);
+      }
+    }
   }
 
   disconnect() {
-    if (this.unsub) {
-      this.unsub();
-    }
+    this.listNames$.pipe(
+      first(),
+    ).subscribe(listNames => {
+      listNames.forEach(list => this.unsubscribeFromList(list, false));
+      this.map$.next(this.map$.getValue());
+    });
   }
 }
 
