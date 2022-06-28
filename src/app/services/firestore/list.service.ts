@@ -9,12 +9,6 @@ import {Link} from '../../models/link.model';
   providedIn: 'root',
 })
 export class ListService {
-  public links$ = this.lists$.pipe(
-    map(lists => lists.reduce(
-      (prev, cur) => prev.concat(...cur.links),
-      [] as Link[]),
-    ),
-  );
   private map$ = new BehaviorSubject<Map<string, { list: ListModel, unsub: Unsubscribe | null }>>(
     new Map<string, { list: ListModel, unsub: Unsubscribe }>(),
   );
@@ -24,6 +18,12 @@ export class ListService {
   public lists$ = this.map$.pipe(
     map(map => Array.from(map.values())),
     map(listAndUnsubs => listAndUnsubs.map(listAndUnsub => listAndUnsub.list)),
+  );
+  public links$ = this.lists$.pipe(
+    map(lists => lists.reduce(
+      (prev, cur) => prev.concat(...cur.links),
+      [] as Link[]),
+    ),
   );
 
   constructor(private readonly firestore: Firestore) {
