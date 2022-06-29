@@ -38,6 +38,7 @@ export class UserService {
   }
 }
 
+
 const userConverter: FirestoreDataConverter<UserModel> = {
   toFirestore(modelObject: UserModel): DocumentData {
     return modelObject;
