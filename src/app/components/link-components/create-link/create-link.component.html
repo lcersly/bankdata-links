@@ -1,0 +1,15 @@
+<mat-toolbar>
+  <span>Create new link</span>
+</mat-toolbar>
+
+<form [formGroup]="form">
+  <mat-form-field appearance="outline">
+    <mat-label>URL</mat-label>
+    <input matInput>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Leave a comment</mat-label>
+    <textarea matInput placeholder="Ex. It makes me feel..."></textarea>
+  </mat-form-field>
+</form>

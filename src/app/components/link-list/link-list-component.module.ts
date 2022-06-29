@@ -10,10 +10,12 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatInputModule} from '@angular/material/input';
 import {MatSelectModule} from '@angular/material/select';
 import {PipeModule} from '../../pipes/pipe.module';
+import {CreateButtonComponent} from './create-button/create-button.component';
 
 
 @NgModule({
   declarations: [
+    CreateButtonComponent,
     LinkListComponent,
   ],
   imports: [

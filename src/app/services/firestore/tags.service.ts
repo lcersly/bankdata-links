@@ -21,7 +21,7 @@ export class TagsService {
 
   updateTags() {
     let userDocumentRef = doc(this.firestore, this.getURL())
-      .withConverter(userConverter);
+      .withConverter(converter);
     this.unsub = onSnapshot(userDocumentRef,
       (doc) => this._data$.next(doc.data()),
     );
@@ -34,7 +34,7 @@ export class TagsService {
   }
 }
 
-const userConverter: FirestoreDataConverter<TagModel> = {
+const converter: FirestoreDataConverter<TagModel> = {
   toFirestore(modelObject: TagModel): DocumentData {
     return modelObject;
   },

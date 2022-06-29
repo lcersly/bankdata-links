@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
-import {LinkService} from '../../services/link.service';
+import {LinkService} from '../../services/firestore/link.service';
 import {Link} from '../../models/link.model';
 import {DataSource} from '@angular/cdk/collections';
 import {Observable, ReplaySubject} from 'rxjs';
@@ -35,29 +35,29 @@ export class LinkListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.linkService.links$.subscribe(links => {
-      this.dataSource.setData(links);
-
-      this.groupedList = new Map<string, Link[]>();
-      const envList = new Set<string>();
-
-      for (const link of links) {
-        let links = this.groupedList.get(link.section);
-        if (!links) {
-          links = [];
-          this.groupedList.set(link.section, links);
-        }
-        links.push(link);
-
-        if (link.environment) {
-          envList.add(link.environment);
-        }
-      }
-
-      this.environments = envList;
-      this.envControl.setValue([...envList])
-      this.searchChange();
-    });
+    // this.linkService.links$.subscribe(links => {
+    //   this.dataSource.setData(links);
+    //
+    //   this.groupedList = new Map<string, Link[]>();
+    //   const envList = new Set<string>();
+    //
+    //   for (const link of links) {
+    //     let links = this.groupedList.get(link.section);
+    //     if (!links) {
+    //       links = [];
+    //       this.groupedList.set(link.section, links);
+    //     }
+    //     links.push(link);
+    //
+    //     if (link.environment) {
+    //       envList.add(link.environment);
+    //     }
+    //   }
+    //
+    //   this.environments = envList;
+    //   this.envControl.setValue([...envList])
+    //   this.searchChange();
+    // });
 
     this.searchForm.valueChanges.subscribe(() => this.searchChange());
   }
