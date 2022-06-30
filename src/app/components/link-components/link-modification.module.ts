@@ -3,8 +3,9 @@ import {CommonModule} from '@angular/common';
 import {EditLinkComponent} from './edit-link/edit-link.component';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatInputModule} from '@angular/material/input';
-import {ReactiveFormsModule} from '@angular/forms';
 import {CreateNewLinkComponent} from './create-new-link/create-new-link.component';
+import {MatButtonModule} from '@angular/material/button';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 
 @NgModule({
@@ -16,7 +17,9 @@ import {CreateNewLinkComponent} from './create-new-link/create-new-link.componen
     CommonModule,
     MatToolbarModule,
     MatInputModule,
+    FormsModule,
     ReactiveFormsModule,
+    MatButtonModule,
   ],
   exports: [
     EditLinkComponent,

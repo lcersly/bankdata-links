@@ -2,14 +2,16 @@
   <span>Create new link</span>
 </mat-toolbar>
 
-<form >
-  <mat-form-field appearance="outline">
+<form (ngSubmit)="create()">
+  <mat-form-field >
     <mat-label>URL</mat-label>
-    <input matInput>
+    <textarea matInput placeholder="http://... or https://..." [formControl]="urlControl"></textarea>
   </mat-form-field>
 
-  <mat-form-field appearance="outline">
-    <mat-label>Leave a comment</mat-label>
-    <textarea matInput placeholder="Ex. It makes me feel..."></textarea>
+  <mat-form-field>
+    <mat-label>Name</mat-label>
+    <textarea matInput placeholder="Some descriptive name for this URL"></textarea>
   </mat-form-field>
+
+  <button mat-raised-button>Create</button>
 </form>
