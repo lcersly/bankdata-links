@@ -16,19 +16,21 @@ import {getFirestore, provideFirestore} from '@angular/fire/firestore';
     AppComponent,
   ],
   imports: [
-    // firebase
+    // firebase init
     provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
 
     // standard modules
     BrowserModule,
-    AppRoutingModule,
     BrowserAnimationsModule,
 
-    //components
-    LinkListComponentModule,
+    // component modules
     LinkModificationModule,
+    LinkListComponentModule,
+
+    // routing
+    AppRoutingModule,
 
     // helpers
     PipeModule,

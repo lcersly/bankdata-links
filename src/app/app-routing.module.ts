@@ -1,8 +1,8 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {LinkListComponent} from './components/link-list/link-list.component';
-import {CreateLinkComponent} from './components/link-components/create-link/create-link.component';
 import {EditLinkComponent} from './components/link-components/edit-link/edit-link.component';
+import {CreateNewLinkComponent} from './components/link-components/create-new-link/create-new-link.component';
 
 export const PATHS_URLS = {
   createLink: 'link/create'
@@ -10,10 +10,11 @@ export const PATHS_URLS = {
 
 const routes: Routes = [
   {path: '', pathMatch: 'full', redirectTo: 'link'},
+  {path: 'links', component: LinkListComponent},
   {
     path: 'link', children: [
-      {path: '', component: LinkListComponent},
-      {path: 'create', component: CreateLinkComponent},
+      {path: '', pathMatch: 'full', redirectTo: 'create'},
+      {path: 'create', component: CreateNewLinkComponent},
       {path: 'edit/:id', component: EditLinkComponent},
     ],
   },
