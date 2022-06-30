@@ -3,15 +3,48 @@
 </mat-toolbar>
 
 <form (ngSubmit)="create()">
-  <mat-form-field >
+  <mat-form-field class="single-line-field">
     <mat-label>URL</mat-label>
     <textarea matInput placeholder="http://... or https://..." [formControl]="urlControl"></textarea>
+    <mat-error *ngIf="hasError(urlControl, 'required')">Required</mat-error>
+    <mat-error *ngIf="hasError(urlControl, 'pattern')">Doesn't look like a valid URL</mat-error>
   </mat-form-field>
 
-  <mat-form-field>
+  <mat-form-field class="single-line-field">
     <mat-label>Name</mat-label>
-    <textarea matInput placeholder="Some descriptive name for this URL"></textarea>
+    <input matInput placeholder="Short descriptive name" [formControl]="nameControl">
+    <mat-error *ngIf="hasError(nameControl, 'required')">Required</mat-error>
   </mat-form-field>
+
+  <mat-form-field class="single-line-field">
+    <mat-label>Description</mat-label>
+    <input matInput placeholder="Ekstra description" [formControl]="descriptionControl">
+    <mat-error *ngIf="hasError(descriptionControl, 'required')">Required</mat-error>
+  </mat-form-field>
+
+  <mat-form-field class="single-line-field">
+    <mat-label>Path</mat-label>
+    <input matInput placeholder="Portal > LTE > Test" [formControl]="pathControl">
+    <mat-error *ngIf="hasError(pathControl, 'required')">Required</mat-error>
+  </mat-form-field>
+
+  <mat-form-field class="single-line-field">
+    <mat-label>Section</mat-label>
+    <input matInput placeholder="Section name" [formControl]="sectionControl">
+    <mat-error *ngIf="hasError(sectionControl, 'required')">Required</mat-error>
+  </mat-form-field>
+
+  <app-chips-with-autocomplete
+    [formControl]="tagsControl"
+    class="single-line-field"
+  ></app-chips-with-autocomplete>
+
+  <div class="single-line-field">
+    <mat-label>Environment(s)</mat-label>
+    <mat-button-toggle-group multiple [formControl]="environmentControl">
+      <mat-button-toggle *ngFor="let env of environments" [value]="env">{{env}}</mat-button-toggle>
+    </mat-button-toggle-group>
+  </div>
 
   <button mat-raised-button>Create</button>
 </form>

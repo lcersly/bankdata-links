@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, Validators} from '@angular/forms';
 import {urlPattern} from '../constants';
 
 @Component({
@@ -9,13 +9,15 @@ import {urlPattern} from '../constants';
 })
 export class CreateNewLinkComponent implements OnInit {
 
+  public environments = ['T','S','P'];
+
   public form = this.fb.group({
     url: ['', [Validators.required, Validators.pattern(urlPattern)]],
     name: ['', [Validators.required, Validators.minLength(3)]],
-    description: ['', [Validators.required]],
+    description: '',
     section: ['', [Validators.required]],
     path: ['', [Validators.required]],
-    tags: [''],
+    tags: [[]],
     environment: ['', [Validators.required]],
     icon: [''],
   });
@@ -63,5 +65,9 @@ export class CreateNewLinkComponent implements OnInit {
     if(!this.form.valid){
       return;
     }
+  }
+
+  hasError(urlControl: FormControl, errorCode: string) {
+    return urlControl.hasError(errorCode);
   }
 }
