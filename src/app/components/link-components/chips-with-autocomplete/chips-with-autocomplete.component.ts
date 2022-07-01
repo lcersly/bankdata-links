@@ -1,4 +1,4 @@
-import {Component, ElementRef, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import {
   AbstractControl,
@@ -9,9 +9,11 @@ import {
   ValidationErrors,
   Validator,
 } from '@angular/forms';
-import {map, Observable, startWith} from 'rxjs';
+import {combineLatest, map, startWith, Subject} from 'rxjs';
 import {MatChipInputEvent} from '@angular/material/chips';
 import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
+import {TagModel} from '../../../models/tag.model';
+import {TagService} from '../../../services/firestore/tag.service';
 
 @Component({
   selector: 'app-chips-with-autocomplete',
@@ -20,50 +22,62 @@ import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      multi:true,
-      useExisting: ChipsWithAutocompleteComponent
+      multi: true,
+      useExisting: ChipsWithAutocompleteComponent,
     },
     {
       provide: NG_VALIDATORS,
       multi: true,
-      useExisting: ChipsWithAutocompleteComponent
-    }
-  ]
+      useExisting: ChipsWithAutocompleteComponent,
+    },
+  ],
 })
-export class ChipsWithAutocompleteComponent implements ControlValueAccessor, Validator {
+export class ChipsWithAutocompleteComponent implements ControlValueAccessor, Validator, OnInit, OnDestroy {
 
   separatorKeysCodes: number[] = [ENTER, COMMA];
   tagCtrl = new FormControl('');
-  filteredTags: Observable<string[]>;
-  selectedTags: string[] = ['Lemon'];
-  allTags: string[] = ['Apple', 'Lemon', 'Lime', 'Orange', 'Strawberry'];
+  filteredTags = combineLatest([
+    this.tagCtrl.valueChanges,
+    this.tagService.tags$.pipe(
+      map(tags => tags?.map(t => ({...t, exists: true}) as Tag)),
+    ),
+  ]).pipe(
+    startWith([null, [] as Tag[]]),
+    map(([filter, tags]) => this._filter(filter, tags)),
+  );
+  selectedTags: Tag[] = [];
+  private onDestroy = new Subject<void>();
 
-  onChange: (tags:string[]) => void = ()=> {};
-  onTouched = () => {};
+  onChange: (tags: TagModel[]) => void = () => {
+  };
+  onTouched = () => {
+  };
   touched = false;
   disabled = false;
 
   @ViewChild('tagInput') tagInput: ElementRef<HTMLInputElement> | undefined;
 
-  constructor() {
-    this.filteredTags = this.tagCtrl.valueChanges.pipe(
-      startWith(null),
-      map((tag: string | null) => (tag ? this._filter(tag) : this.allTags.slice())),
-    );
+  constructor(private tagService: TagService) {
   }
 
   add(event: MatChipInputEvent): void {
-    this.markAsTouched();
-    if(this.disabled){
+    if (this.disabled) {
       return;
     }
+    this.markAsTouched();
 
     const value = (event.value || '').trim();
 
     // Add our tag
-    if (value && !this.disabled) {
-      this.selectedTags.push(value);
-      this.onChange(this.selectedTags);
+    if (value) {
+      let existingTag = this.tagService.tags.find(existingTag => existingTag.key.toLowerCase() === value.toLowerCase());
+      if (existingTag) {
+        this.selectedTags.push({...existingTag, exists: true});
+      } else {
+        this.selectedTags.push({key: value, description: '', exists: false});
+      }
+
+      this.onChange(this.selectedTags.map(t => ({key: t.key, description: t.description})));
     }
 
     // Clear the input value
@@ -72,9 +86,9 @@ export class ChipsWithAutocompleteComponent implements ControlValueAccessor, Val
     this.tagCtrl.setValue(null);
   }
 
-  remove(tag: string): void {
+  remove(tag: Tag): void {
     this.markAsTouched();
-    const index = this.selectedTags.indexOf(tag);
+    const index = this.selectedTags.findIndex(t => t.key === tag.key);
 
     if (index >= 0) {
       this.selectedTags.splice(index, 1);
@@ -82,17 +96,27 @@ export class ChipsWithAutocompleteComponent implements ControlValueAccessor, Val
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
-    this.selectedTags.push(event.option.viewValue);
-    if(this.tagInput?.nativeElement){
+    this.markAsTouched();
+    let key = event.option.viewValue;
+    let existingTag = this.tagService.tags.find(existingTag => existingTag.key.toLowerCase() === key.toLowerCase());
+    if(existingTag){
+      this.selectedTags.push({...existingTag, exists: true});
+    }
+    if (this.tagInput?.nativeElement) {
       this.tagInput.nativeElement.value = '';
     }
     this.tagCtrl.setValue(null);
   }
 
-  private _filter(value: string): string[] {
-    const filterValue = value.toLowerCase();
+  private _filter(filter: string | undefined, allTags: Tag[] | null): Tag[] {
+    const filterValue = filter?.toLowerCase() || '';
+    allTags = allTags || [];
 
-    return this.allTags.filter(tag => tag.toLowerCase().includes(filterValue));
+    if (!filterValue) {
+      return allTags.slice();
+    }
+
+    return allTags.filter(tag => tag.key?.toLowerCase().includes(filterValue));
   }
 
   registerOnChange(fn: any): void {
@@ -105,15 +129,21 @@ export class ChipsWithAutocompleteComponent implements ControlValueAccessor, Val
 
   setDisabledState(isDisabled: boolean): void {
     this.disabled = isDisabled;
-    if(isDisabled){
+    if (isDisabled) {
       this.tagCtrl.disable();
-    }else{
+    } else {
       this.tagCtrl.enable();
     }
   }
 
   writeValue(tagList: string[]): void {
-    this.selectedTags = tagList;
+    if (!tagList) {
+      this.selectedTags = [];
+    } else {
+      //todo add each tag to the list
+    }
+
+    // this.selectedTags = tagList;
   }
 
   markAsTouched() {
@@ -126,4 +156,18 @@ export class ChipsWithAutocompleteComponent implements ControlValueAccessor, Val
   validate(control: AbstractControl): ValidationErrors | null {
     return null;
   }
+
+  ngOnDestroy(): void {
+    this.onDestroy.next();
+    this.onDestroy.complete();
+  }
+
+  ngOnInit(): void {
+  }
+
+
+}
+
+interface Tag extends TagModel {
+  exists: boolean;
 }

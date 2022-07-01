@@ -1,10 +1,13 @@
 <mat-form-field class="example-chip-list" appearance="fill">
   <mat-label>Tags</mat-label>
-  <mat-chip-list #chipList aria-label="Tag selection">
+  <mat-chip-list #chipList aria-label="Search or create tag...">
     <mat-chip
       *ngFor="let tags of selectedTags"
-      (removed)="remove(tags)">
-      {{tags}}
+      (removed)="remove(tags)"
+      [matTooltip]="tags.description"
+      matTooltipPosition="above"
+    >
+      {{tags.key}}
       <button matChipRemove>
         <mat-icon>cancel</mat-icon>
       </button>

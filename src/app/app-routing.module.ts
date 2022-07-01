@@ -9,7 +9,7 @@ export const PATHS_URLS = {
 };
 
 const routes: Routes = [
-  {path: '', pathMatch: 'full', redirectTo: 'link'},
+  {path: '', pathMatch: 'full', redirectTo: 'links'},
   {path: 'links', component: LinkListComponent},
   {
     path: 'link', children: [

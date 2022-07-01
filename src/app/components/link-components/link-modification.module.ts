@@ -10,7 +10,9 @@ import {ChipsWithAutocompleteComponent} from './chips-with-autocomplete/chips-wi
 import {MatChipsModule} from '@angular/material/chips';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatIconModule} from '@angular/material/icon';
-import {MatButtonToggleModule} from '@angular/material/button-toggle';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {CheckBoxGroupComponent} from './checkbox-group/check-box-group.component';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 
 @NgModule({
@@ -18,6 +20,7 @@ import {MatButtonToggleModule} from '@angular/material/button-toggle';
     EditLinkComponent,
     CreateNewLinkComponent,
     ChipsWithAutocompleteComponent,
+    CheckBoxGroupComponent,
   ],
   imports: [
     CommonModule,
@@ -29,7 +32,8 @@ import {MatButtonToggleModule} from '@angular/material/button-toggle';
     MatChipsModule,
     MatAutocompleteModule,
     MatIconModule,
-    MatButtonToggleModule,
+    MatCheckboxModule,
+    MatTooltipModule
   ],
   exports: [
     EditLinkComponent,

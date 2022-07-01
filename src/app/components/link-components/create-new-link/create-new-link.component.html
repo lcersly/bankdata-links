@@ -39,12 +39,7 @@
     class="single-line-field"
   ></app-chips-with-autocomplete>
 
-  <div class="single-line-field">
-    <mat-label>Environment(s)</mat-label>
-    <mat-button-toggle-group multiple [formControl]="environmentControl">
-      <mat-button-toggle *ngFor="let env of environments" [value]="env">{{env}}</mat-button-toggle>
-    </mat-button-toggle-group>
-  </div>
+  <app-checkbox-group [formControl]="environmentControl"></app-checkbox-group>
 
   <button mat-raised-button>Create</button>
 </form>
