@@ -14,38 +14,38 @@ import {MatChipInputEvent} from '@angular/material/chips';
 import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
 import {TagModel} from '../../../models/tag.model';
 import {TagService} from '../../../services/firestore/tag.service';
+import {ThemePalette} from '@angular/material/core';
 
 @Component({
-  selector: 'app-chips-with-autocomplete',
-  templateUrl: './chips-with-autocomplete.component.html',
-  styleUrls: ['./chips-with-autocomplete.component.scss'],
+  selector: 'app-tag-selector',
+  templateUrl: './tag-selector.component.html',
+  styleUrls: ['./tag-selector.component.scss'],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
       multi: true,
-      useExisting: ChipsWithAutocompleteComponent,
+      useExisting: TagSelectorComponent,
     },
     {
       provide: NG_VALIDATORS,
       multi: true,
-      useExisting: ChipsWithAutocompleteComponent,
+      useExisting: TagSelectorComponent,
     },
   ],
 })
-export class ChipsWithAutocompleteComponent implements ControlValueAccessor, Validator, OnInit, OnDestroy {
-
+export class TagSelectorComponent implements ControlValueAccessor, Validator, OnInit, OnDestroy {
   separatorKeysCodes: number[] = [ENTER, COMMA];
   tagCtrl = new FormControl('');
   filteredTags = combineLatest([
     this.tagCtrl.valueChanges,
     this.tagService.tags$.pipe(
-      map(tags => tags?.map(t => ({...t, exists: true}) as Tag)),
+      map(tags => tags?.map(t => ({...t, exists: true}) as TagModel)),
     ),
   ]).pipe(
-    startWith([null, [] as Tag[]]),
+    startWith([null, [] as TagModel[]]),
     map(([filter, tags]) => this._filter(filter, tags)),
   );
-  selectedTags: Tag[] = [];
+  selectedTags: TagModel[] = [];
   private onDestroy = new Subject<void>();
 
   onChange: (tags: TagModel[]) => void = () => {
@@ -72,12 +72,12 @@ export class ChipsWithAutocompleteComponent implements ControlValueAccessor, Val
     if (value) {
       let existingTag = this.tagService.tags.find(existingTag => existingTag.key.toLowerCase() === value.toLowerCase());
       if (existingTag) {
-        this.selectedTags.push({...existingTag, exists: true});
+        this.selectedTags.push(existingTag);
       } else {
         this.selectedTags.push({key: value, description: '', exists: false});
       }
 
-      this.onChange(this.selectedTags.map(t => ({key: t.key, description: t.description})));
+      this.onChange(this.selectedTags);
     }
 
     // Clear the input value
@@ -86,7 +86,7 @@ export class ChipsWithAutocompleteComponent implements ControlValueAccessor, Val
     this.tagCtrl.setValue(null);
   }
 
-  remove(tag: Tag): void {
+  remove(tag: TagModel): void {
     this.markAsTouched();
     const index = this.selectedTags.findIndex(t => t.key === tag.key);
 
@@ -97,10 +97,10 @@ export class ChipsWithAutocompleteComponent implements ControlValueAccessor, Val
 
   selected(event: MatAutocompleteSelectedEvent): void {
     this.markAsTouched();
-    let key = event.option.viewValue;
+    let key = event.option.value;
     let existingTag = this.tagService.tags.find(existingTag => existingTag.key.toLowerCase() === key.toLowerCase());
-    if(existingTag){
-      this.selectedTags.push({...existingTag, exists: true});
+    if (existingTag) {
+      this.selectedTags.push(existingTag);
     }
     if (this.tagInput?.nativeElement) {
       this.tagInput.nativeElement.value = '';
@@ -108,15 +108,8 @@ export class ChipsWithAutocompleteComponent implements ControlValueAccessor, Val
     this.tagCtrl.setValue(null);
   }
 
-  private _filter(filter: string | undefined, allTags: Tag[] | null): Tag[] {
-    const filterValue = filter?.toLowerCase() || '';
-    allTags = allTags || [];
-
-    if (!filterValue) {
-      return allTags.slice();
-    }
-
-    return allTags.filter(tag => tag.key?.toLowerCase().includes(filterValue));
+  getTagColor(tag: TagModel): ThemePalette {
+    return tag.exists ? 'primary' : 'accent';
   }
 
   registerOnChange(fn: any): void {
@@ -165,9 +158,14 @@ export class ChipsWithAutocompleteComponent implements ControlValueAccessor, Val
   ngOnInit(): void {
   }
 
+  private _filter(filter: string | undefined, allTags: TagModel[] | null): TagModel[] {
+    const filterValue = filter?.toLowerCase() || '';
+    allTags = allTags || [];
 
-}
+    if (!filterValue) {
+      return allTags.slice();
+    }
 
-interface Tag extends TagModel {
-  exists: boolean;
+    return allTags.filter(tag => tag.key?.toLowerCase().includes(filterValue));
+  }
 }

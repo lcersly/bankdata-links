@@ -48,9 +48,9 @@ export class CheckBoxGroupComponent implements ControlValueAccessor, Validator {
 
   allComplete: boolean = false;
 
-  updateAllComplete() {
+  updateAllComplete(updateParent = true) {
     this.allComplete = this.task.subtasks != null && this.task.subtasks.every(t => t.completed);
-    this.updateParentForm();
+    if (updateParent) this.updateParentForm();
   }
 
   someComplete(): boolean {
@@ -104,6 +104,7 @@ export class CheckBoxGroupComponent implements ControlValueAccessor, Validator {
       return;
     }
     this.task.subtasks.forEach(t => t.completed = value.includes(t.name));
+    this.updateAllComplete(false);
   }
 
   markAsTouched() {

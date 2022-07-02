@@ -1,5 +1,5 @@
 export interface TagModel extends TagBase {
-
+  exists: boolean;
 }
 
 export interface TagModelDatabase extends TagBase {

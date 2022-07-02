@@ -1,20 +1,20 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {ChipsWithAutocompleteComponent} from './chips-with-autocomplete.component';
+import {TagSelectorComponent} from './tag-selector.component';
 
 describe('ChipsWithAutocompleteComponent', () => {
-  let component: ChipsWithAutocompleteComponent;
-  let fixture: ComponentFixture<ChipsWithAutocompleteComponent>;
+  let component: TagSelectorComponent;
+  let fixture: ComponentFixture<TagSelectorComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ChipsWithAutocompleteComponent ]
+      declarations: [TagSelectorComponent],
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ChipsWithAutocompleteComponent);
+    fixture = TestBed.createComponent(TagSelectorComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

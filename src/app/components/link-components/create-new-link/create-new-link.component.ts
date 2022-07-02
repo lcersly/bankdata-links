@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, Validators} from '@angular/forms';
 import {urlPattern} from '../constants';
+import {environment} from '../../../../environments/environment';
 
 @Component({
   selector: 'app-create-new-link',
@@ -57,6 +58,16 @@ export class CreateNewLinkComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if (!environment.production) {
+      this.form.patchValue({
+        url: 'https://google.com',
+        name: 'GoOgLe',
+        description: 'Lorem ipsum...',
+        section: 'Test',
+        path: 'Test > Test',
+        environment: 'T,P,S',
+      })
+    }
   }
 
   create() {
@@ -65,6 +76,8 @@ export class CreateNewLinkComponent implements OnInit {
     if(!this.form.valid){
       return;
     }
+
+
   }
 
   hasError(urlControl: FormControl, errorCode: string) {

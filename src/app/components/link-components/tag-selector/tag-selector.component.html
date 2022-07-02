@@ -2,12 +2,14 @@
   <mat-label>Tags</mat-label>
   <mat-chip-list #chipList aria-label="Search or create tag...">
     <mat-chip
-      *ngFor="let tags of selectedTags"
-      (removed)="remove(tags)"
-      [matTooltip]="tags.description"
+      (removed)="remove(tag)"
+      *ngFor="let tag of selectedTags"
+      [color]="getTagColor(tag)"
       matTooltipPosition="above"
+      [matTooltip]="tag.description"
+      selected
     >
-      {{tags.key}}
+      {{tag.key}}
       <button matChipRemove>
         <mat-icon>cancel</mat-icon>
       </button>
@@ -22,8 +24,8 @@
       (matChipInputTokenEnd)="add($event)">
   </mat-chip-list>
   <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
-    <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
-      {{tag}}
+    <mat-option *ngFor="let tag of filteredTags | async" [value]="tag.key">
+      {{tag.key}} - {{tag.description}}
     </mat-option>
   </mat-autocomplete>
 </mat-form-field>

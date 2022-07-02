@@ -6,7 +6,7 @@ import {MatInputModule} from '@angular/material/input';
 import {CreateNewLinkComponent} from './create-new-link/create-new-link.component';
 import {MatButtonModule} from '@angular/material/button';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {ChipsWithAutocompleteComponent} from './chips-with-autocomplete/chips-with-autocomplete.component';
+import {TagSelectorComponent} from './tag-selector/tag-selector.component';
 import {MatChipsModule} from '@angular/material/chips';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatIconModule} from '@angular/material/icon';
@@ -19,7 +19,7 @@ import {MatTooltipModule} from '@angular/material/tooltip';
   declarations: [
     EditLinkComponent,
     CreateNewLinkComponent,
-    ChipsWithAutocompleteComponent,
+    TagSelectorComponent,
     CheckBoxGroupComponent,
   ],
   imports: [

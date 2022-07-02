@@ -34,10 +34,10 @@
     <mat-error *ngIf="hasError(sectionControl, 'required')">Required</mat-error>
   </mat-form-field>
 
-  <app-chips-with-autocomplete
+  <app-tag-selector
     [formControl]="tagsControl"
     class="single-line-field"
-  ></app-chips-with-autocomplete>
+  ></app-tag-selector>
 
   <app-checkbox-group [formControl]="environmentControl"></app-checkbox-group>
 
