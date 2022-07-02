@@ -2,16 +2,16 @@ import {Injectable} from '@angular/core';
 import {addDoc, collection, doc, Firestore, onSnapshot, Unsubscribe, updateDoc} from '@angular/fire/firestore';
 import {BehaviorSubject} from 'rxjs';
 import {DocumentData, FirestoreDataConverter} from 'firebase/firestore';
-import {TagModel, TagModelDatabase} from '../../models/tag.model';
+import {TagBasic, TagDatabase, TagDatabaseAfter, TagWithID} from '../../models/tag.model';
 
 @Injectable({
   providedIn: 'root',
 })
-export class TagService {
+export class FirestoreTagService {
   private unsub: Unsubscribe | undefined;
-  private _data$ = new BehaviorSubject<TagModel[]>([]);
+  private _data$ = new BehaviorSubject<TagDatabaseAfter[]>([]);
   public tags$ = this._data$.asObservable();
-  public tags: TagModel[] = [];
+  public tags: TagDatabaseAfter[] = [];
 
   constructor(private readonly firestore: Firestore) {
     this.subscribeToTags();
@@ -28,11 +28,11 @@ export class TagService {
       .withConverter(converter);
   }
 
-  public createNew(tag: TagModel) {
-    return addDoc(this.collectionRef, tag)
+  public createNew(tag: TagBasic) {
+    return addDoc(this.collectionRef, {key: tag.key, description: tag.description})
   }
 
-  public updateDescription(tag: TagModel) {
+  public updateDescription(tag: TagWithID & TagBasic) {
     return updateDoc(doc(this.collectionRef, tag.key), {description: tag.description})
   }
 
@@ -47,7 +47,7 @@ export class TagService {
         if (doc.empty) {
           this._data$.next([]);
         } else {
-          this._data$.next(doc.docs.map(d => ({...d.data(), key: d.id})));
+          this._data$.next(doc.docs.map(d => d.data() as TagDatabaseAfter));
         }
       },
     );
@@ -60,12 +60,20 @@ export class TagService {
   }
 }
 
-const converter: FirestoreDataConverter<TagModel> = {
-  toFirestore(modelObject: TagModel): DocumentData {
-    return modelObject;
+const converter: FirestoreDataConverter<TagBasic> = {
+  toFirestore(modelObject: TagBasic): DocumentData {
+    return {
+      key: modelObject.key,
+      description: modelObject.description,
+    } as TagBasic;
   },
-  fromFirestore(snapshot): TagModel {
-    let documentData = snapshot.data() as TagModelDatabase;
-    return {...documentData, exists: true} as TagModel
+  fromFirestore(snapshot): TagDatabaseAfter {
+    let documentData = snapshot.data() as TagDatabase;
+    return {
+      key: documentData.key,
+      description: documentData.description,
+      id: snapshot.id,
+      exists: true
+    }
   },
 }

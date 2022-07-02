@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
-import {LinkService} from '../../services/firestore/link.service';
+import {FirestoreLinkService} from '../../services/firestore/firestore-link.service';
 import {Link} from '../../models/link.model';
 import {DataSource} from '@angular/cdk/collections';
 import {Observable, ReplaySubject} from 'rxjs';
@@ -23,7 +23,7 @@ export class LinkListComponent implements OnInit {
     environment: this.fb.control(''),
   });
 
-  constructor(private linkService: LinkService, private fb: FormBuilder) {
+  constructor(private linkService: FirestoreLinkService, private fb: FormBuilder) {
   }
 
   get envControl() {

@@ -1,27 +1,16 @@
 import {Injectable} from '@angular/core';
-import {BehaviorSubject, combineLatest, map} from 'rxjs';
+import {BehaviorSubject} from 'rxjs';
 import {collection, Firestore, onSnapshot, Unsubscribe} from '@angular/fire/firestore';
 import {DocumentData, FirestoreDataConverter} from 'firebase/firestore';
-import {Link, LinkDatabase} from '../../models/link.model';
+import {Link} from '../../models/link.model';
 
 @Injectable({
   providedIn: 'root',
 })
-export class LinkService {
+export class FirestoreLinkService {
   private unsub: Unsubscribe | undefined;
-  private _data$ = new BehaviorSubject<Link[] | undefined>(undefined);
+  private _data$ = new BehaviorSubject<Link[]>([]);
   public allLinks$ = this._data$.asObservable();
-  private _filterValue$ = new BehaviorSubject<string | undefined>(undefined);
-  public filteredLinks$ = combineLatest([this.allLinks$, this._filterValue$])
-    .pipe(
-      map(([links, filter]) => {
-        if(!filter){
-          return links;
-        }
-        links = links || [];
-        return links.filter(link => link.name.includes(filter));
-      }),
-    );
 
   constructor(private readonly firestore: Firestore) {
     this.subscribeToLinks();
@@ -46,7 +35,8 @@ export class LinkService {
       });
   }
 
-  addLink(){
+
+  createLink(link: Link) {
 
   }
 
@@ -64,9 +54,6 @@ export class LinkService {
     }
   }
 
-  setFilterValue(value: string | undefined) {
-    this._filterValue$.next(value);
-  }
 }
 
 const converter: FirestoreDataConverter<Link> = {
@@ -74,7 +61,7 @@ const converter: FirestoreDataConverter<Link> = {
     return modelObject;
   },
   fromFirestore(snapshot): Link {
-    const linkData = snapshot.data() as LinkDatabase;
+    const linkData = snapshot.data() as Link;
 
     return {
       ...linkData,

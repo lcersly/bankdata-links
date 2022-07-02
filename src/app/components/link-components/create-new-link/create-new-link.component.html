@@ -41,5 +41,10 @@
 
   <app-checkbox-group [formControl]="environmentControl"></app-checkbox-group>
 
+  <mat-form-field class="single-line-field">
+    <mat-label>Base64 image</mat-label>
+    <textarea matInput placeholder="Encoded image ..." [formControl]="iconControl"></textarea>
+  </mat-form-field>
+
   <button mat-raised-button>Create</button>
 </form>
