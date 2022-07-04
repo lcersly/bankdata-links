@@ -18,7 +18,7 @@
 
   <mat-form-field class="single-line-field">
     <mat-label>Description</mat-label>
-    <input matInput placeholder="Ekstra description" [formControl]="descriptionControl">
+    <input matInput placeholder="Extra description" [formControl]="descriptionControl">
     <mat-error *ngIf="hasError(descriptionControl, 'required')">Required</mat-error>
   </mat-form-field>
 
@@ -40,6 +40,11 @@
   ></app-tag-selector>
 
   <app-checkbox-group [formControl]="environmentControl"></app-checkbox-group>
+
+  <mat-form-field class="single-line-field">
+    <mat-label>Base64 image</mat-label>
+    <textarea matInput placeholder="Encoded image ..." [formControl]="iconControl"></textarea>
+  </mat-form-field>
 
   <button mat-raised-button>Create</button>
 </form>

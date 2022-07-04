@@ -1,13 +1,11 @@
-<mat-form-field class="example-chip-list" appearance="fill">
+<mat-form-field appearance="fill">
   <mat-label>Tags</mat-label>
-  <mat-chip-list #chipList aria-label="Search or create tag...">
+  <mat-chip-list #chipList aria-label="Search for or create a tag...">
     <mat-chip
-      (removed)="remove(tag)"
       *ngFor="let tag of selectedTags"
-      [color]="getTagColor(tag)"
+      (removed)="remove(tag)"
       matTooltipPosition="above"
       [matTooltip]="tag.description"
-      selected
     >
       {{tag.key}}
       <button matChipRemove>
@@ -28,4 +26,7 @@
       {{tag.key}} - {{tag.description}}
     </mat-option>
   </mat-autocomplete>
+  <mat-hint *ngIf="newTagsCount === 0">Find previously tags here or create new ones</mat-hint>
+  <mat-hint *ngIf="newTagsCount === 1">1 new tag will be created</mat-hint>
+  <mat-hint *ngIf="newTagsCount > 1">{{newTagsCount}} new tags will be created</mat-hint>
 </mat-form-field>

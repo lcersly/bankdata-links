@@ -12,9 +12,8 @@ import {
 import {combineLatest, map, startWith, Subject} from 'rxjs';
 import {MatChipInputEvent} from '@angular/material/chips';
 import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
-import {TagModel} from '../../../models/tag.model';
-import {TagService} from '../../../services/firestore/tag.service';
-import {ThemePalette} from '@angular/material/core';
+import {FirestoreTagService} from '../../../services/firestore/firestore-tag.service';
+import {TagBasic, TagDatabaseAfter, TagSelection} from '../../../models/tag.model';
 
 @Component({
   selector: 'app-tag-selector',
@@ -39,25 +38,24 @@ export class TagSelectorComponent implements ControlValueAccessor, Validator, On
   filteredTags = combineLatest([
     this.tagCtrl.valueChanges,
     this.tagService.tags$.pipe(
-      map(tags => tags?.map(t => ({...t, exists: true}) as TagModel)),
+      map(tags => tags?.map(t => ({...t, exists: true}))),
     ),
   ]).pipe(
-    startWith([null, [] as TagModel[]]),
+    startWith([null, [] as TagDatabaseAfter[]]),
     map(([filter, tags]) => this._filter(filter, tags)),
   );
-  selectedTags: TagModel[] = [];
+  selectedTags: TagSelection[] = [];
   private onDestroy = new Subject<void>();
 
-  onChange: (tags: TagModel[]) => void = () => {
+  onChange: (tags: TagSelection[]) => void = () => {
   };
   onTouched = () => {
   };
-  touched = false;
   disabled = false;
 
   @ViewChild('tagInput') tagInput: ElementRef<HTMLInputElement> | undefined;
 
-  constructor(private tagService: TagService) {
+  constructor(private tagService: FirestoreTagService) {
   }
 
   add(event: MatChipInputEvent): void {
@@ -86,7 +84,7 @@ export class TagSelectorComponent implements ControlValueAccessor, Validator, On
     this.tagCtrl.setValue(null);
   }
 
-  remove(tag: TagModel): void {
+  remove(tag: TagBasic): void {
     this.markAsTouched();
     const index = this.selectedTags.findIndex(t => t.key === tag.key);
 
@@ -100,7 +98,11 @@ export class TagSelectorComponent implements ControlValueAccessor, Validator, On
     let key = event.option.value;
     let existingTag = this.tagService.tags.find(existingTag => existingTag.key.toLowerCase() === key.toLowerCase());
     if (existingTag) {
+      console.debug('Found matching tag for key: ' + key, existingTag);
       this.selectedTags.push(existingTag);
+      this.onChange(this.selectedTags);
+    } else {
+      console.error('Could not find matching tag from key: ' + key);
     }
     if (this.tagInput?.nativeElement) {
       this.tagInput.nativeElement.value = '';
@@ -108,9 +110,13 @@ export class TagSelectorComponent implements ControlValueAccessor, Validator, On
     this.tagCtrl.setValue(null);
   }
 
-  getTagColor(tag: TagModel): ThemePalette {
-    return tag.exists ? 'primary' : 'accent';
+  get newTagsCount(){
+    return this.selectedTags.filter(t => !t.exists).length;
   }
+
+  // getTagColor(tag: TagExists): ThemePalette {
+  //   return tag.exists ? 'primary' : 'accent';
+  // }
 
   registerOnChange(fn: any): void {
     this.onChange = fn;
@@ -140,9 +146,8 @@ export class TagSelectorComponent implements ControlValueAccessor, Validator, On
   }
 
   markAsTouched() {
-    if (!this.touched) {
+    if (this.onTouched) {
       this.onTouched();
-      this.touched = true;
     }
   }
 
@@ -158,7 +163,7 @@ export class TagSelectorComponent implements ControlValueAccessor, Validator, On
   ngOnInit(): void {
   }
 
-  private _filter(filter: string | undefined, allTags: TagModel[] | null): TagModel[] {
+  private _filter<T extends TagBasic>(filter: string | undefined, allTags: T[] | null): T[] {
     const filterValue = filter?.toLowerCase() || '';
     allTags = allTags || [];
 
