@@ -80,7 +80,7 @@ export class CreateNewLinkComponent implements OnInit {
       return;
     }
 
-    this.linkService.createLink(this.form.value as Link)
+    this.linkService.createLinkAndTags(this.form.value as Link)
   }
 
   hasError(urlControl: FormControl, errorCode: string) {

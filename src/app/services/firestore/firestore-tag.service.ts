@@ -1,5 +1,14 @@
 import {Injectable} from '@angular/core';
-import {addDoc, collection, doc, Firestore, onSnapshot, Unsubscribe, updateDoc} from '@angular/fire/firestore';
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  Firestore,
+  onSnapshot,
+  Unsubscribe,
+  updateDoc,
+} from '@angular/fire/firestore';
 import {BehaviorSubject} from 'rxjs';
 import {DocumentData, FirestoreDataConverter} from 'firebase/firestore';
 import {TagBasic, TagDatabase, TagDatabaseAfter, TagWithID} from '../../models/tag.model';
@@ -58,6 +67,11 @@ export class FirestoreTagService {
       this.unsub();
     }
   }
+
+  deleteTag(tag: TagWithID) {
+    console.debug('Deleting tag', tag);
+    return deleteDoc(doc(this.collectionRef, tag.id))
+  }
 }
 
 const converter: FirestoreDataConverter<TagBasic> = {
@@ -73,7 +87,7 @@ const converter: FirestoreDataConverter<TagBasic> = {
       key: documentData.key,
       description: documentData.description,
       id: snapshot.id,
-      exists: true
+      exists: true,
     }
   },
 }

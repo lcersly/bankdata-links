@@ -13,8 +13,7 @@ import {combineLatest, map, startWith, Subject} from 'rxjs';
 import {MatChipInputEvent} from '@angular/material/chips';
 import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
 import {FirestoreTagService} from '../../../services/firestore/firestore-tag.service';
-import {ThemePalette} from '@angular/material/core';
-import {TagBasic, TagDatabaseAfter, TagExists, TagSelection} from '../../../models/tag.model';
+import {TagBasic, TagDatabaseAfter, TagSelection} from '../../../models/tag.model';
 
 @Component({
   selector: 'app-tag-selector',
@@ -111,9 +110,13 @@ export class TagSelectorComponent implements ControlValueAccessor, Validator, On
     this.tagCtrl.setValue(null);
   }
 
-  getTagColor(tag: TagExists): ThemePalette {
-    return tag.exists ? 'primary' : 'accent';
+  get newTagsCount(){
+    return this.selectedTags.filter(t => !t.exists).length;
   }
+
+  // getTagColor(tag: TagExists): ThemePalette {
+  //   return tag.exists ? 'primary' : 'accent';
+  // }
 
   registerOnChange(fn: any): void {
     this.onChange = fn;

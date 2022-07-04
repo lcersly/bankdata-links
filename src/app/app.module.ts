@@ -10,6 +10,7 @@ import {initializeApp, provideFirebaseApp} from '@angular/fire/app';
 import {environment} from '../environments/environment';
 import {getAuth, provideAuth} from '@angular/fire/auth';
 import {getFirestore, provideFirestore} from '@angular/fire/firestore';
+import {TagModule} from './components/tag/tag.module';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import {getFirestore, provideFirestore} from '@angular/fire/firestore';
     // component modules
     LinkModificationModule,
     LinkListComponentModule,
+    TagModule,
 
     // routing
     AppRoutingModule,

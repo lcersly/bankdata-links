@@ -35,7 +35,7 @@ export class LinkService {
     this._filterValue$.next(value);
   }
 
-  public async createLink(link: Link){
+  public async createLinkAndTags(link: Link){
     for (const tag of link.tags) {
       if(!tag.exists){
         console.info('Creating new tag', tag);
