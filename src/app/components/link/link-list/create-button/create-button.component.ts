@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {Router} from '@angular/router';
-import {PATHS_URLS} from '../../../app-routing.module';
+import {PATHS_URLS} from '../../../../app-routing.module';
 
 @Component({
   selector: 'app-create-button',

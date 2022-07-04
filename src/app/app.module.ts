@@ -3,9 +3,8 @@ import {BrowserModule} from '@angular/platform-browser';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {LinkListComponentModule} from './components/link-list/link-list-component.module';
 import {PipeModule} from './pipes/pipe.module';
-import {LinkModificationModule} from './components/link-components/link-modification.module';
+import {LinkModule} from './components/link/link.module';
 import {initializeApp, provideFirebaseApp} from '@angular/fire/app';
 import {environment} from '../environments/environment';
 import {getAuth, provideAuth} from '@angular/fire/auth';
@@ -27,8 +26,7 @@ import {TagModule} from './components/tag/tag.module';
     BrowserAnimationsModule,
 
     // component modules
-    LinkModificationModule,
-    LinkListComponentModule,
+    LinkModule,
     TagModule,
 
     // routing
