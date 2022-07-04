@@ -11,6 +11,7 @@ import {CreateTagButtonComponent} from './tag-list/create-tag-button/create-tag-
 import {MatIconModule} from '@angular/material/icon';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {EditTagComponent} from './edit-tag/edit-tag.component';
+import {SharedModule} from '../../shared/shared.module';
 
 
 @NgModule({
@@ -30,6 +31,7 @@ import {EditTagComponent} from './edit-tag/edit-tag.component';
     MatIconModule,
     FormsModule,
     ReactiveFormsModule,
+    SharedModule,
   ],
   exports:[
     TagListComponent,

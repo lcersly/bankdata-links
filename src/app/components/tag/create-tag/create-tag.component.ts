@@ -1,13 +1,13 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, Validators} from '@angular/forms';
-import {FirestoreTagService} from '../../../services/firestore/firestore-tag.service';
-import {TagBasic} from '../../../models/tag.model';
+import {FirestoreTagService} from '../../../shared/services/firestore/firestore-tag.service';
+import {TagBasic} from '../../../shared/models/tag.model';
 import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-create-tag',
   templateUrl: './create-tag.component.html',
-  styleUrls: ['./create-tag.component.scss']
+  styleUrls: ['./create-tag.component.scss'],
 })
 export class CreateTagComponent implements OnInit {
 

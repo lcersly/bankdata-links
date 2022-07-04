@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
-import {FirestoreLinkService} from '../../../services/firestore/firestore-link.service';
-import {Link} from '../../../models/link.model';
+import {FirestoreLinkService} from '../../../shared/services/firestore/firestore-link.service';
+import {Link} from '../../../shared/models/link.model';
 import {DataSource} from '@angular/cdk/collections';
 import {Observable, ReplaySubject} from 'rxjs';
 import {FormBuilder, FormControl} from '@angular/forms';

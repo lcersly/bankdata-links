@@ -2,8 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, Validators} from '@angular/forms';
 import {urlPattern} from '../constants';
 import {environment} from '../../../../environments/environment';
-import {LinkService} from '../../../services/link.service';
-import {Link} from '../../../models/link.model';
+import {LinkService} from '../../../shared/services/link.service';
+import {Link} from '../../../shared/models/link.model';
 
 @Component({
   selector: 'app-create-new-link',

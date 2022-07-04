@@ -17,9 +17,10 @@ import {MatTableModule} from '@angular/material/table';
 import {MatListModule} from '@angular/material/list';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatSelectModule} from '@angular/material/select';
-import {PipeModule} from '../../pipes/pipe.module';
+import {PipeModule} from '../../shared/pipes/pipe.module';
 import {CreateButtonComponent} from './link-list/create-button/create-button.component';
 import {LinkListComponent} from './link-list/link-list.component';
+import {SharedModule} from '../../shared/shared.module';
 
 
 @NgModule({
@@ -48,6 +49,7 @@ import {LinkListComponent} from './link-list/link-list.component';
     MatFormFieldModule,
     MatSelectModule,
     PipeModule,
+    SharedModule,
   ],
   exports: [
     EditLinkComponent,
