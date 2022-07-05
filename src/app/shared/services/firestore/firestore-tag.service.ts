@@ -9,7 +9,7 @@ import {
   Unsubscribe,
   updateDoc,
 } from '@angular/fire/firestore';
-import {BehaviorSubject} from 'rxjs';
+import {BehaviorSubject, map} from 'rxjs';
 import {DocumentData, FirestoreDataConverter} from 'firebase/firestore';
 import {TagBasic, TagDatabase, TagDatabaseAfter, TagWithID} from '../../models/tag.model';
 
@@ -32,6 +32,10 @@ export class FirestoreTagService {
     return `tags`;
   }
 
+  public getTag(id: string) {
+    return this.tags$.pipe(map(tags => tags.find(tag => tag.id === id)));
+  }
+
   private get collectionRef() {
     return collection(this.firestore, this.getURL())
       .withConverter(converter);
@@ -41,8 +45,8 @@ export class FirestoreTagService {
     return addDoc(this.collectionRef, {key: tag.key, description: tag.description})
   }
 
-  public updateDescription(tag: TagWithID & TagBasic) {
-    return updateDoc(doc(this.collectionRef, tag.key), {description: tag.description})
+  public update(tag: TagWithID & TagBasic) {
+    return updateDoc(doc(this.collectionRef, tag.id), {description: tag.description, key: tag.key})
   }
 
   // public rename(oldString: string, newString: string) {

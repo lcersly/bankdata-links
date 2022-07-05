@@ -1,1 +1,18 @@
 <app-top-bar title="Edit tag"></app-top-bar>
+
+<form (ngSubmit)="edit()">
+  <mat-form-field class="single-line-field">
+    <mat-label>Key</mat-label>
+    <input matInput placeholder="The key..." [formControl]="keyControl">
+    <mat-error *ngIf="hasError(keyControl, 'required')">Required</mat-error>
+  </mat-form-field>
+
+  <mat-form-field class="single-line-field">
+    <mat-label>Description</mat-label>
+    <input matInput placeholder="Extra description" [formControl]="descriptionControl">
+    <mat-error *ngIf="hasError(descriptionControl, 'required')">Required</mat-error>
+  </mat-form-field>
+
+  <button mat-raised-button routerLink="/tags">close</button>
+  <button mat-mini-fab color="primary"><mat-icon>new_label</mat-icon></button>
+</form>
