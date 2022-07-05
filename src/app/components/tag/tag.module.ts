@@ -13,6 +13,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {EditTagComponent} from './edit-tag/edit-tag.component';
 import {SharedModule} from '../../shared/shared.module';
 import {AppRoutingModule} from '../../app-routing.module';
+import {MatSortModule} from '@angular/material/sort';
 
 
 @NgModule({
@@ -23,17 +24,18 @@ import {AppRoutingModule} from '../../app-routing.module';
     EditTagComponent,
   ],
     imports: [
-        CommonModule,
-        MatButtonModule,
-        MatToolbarModule,
-        MatTableModule,
-        MatCheckboxModule,
-        MatInputModule,
-        MatIconModule,
-        FormsModule,
-        ReactiveFormsModule,
-        SharedModule,
-        AppRoutingModule,
+      CommonModule,
+      MatButtonModule,
+      MatToolbarModule,
+      MatTableModule,
+      MatCheckboxModule,
+      MatInputModule,
+      MatIconModule,
+      FormsModule,
+      ReactiveFormsModule,
+      SharedModule,
+      AppRoutingModule,
+      MatSortModule,
     ],
   exports:[
     TagListComponent,

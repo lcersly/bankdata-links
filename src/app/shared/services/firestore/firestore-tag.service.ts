@@ -28,17 +28,13 @@ export class FirestoreTagService {
     this.tags$.subscribe(t => console.debug(`Service - Tags updated (${t.length})`, t));
   }
 
-  public getURL(): string {
-    return `tags`;
+  private get collectionRef() {
+    return collection(this.firestore, `tags`)
+      .withConverter(converter);
   }
 
   public getTag(id: string) {
     return this.tags$.pipe(map(tags => tags.find(tag => tag.id === id)));
-  }
-
-  private get collectionRef() {
-    return collection(this.firestore, this.getURL())
-      .withConverter(converter);
   }
 
   public createNew(tag: TagBasic) {
@@ -48,11 +44,6 @@ export class FirestoreTagService {
   public update(tag: TagWithID & TagBasic) {
     return updateDoc(doc(this.collectionRef, tag.id), {description: tag.description, key: tag.key})
   }
-
-  // public rename(oldString: string, newString: string) {
-  //   //todo find all links with old string and rename them
-  //
-  // }
 
   private subscribeToTags() {
     this.unsub = onSnapshot(this.collectionRef,

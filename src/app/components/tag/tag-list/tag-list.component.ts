@@ -1,19 +1,22 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {FirestoreTagService} from '../../../shared/services/firestore/firestore-tag.service';
 import {MatTableDataSource} from '@angular/material/table';
 import {TagDatabaseAfter} from '../../../shared/models/tag.model';
 import {SelectionModel} from '@angular/cdk/collections';
 import {Router} from '@angular/router';
+import {MatSort} from '@angular/material/sort';
 
 @Component({
   selector: 'app-tag-list',
   templateUrl: './tag-list.component.html',
   styleUrls: ['./tag-list.component.scss'],
 })
-export class TagListComponent implements OnInit {
+export class TagListComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = ['select', 'key', 'description', 'edit'];
   dataSource = new MatTableDataSource<TagDatabaseAfter>([]);
   selection = new SelectionModel<TagDatabaseAfter>(true, []);
+
+  @ViewChild(MatSort) sort: MatSort | undefined;
 
   constructor(public fireTagService: FirestoreTagService, private router: Router) {
   }
@@ -23,6 +26,13 @@ export class TagListComponent implements OnInit {
       this.dataSource.data = tags;
       this.dataSource._updateChangeSubscription();
     })
+  }
+
+  ngAfterViewInit(): void {
+    if (this.sort) {
+      this.dataSource.sort = this.sort;
+      this.dataSource.sort.sort({id: 'key', start: 'desc', disableClear: true})
+    }
   }
 
   /** Whether the number of selected elements matches the total number of rows. */

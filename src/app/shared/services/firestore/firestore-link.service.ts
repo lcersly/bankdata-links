@@ -25,12 +25,8 @@ export class FirestoreLinkService {
     this.subscribeToLinks();
   }
 
-  public getURL(): string {
-    return `links`;
-  }
-
   get colRef() {
-    return collection(this.firestore, this.getURL()).withConverter(converter);
+    return collection(this.firestore, `links`).withConverter(converter);
   }
 
   subscribeToLinks() {
@@ -48,17 +44,17 @@ export class FirestoreLinkService {
   }
 
 
-  createLink(link: Link) {
+  create(link: Link) {
     return addDoc(this.colRef, {...link});
   }
 
-  editLink(link: Link) {
+  edit(link: Link) {
     let data = {...link};
     delete data.id;
     return updateDoc(doc(this.colRef, link.id), data);
   }
 
-  deleteLink(link: Link) {
+  delete(link: Link) {
     return deleteDoc(doc(this.colRef, link.id));
   }
 

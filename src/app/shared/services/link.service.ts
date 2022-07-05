@@ -48,7 +48,7 @@ export class LinkService {
       }
     }
 
-    await this.fireLinkService.createLink(link);
+    await this.fireLinkService.create(link);
 
     return created;
   }
