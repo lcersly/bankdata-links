@@ -1,33 +1,32 @@
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
-import {FirestoreLinkService} from '../../../shared/services/firestore/firestore-link.service';
+import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Link} from '../../../shared/models/link.model';
-import {DataSource} from '@angular/cdk/collections';
-import {Observable, ReplaySubject} from 'rxjs';
+import {first, Subject, takeUntil} from 'rxjs';
 import {FormBuilder, FormControl} from '@angular/forms';
+import {LinkService} from '../../../shared/services/link.service';
+import {FilterService} from '../../../shared/services/filter.service';
+import {MatSort} from '@angular/material/sort';
+import {MatTableDataSource} from '@angular/material/table';
 
 @Component({
   selector: 'app-link-list',
   templateUrl: './link-list.component.html',
   styleUrls: ['./link-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  // changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LinkListComponent implements OnInit {
-  displayedColumns: string[] = ['icon', 'url', 'environment', 'tags', 'section'];
-  dataSource: ExampleDataSource = new ExampleDataSource([]);
-  groupedList = new Map<string, Link[]>()
-  filteredList = new Map<string, Link[]>()
+export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
+  displayedColumns: string[] = ['icon', 'url', 'environment', 'tags'];
+  dataSource = new MatTableDataSource<Link>([]);
+  @ViewChild(MatSort) matSort: MatSort | undefined
+  private onDestroy = new Subject<void>();
 
-  environments: Set<string> = new Set<string>();
   searchForm = this.fb.group({
     searchString: this.fb.control(''),
-    environment: this.fb.control(''),
   });
 
-  constructor(private linkService: FirestoreLinkService, private fb: FormBuilder) {
-  }
-
-  get envControl() {
-    return this.searchForm.get('environment') as FormControl
+  constructor(private linkService: LinkService,
+              private fb: FormBuilder,
+              private filterService: FilterService,
+  ) {
   }
 
   get searchControl() {
@@ -35,76 +34,60 @@ export class LinkListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // this.linkService.links$.subscribe(links => {
-    //   this.dataSource.setData(links);
-    //
-    //   this.groupedList = new Map<string, Link[]>();
-    //   const envList = new Set<string>();
-    //
-    //   for (const link of links) {
-    //     let links = this.groupedList.get(link.section);
-    //     if (!links) {
-    //       links = [];
-    //       this.groupedList.set(link.section, links);
-    //     }
-    //     links.push(link);
-    //
-    //     if (link.environment) {
-    //       envList.add(link.environment);
-    //     }
-    //   }
-    //
-    //   this.environments = envList;
-    //   this.envControl.setValue([...envList])
-    //   this.searchChange();
-    // });
+    // initial search filters
+    this.filterService.linkFilters$
+      .pipe(first())
+      .subscribe(linkFilters => this.searchForm.patchValue(linkFilters))
 
-    this.searchForm.valueChanges.subscribe(() => this.searchChange());
+    // store all subsequent changes in the service
+    this.searchForm.valueChanges
+      .pipe(takeUntil(this.onDestroy))
+      .subscribe(filters => this.filterService.setLinkFilters(filters));
+
+    // subscribe to links
+    this.linkService.links$
+      .pipe(takeUntil(this.onDestroy))
+      .subscribe(links => {
+        this.dataSource.data = links;
+        this.dataSource._updateChangeSubscription();
+      });
   }
 
-  searchChange() {
-    let searchValue = this.searchControl.value?.trim();
-    if (!searchValue && this.envControl.value?.length === this.environments.size) {
-      this.filteredList = this.groupedList;
-    } else {
-      const list = new Map<string, Link[]>();
-      for (const section of this.groupedList) {
-        let links = section[1].filter(link => this.linkMatch(link, searchValue, this.envControl.value));
-        if (links.length) {
-          list.set(section[0], links);
-        }
-      }
-      this.filteredList = list;
+  ngAfterViewInit(): void {
+    if (this.matSort) {
+      this.dataSource.sort = this.matSort;
     }
   }
 
-  linkMatch(link: Link, searchString: string | undefined, environments: string[]) {
-    if (!environments.find(env => link.environment === env)) {
-      return false;
-    }
-
-    if (!searchString) return true;
-    const concat = (link.section + link.url + link.name + link.description + link.tags?.join()).toLowerCase();
-    return concat.includes(searchString.toLowerCase());
-  }
-}
-
-class ExampleDataSource extends DataSource<Link> {
-  private _dataStream = new ReplaySubject<Link[]>();
-
-  constructor(initialData: Link[]) {
-    super();
-    this.setData(initialData);
+  ngOnDestroy(): void {
+    this.onDestroy.next();
+    this.onDestroy.complete();
   }
 
-  connect(): Observable<Link[]> {
-    return this._dataStream;
-  }
 
-  disconnect() {
-  }
+  // searchChange() {
+  //   let searchValue = this.searchControl.value?.trim();
+  //   if (!searchValue && this.envControl.value?.length === this.environments.size) {
+  //     this.filteredList = this.groupedList;
+  //   } else {
+  //     const list = new Map<string, Link[]>();
+  //     for (const section of this.groupedList) {
+  //       let links = section[1].filter(link => this.linkMatch(link, searchValue, this.envControl.value));
+  //       if (links.length) {
+  //         list.set(section[0], links);
+  //       }
+  //     }
+  //     this.filteredList = list;
+  //   }
+  // }
 
-  setData(data: Link[]) {
-    this._dataStream.next(data);
-  }
+  // linkMatch(link: Link, searchString: string | undefined, environments: string[]) {
+  //   if (!environments.find(env => link.environment === env)) {
+  //     return false;
+  //   }
+  //
+  //   if (!searchString) return true;
+  //   const concat = (link.section + link.url + link.name + link.description + link.tags?.join()).toLowerCase();
+  //   return concat.includes(searchString.toLowerCase());
+  // }
 }

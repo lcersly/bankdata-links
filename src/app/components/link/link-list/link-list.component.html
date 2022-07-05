@@ -1,68 +1,45 @@
 <app-top-bar title="Link list"></app-top-bar>
 
-<form [formGroup]="searchForm">
+<form>
   <mat-form-field appearance="fill">
     <mat-label>Search</mat-label>
-    <input formControlName="searchString" matInput type="text">
+    <input [formControl]="searchControl" matInput type="text">
     <button (click)="searchControl.setValue('')" *ngIf="searchControl.value" aria-label="Clear" mat-icon-button
             matSuffix>
       <mat-icon>close</mat-icon>
     </button>
   </mat-form-field>
-
-  <mat-form-field appearance="fill">
-    <mat-label>Environment</mat-label>
-    <mat-select formControlName="environment" multiple>
-      <mat-option *ngFor="let env of environments" [value]="env">
-        {{env}}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
 </form>
 
-<mat-list>
-  <ng-container *ngFor="let group of filteredList | keyvalue; let i = index">
-    <mat-divider *ngIf="i > 0"></mat-divider>
-    <div mat-subheader>{{group.key}}</div>
-
-    <mat-list-item *ngFor="let link of group.value">
-      <mat-icon mat-list-icon><img [src]="link.icon"></mat-icon>
-      <div mat-line><a [href]="link.url | safeUrl">{{link.name}}</a></div>
-    </mat-list-item>
-
-  </ng-container>
-</mat-list>
-
-
-<table [dataSource]="dataSource" class="mat-elevation-z8" mat-table>
+<mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort>
 
   <ng-container matColumnDef="url">
-    <th *matHeaderCellDef mat-header-cell> URL</th>
-    <td *matCellDef="let element" mat-cell><a [href]="element.url">{{element.name}}</a></td>
+    <mat-header-cell *matHeaderCellDef> URL</mat-header-cell>
+    <mat-cell *matCellDef="let element"><a [href]="element.url" target="_blank">{{element.name}}</a></mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="icon">
-    <th *matHeaderCellDef mat-header-cell></th>
-    <td *matCellDef="let element" mat-cell><img [src]="element.icon"></td>
+    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+    <mat-cell *matCellDef="let element"><img [src]="element.icon"></mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="section">
-    <th *matHeaderCellDef mat-header-cell>Section</th>
-    <td *matCellDef="let element" mat-cell> {{element.section}} </td>
+    <mat-header-cell *matHeaderCellDef>Section</mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{element.section}} </mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="environment">
-    <th *matHeaderCellDef mat-header-cell>Env</th>
-    <td *matCellDef="let element" mat-cell> {{element.environment}} </td>
+    <mat-header-cell *matHeaderCellDef>Env</mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{element.environment}} </mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="tags">
-    <th *matHeaderCellDef mat-header-cell>Tags</th>
-    <td *matCellDef="let element" mat-cell> {{element.tags}} </td>
+    <mat-header-cell *matHeaderCellDef>Tags</mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{element.tags}} </mat-cell>
   </ng-container>
 
-  <tr *matHeaderRowDef="displayedColumns" mat-header-row></tr>
-  <tr *matRowDef="let row; columns: displayedColumns;" mat-row></tr>
-</table>
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+</mat-table>
 
 <app-create-button></app-create-button>

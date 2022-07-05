@@ -32,14 +32,9 @@ export class FirestoreLinkService {
   subscribeToLinks() {
     this.unsub = onSnapshot(this.colRef,
       (documents) => {
-        documents.docChanges().forEach(update => {
-          const change = {
-            id: update.doc.id,
-            participant: update.doc.data(),
-            change: update.type,
-          };
-          console.info('Participant', update, change);
-        });
+        const docs: Link[] = [];
+        documents.docs.forEach(doc => docs.push(doc.data()));
+        this._data$.next(docs);
       });
   }
 

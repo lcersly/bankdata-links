@@ -21,6 +21,8 @@ import {PipeModule} from '../../shared/pipes/pipe.module';
 import {CreateButtonComponent} from './link-list/create-button/create-button.component';
 import {LinkListComponent} from './link-list/link-list.component';
 import {SharedModule} from '../../shared/shared.module';
+import {AppRoutingModule} from '../../app-routing.module';
+import {MatSortModule} from '@angular/material/sort';
 
 
 @NgModule({
@@ -50,6 +52,8 @@ import {SharedModule} from '../../shared/shared.module';
     MatSelectModule,
     PipeModule,
     SharedModule,
+    AppRoutingModule,
+    MatSortModule,
   ],
   exports: [
     EditLinkComponent,

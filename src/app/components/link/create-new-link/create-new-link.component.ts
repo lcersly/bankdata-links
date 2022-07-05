@@ -6,6 +6,7 @@ import {LinkService} from '../../../shared/services/link.service';
 import {Link} from '../../../shared/models/link.model';
 import {fieldHasError} from '../../../shared/util';
 import {NotificationService} from '../../../shared/services/notification.service';
+import {FavIconService} from '../../../shared/services/fav-icon.service';
 
 @Component({
   selector: 'app-create-new-link',
@@ -28,6 +29,13 @@ export class CreateNewLinkComponent implements OnInit {
   });
 
   hasError = fieldHasError;
+
+  constructor(private fb: FormBuilder,
+              private linkService: LinkService,
+              private notifications: NotificationService,
+              private favIconService: FavIconService,
+  ) {
+  }
 
   ngOnInit(): void {
     if (!environment.production) {
@@ -74,12 +82,13 @@ export class CreateNewLinkComponent implements OnInit {
     return this.form.get('icon') as FormControl
   }
 
-  constructor(private fb: FormBuilder, private linkService: LinkService, private notifications: NotificationService) {
+  fetchIcon(event: MouseEvent) {
+    event.stopPropagation();
+    this.favIconService.fetchFavIcon(this.urlControl.value)
   }
 
   async create() {
     this.form.markAllAsTouched();
-    console.info(this.form.valid, this.form.value)
     if (!this.form.valid) {
       return;
     }

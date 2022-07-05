@@ -31,7 +31,6 @@ export class TagListComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     if (this.sort) {
       this.dataSource.sort = this.sort;
-      this.dataSource.sort.sort({id: 'key', start: 'desc', disableClear: true})
     }
   }
 

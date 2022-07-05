@@ -10,6 +10,7 @@ import {environment} from '../environments/environment';
 import {getAuth, provideAuth} from '@angular/fire/auth';
 import {getFirestore, provideFirestore} from '@angular/fire/firestore';
 import {TagModule} from './components/tag/tag.module';
+import {HttpClientModule} from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import {TagModule} from './components/tag/tag.module';
     // standard modules
     BrowserModule,
     BrowserAnimationsModule,
+    HttpClientModule,
 
     // component modules
     LinkModule,

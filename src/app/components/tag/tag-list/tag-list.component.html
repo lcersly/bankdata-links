@@ -7,6 +7,8 @@
 
 <mat-table [dataSource]="dataSource" class="mat-elevation-z8"
            matSort
+           matSortActive="key"
+           matSortDirection="asc"
 >
 
   <!-- Checkbox Column -->
@@ -43,7 +45,7 @@
   <ng-container matColumnDef="edit">
     <mat-header-cell *matHeaderCellDef></mat-header-cell>
     <mat-cell *matCellDef="let element">
-      <button (click)="edit($event, element)" color="primary" mat-mini-fab>
+      <button (click)="edit($event, element)" class="mat-elevation-z0" color="primary" mat-mini-fab>
         <mat-icon>edit</mat-icon>
       </button>
     </mat-cell>
