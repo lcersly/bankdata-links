@@ -1,6 +1,15 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject} from 'rxjs';
-import {collection, Firestore, onSnapshot, Unsubscribe} from '@angular/fire/firestore';
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  Firestore,
+  onSnapshot,
+  Unsubscribe,
+  updateDoc,
+} from '@angular/fire/firestore';
 import {DocumentData, FirestoreDataConverter} from 'firebase/firestore';
 import {Link} from '../../models/link.model';
 
@@ -20,9 +29,12 @@ export class FirestoreLinkService {
     return `links`;
   }
 
+  get colRef() {
+    return collection(this.firestore, this.getURL()).withConverter(converter);
+  }
+
   subscribeToLinks() {
-    let collectionReference = collection(this.firestore, this.getURL()).withConverter(converter);
-    this.unsub = onSnapshot(collectionReference,
+    this.unsub = onSnapshot(this.colRef,
       (documents) => {
         documents.docChanges().forEach(update => {
           const change = {
@@ -30,22 +42,24 @@ export class FirestoreLinkService {
             participant: update.doc.data(),
             change: update.type,
           };
-          console.info("Participant", update, change);
+          console.info('Participant', update, change);
         });
       });
   }
 
 
   createLink(link: Link) {
-
+    return addDoc(this.colRef, {...link});
   }
 
-  editLink(){
-
+  editLink(link: Link) {
+    let data = {...link};
+    delete data.id;
+    return updateDoc(doc(this.colRef, link.id), data);
   }
 
-  deleteLink(){
-
+  deleteLink(link: Link) {
+    return deleteDoc(doc(this.colRef, link.id));
   }
 
   disconnect() {
@@ -65,7 +79,7 @@ const converter: FirestoreDataConverter<Link> = {
 
     return {
       ...linkData,
-      // id: snapshot.id,
+      id: snapshot.id,
       // expirationAt: room.expirationAt?.toDate(),
       // updatedAt: room.updatedAt?.toDate(),
       // createdAt: room.createdAt?.toDate(),

@@ -36,13 +36,21 @@ export class LinkService {
   }
 
   public async createLinkAndTags(link: Link){
+    const created = {
+      tags: 0,
+    };
     for (const tag of link.tags) {
-      if(!tag.exists){
+      if (!tag.exists) {
         console.info('Creating new tag', tag);
         let documentReference = await this.firestoreTagService.createNew(tag);
         tag.id = documentReference.id;
+        created.tags++;
       }
     }
+
+    await this.fireLinkService.createLink(link);
+
+    return created;
   }
 
   /**

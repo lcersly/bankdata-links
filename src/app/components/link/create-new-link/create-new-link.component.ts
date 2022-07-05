@@ -4,6 +4,8 @@ import {urlPattern} from '../constants';
 import {environment} from '../../../../environments/environment';
 import {LinkService} from '../../../shared/services/link.service';
 import {Link} from '../../../shared/models/link.model';
+import {fieldHasError} from '../../../shared/util';
+import {NotificationService} from '../../../shared/services/notification.service';
 
 @Component({
   selector: 'app-create-new-link',
@@ -25,8 +27,7 @@ export class CreateNewLinkComponent implements OnInit {
     icon: [''],
   });
 
-  constructor(private fb: FormBuilder, private linkService: LinkService) {
-  }
+  hasError = fieldHasError;
 
   ngOnInit(): void {
     if (!environment.production) {
@@ -73,17 +74,18 @@ export class CreateNewLinkComponent implements OnInit {
     return this.form.get('icon') as FormControl
   }
 
-  create() {
+  constructor(private fb: FormBuilder, private linkService: LinkService, private notifications: NotificationService) {
+  }
+
+  async create() {
     this.form.markAllAsTouched();
     console.info(this.form.valid, this.form.value)
     if (!this.form.valid) {
       return;
     }
 
-    this.linkService.createLinkAndTags(this.form.value as Link)
-  }
+    const {tags} = await this.linkService.createLinkAndTags(this.form.value as Link);
 
-  hasError(urlControl: FormControl, errorCode: string) {
-    return urlControl.hasError(errorCode);
+    this.notifications.link.created(tags);
   }
 }

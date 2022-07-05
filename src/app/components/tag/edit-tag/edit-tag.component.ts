@@ -4,23 +4,30 @@ import {Subject} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {FormBuilder, FormControl, Validators} from '@angular/forms';
 import {fieldHasError} from '../../../shared/util';
+import {NotificationService} from '../../../shared/services/notification.service';
+import {TagBasic, TagWithID} from '../../../shared/models/tag.model';
 
 @Component({
   selector: 'app-edit-tag',
   templateUrl: './edit-tag.component.html',
-  styleUrls: ['./edit-tag.component.scss']
+  styleUrls: ['./edit-tag.component.scss'],
 })
 export class EditTagComponent implements OnInit, OnDestroy {
   private onDestroy = new Subject<void>();
   public form = this.fb.group({
     description: '',
-    key: ['', Validators.required]
+    key: ['', Validators.required],
   });
 
-  constructor(private tagService: FirestoreTagService, private route: ActivatedRoute, private fb: FormBuilder) { }
+  constructor(private tagService: FirestoreTagService,
+              private route: ActivatedRoute,
+              private fb: FormBuilder,
+              private notifications: NotificationService,
+  ) {
+  }
 
   ngOnInit(): void {
-    this.route.data.subscribe(({ tag }) => {
+    this.route.data.subscribe(({tag}) => {
       console.info(tag);
       // do something with your resolved data ...
     })
@@ -37,7 +44,8 @@ export class EditTagComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // await this.tagService.update(this.form.value as TagBasic)
+    await this.tagService.update(this.form.value as TagBasic & TagWithID)
+    this.notifications.tag.edited();
   }
 
   public get keyControl(): FormControl {
