@@ -6,6 +6,7 @@ import {LinkService} from '../../../shared/services/link.service';
 import {FilterService} from '../../../shared/services/filter.service';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-link-list',
@@ -14,7 +15,7 @@ import {MatTableDataSource} from '@angular/material/table';
   // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
-  displayedColumns: string[] = ['icon', 'url', 'environment', 'tags'];
+  displayedColumns: string[] = ['icon', 'url', 'environment', 'tags', 'edit'];
   dataSource = new MatTableDataSource<Link>([]);
   @ViewChild(MatSort) matSort: MatSort | undefined
   private onDestroy = new Subject<void>();
@@ -26,6 +27,7 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(private linkService: LinkService,
               private fb: FormBuilder,
               private filterService: FilterService,
+              private router: Router,
   ) {
   }
 
@@ -51,6 +53,11 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
         this.dataSource.data = links;
         this.dataSource._updateChangeSubscription();
       });
+  }
+
+  edit($event: MouseEvent, element: Link) {
+    $event.stopPropagation();
+    this.router.navigate(['link', element.id])
   }
 
   ngAfterViewInit(): void {

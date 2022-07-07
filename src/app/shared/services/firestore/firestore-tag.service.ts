@@ -9,7 +9,7 @@ import {
   Unsubscribe,
   updateDoc,
 } from '@angular/fire/firestore';
-import {BehaviorSubject, map} from 'rxjs';
+import {map, ReplaySubject} from 'rxjs';
 import {DocumentData, FirestoreDataConverter} from 'firebase/firestore';
 import {TagBasic, TagDatabase, TagDatabaseAfter, TagWithID} from '../../models/tag.model';
 
@@ -18,7 +18,7 @@ import {TagBasic, TagDatabase, TagDatabaseAfter, TagWithID} from '../../models/t
 })
 export class FirestoreTagService {
   private unsub: Unsubscribe | undefined;
-  private _data$ = new BehaviorSubject<TagDatabaseAfter[]>([]);
+  private _data$ = new ReplaySubject<TagDatabaseAfter[]>(1);
   public tags$ = this._data$.asObservable();
   public tags: TagDatabaseAfter[] = [];
 

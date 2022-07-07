@@ -11,7 +11,9 @@ import {MatChipsModule} from '@angular/material/chips';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatIconModule} from '@angular/material/icon';
 import {MatCheckboxModule} from '@angular/material/checkbox';
-import {CheckBoxGroupComponent} from './create-new-link/checkbox-group/check-box-group.component';
+import {
+  EnvironmentCheckBoxGroupComponent,
+} from './create-new-link/environment-checkbox-group/environment-check-box-group.component';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatTableModule} from '@angular/material/table';
 import {MatListModule} from '@angular/material/list';
@@ -30,7 +32,7 @@ import {MatSortModule} from '@angular/material/sort';
     EditLinkComponent,
     CreateNewLinkComponent,
     TagSelectorComponent,
-    CheckBoxGroupComponent,
+    EnvironmentCheckBoxGroupComponent,
     CreateButtonComponent,
     LinkListComponent,
   ],

@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FirestoreTagService} from '../../../shared/services/firestore/firestore-tag.service';
-import {Subject} from 'rxjs';
+import {Subject, takeUntil} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {FormBuilder, FormControl, Validators} from '@angular/forms';
 import {fieldHasError} from '../../../shared/util';
@@ -27,10 +27,9 @@ export class EditTagComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.route.data.subscribe(({tag}) => {
-      console.info(tag);
-      // do something with your resolved data ...
-    })
+    this.route.data
+      .pipe(takeUntil(this.onDestroy))
+      .subscribe(({tag}) => this.form.patchValue(tag))
   }
 
   ngOnDestroy(): void {

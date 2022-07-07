@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {BehaviorSubject} from 'rxjs';
+import {ReplaySubject} from 'rxjs';
 import {
   addDoc,
   collection,
@@ -18,7 +18,7 @@ import {Link} from '../../models/link.model';
 })
 export class FirestoreLinkService {
   private unsub: Unsubscribe | undefined;
-  private _data$ = new BehaviorSubject<Link[]>([]);
+  private _data$ = new ReplaySubject<Link[]>(1);
   public allLinks$ = this._data$.asObservable();
 
   constructor(private readonly firestore: Firestore) {
@@ -44,6 +44,7 @@ export class FirestoreLinkService {
   }
 
   edit(link: Link) {
+    console.info(link);
     let data = {...link};
     delete data.id;
     return updateDoc(doc(this.colRef, link.id), data);

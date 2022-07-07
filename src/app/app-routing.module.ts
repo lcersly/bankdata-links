@@ -7,6 +7,7 @@ import {TagListComponent} from './components/tag/tag-list/tag-list.component';
 import {CreateTagComponent} from './components/tag/create-tag/create-tag.component';
 import {EditTagComponent} from './components/tag/edit-tag/edit-tag.component';
 import {TagResolverService} from './components/tag/tag-resolver.service';
+import {LinkResolverService} from './components/link/link-resolver.service';
 
 export const PATHS_URLS = {
   createLink: 'link/create',
@@ -19,7 +20,7 @@ const routes: Routes = [
     path: 'link', children: [
       {path: '', pathMatch: 'full', component: LinkListComponent},
       {path: 'create', component: CreateNewLinkComponent},
-      {path: ':id', component: EditLinkComponent},
+      {path: ':id', component: EditLinkComponent, resolve: {link: LinkResolverService}},
     ],
   },
   {
