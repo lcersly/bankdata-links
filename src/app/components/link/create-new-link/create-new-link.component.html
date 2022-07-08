@@ -3,7 +3,12 @@
 <form (ngSubmit)="create()">
   <mat-form-field class="single-line-field">
     <mat-label>URL</mat-label>
-    <textarea matInput placeholder="http://... or https://..." [formControl]="urlControl"></textarea>
+    <textarea [formControl]="urlControl"
+              cdkAutosizeMaxRows="2"
+              cdkTextareaAutosize
+              matInput
+              placeholder="http://... or https://..."
+    ></textarea>
     <mat-error *ngIf="hasError(urlControl, 'required')">Required</mat-error>
     <mat-error *ngIf="hasError(urlControl, 'pattern')">Doesn't look like a valid URL</mat-error>
   </mat-form-field>
@@ -41,7 +46,12 @@
 
   <mat-form-field class="single-line-field">
     <mat-label>Base64 image</mat-label>
-    <textarea matInput placeholder="Encoded image ..." [formControl]="iconControl"></textarea>
+    <textarea [formControl]="iconControl"
+              cdkAutosizeMaxRows="10"
+              cdkTextareaAutosize
+              matInput
+              placeholder="Encoded image ..."
+    ></textarea>
     <button (click)="fetchIcon($event)" *ngIf="!iconControl.value && urlControl.valid" mat-icon-button matSuffix
             type="button">
       <mat-icon>dns</mat-icon>

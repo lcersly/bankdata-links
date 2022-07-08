@@ -85,6 +85,7 @@ export class CreateNewLinkComponent implements OnInit {
   fetchIcon(event: MouseEvent) {
     event.stopPropagation();
     this.favIconService.fetchFavIcon(this.urlControl.value)
+      .subscribe(data => this.iconControl.setValue(data.base64Image));
   }
 
   async create() {

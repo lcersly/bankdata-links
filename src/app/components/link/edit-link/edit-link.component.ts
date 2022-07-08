@@ -13,7 +13,7 @@ import {ActivatedRoute} from '@angular/router';
 @Component({
   selector: 'app-create-link',
   templateUrl: './edit-link.component.html',
-  styleUrls: ['./edit-link.component.scss']
+  styleUrls: ['./edit-link.component.scss'],
 })
 export class EditLinkComponent implements OnInit, OnDestroy {
 
@@ -33,6 +33,7 @@ export class EditLinkComponent implements OnInit, OnDestroy {
   });
 
   hasError = fieldHasError;
+  private id: string | undefined;
 
   constructor(private fb: FormBuilder,
               private linkService: LinkService,
@@ -45,7 +46,10 @@ export class EditLinkComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.route.data
       .pipe(takeUntil(this.onDestroy))
-      .subscribe(({link}) => this.form.patchValue(link))
+      .subscribe(({link}) => {
+        this.id = link.id;
+        this.form.patchValue(link);
+      })
   }
 
   ngOnDestroy(): void {
@@ -88,6 +92,7 @@ export class EditLinkComponent implements OnInit, OnDestroy {
   fetchIcon(event: MouseEvent) {
     event.stopPropagation();
     this.favIconService.fetchFavIcon(this.urlControl.value)
+      .subscribe(data => this.iconControl.setValue(data.base64Image));
   }
 
   async edit() {
@@ -96,7 +101,11 @@ export class EditLinkComponent implements OnInit, OnDestroy {
       return;
     }
 
-    await this.linkService.edit(this.form.value as Link);
+    let link: Link = {
+      ...this.form.value,
+      id: this.id,
+    };
+    await this.linkService.edit(link);
 
     this.notifications.link.edited();
   }

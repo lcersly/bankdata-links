@@ -6,14 +6,12 @@ import {MatInputModule} from '@angular/material/input';
 import {CreateNewLinkComponent} from './create-new-link/create-new-link.component';
 import {MatButtonModule} from '@angular/material/button';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {TagSelectorComponent} from './create-new-link/tag-selector/tag-selector.component';
+import {TagSelectorComponent} from './tag-selector/tag-selector.component';
 import {MatChipsModule} from '@angular/material/chips';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatIconModule} from '@angular/material/icon';
 import {MatCheckboxModule} from '@angular/material/checkbox';
-import {
-  EnvironmentCheckBoxGroupComponent,
-} from './create-new-link/environment-checkbox-group/environment-check-box-group.component';
+import {EnvironmentCheckBoxGroupComponent} from './environment-checkbox-group/environment-check-box-group.component';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatTableModule} from '@angular/material/table';
 import {MatListModule} from '@angular/material/list';

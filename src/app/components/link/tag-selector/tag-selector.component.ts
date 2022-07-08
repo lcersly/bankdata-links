@@ -12,8 +12,8 @@ import {
 import {combineLatest, map, startWith, Subject} from 'rxjs';
 import {MatChipInputEvent} from '@angular/material/chips';
 import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
-import {FirestoreTagService} from '../../../../shared/services/firestore/firestore-tag.service';
-import {TagBasic, TagDatabaseAfter, TagSelection} from '../../../../shared/models/tag.model';
+import {FirestoreTagService} from '../../../shared/services/firestore/firestore-tag.service';
+import {TagBasic, TagDatabaseAfter, TagSelection} from '../../../shared/models/tag.model';
 
 @Component({
   selector: 'app-tag-selector',

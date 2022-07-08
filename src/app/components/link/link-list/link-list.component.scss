@@ -3,3 +3,17 @@ app-create-button {
   bottom: 10px;
   right: 10px;
 }
+
+mat-table {
+  .mat-column-edit {
+    flex: 0 0 30px;
+  }
+
+  .mat-column-icon {
+    flex: 0 0 50px;
+  }
+
+  .mat-column-environment {
+    flex: 0 0 50px;
+  }
+}

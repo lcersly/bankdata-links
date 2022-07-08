@@ -7,6 +7,7 @@ import {FilterService} from '../../../shared/services/filter.service';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {Router} from '@angular/router';
+import {DomSanitizer} from '@angular/platform-browser';
 
 @Component({
   selector: 'app-link-list',
@@ -28,6 +29,7 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
               private fb: FormBuilder,
               private filterService: FilterService,
               private router: Router,
+              private sanitize: DomSanitizer,
   ) {
   }
 
@@ -97,4 +99,7 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
   //   const concat = (link.section + link.url + link.name + link.description + link.tags?.join()).toLowerCase();
   //   return concat.includes(searchString.toLowerCase());
   // }
+  getSafeIcon(icon: string) {
+    return this.sanitize.bypassSecurityTrustUrl('data:image/png;base64, ' + icon);
+  }
 }
