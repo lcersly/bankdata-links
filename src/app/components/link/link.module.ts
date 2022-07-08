@@ -11,7 +11,9 @@ import {MatChipsModule} from '@angular/material/chips';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatIconModule} from '@angular/material/icon';
 import {MatCheckboxModule} from '@angular/material/checkbox';
-import {CheckBoxGroupComponent} from './create-new-link/checkbox-group/check-box-group.component';
+import {
+  EnvironmentCheckBoxGroupComponent,
+} from './create-new-link/environment-checkbox-group/environment-check-box-group.component';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatTableModule} from '@angular/material/table';
 import {MatListModule} from '@angular/material/list';
@@ -21,6 +23,8 @@ import {PipeModule} from '../../shared/pipes/pipe.module';
 import {CreateButtonComponent} from './link-list/create-button/create-button.component';
 import {LinkListComponent} from './link-list/link-list.component';
 import {SharedModule} from '../../shared/shared.module';
+import {AppRoutingModule} from '../../app-routing.module';
+import {MatSortModule} from '@angular/material/sort';
 
 
 @NgModule({
@@ -28,7 +32,7 @@ import {SharedModule} from '../../shared/shared.module';
     EditLinkComponent,
     CreateNewLinkComponent,
     TagSelectorComponent,
-    CheckBoxGroupComponent,
+    EnvironmentCheckBoxGroupComponent,
     CreateButtonComponent,
     LinkListComponent,
   ],
@@ -50,6 +54,8 @@ import {SharedModule} from '../../shared/shared.module';
     MatSelectModule,
     PipeModule,
     SharedModule,
+    AppRoutingModule,
+    MatSortModule,
   ],
   exports: [
     EditLinkComponent,

@@ -1,6 +1,15 @@
 import {Injectable} from '@angular/core';
-import {BehaviorSubject} from 'rxjs';
-import {collection, Firestore, onSnapshot, Unsubscribe} from '@angular/fire/firestore';
+import {ReplaySubject} from 'rxjs';
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  Firestore,
+  onSnapshot,
+  Unsubscribe,
+  updateDoc,
+} from '@angular/fire/firestore';
 import {DocumentData, FirestoreDataConverter} from 'firebase/firestore';
 import {Link} from '../../models/link.model';
 
@@ -9,43 +18,40 @@ import {Link} from '../../models/link.model';
 })
 export class FirestoreLinkService {
   private unsub: Unsubscribe | undefined;
-  private _data$ = new BehaviorSubject<Link[]>([]);
+  private _data$ = new ReplaySubject<Link[]>(1);
   public allLinks$ = this._data$.asObservable();
 
   constructor(private readonly firestore: Firestore) {
     this.subscribeToLinks();
   }
 
-  public getURL(): string {
-    return `links`;
+  get colRef() {
+    return collection(this.firestore, `links`).withConverter(converter);
   }
 
   subscribeToLinks() {
-    let collectionReference = collection(this.firestore, this.getURL()).withConverter(converter);
-    this.unsub = onSnapshot(collectionReference,
+    this.unsub = onSnapshot(this.colRef,
       (documents) => {
-        documents.docChanges().forEach(update => {
-          const change = {
-            id: update.doc.id,
-            participant: update.doc.data(),
-            change: update.type,
-          };
-          console.info("Participant", update, change);
-        });
+        const docs: Link[] = [];
+        documents.docs.forEach(doc => docs.push(doc.data()));
+        this._data$.next(docs);
       });
   }
 
 
-  createLink(link: Link) {
-
+  create(link: Link) {
+    return addDoc(this.colRef, {...link});
   }
 
-  editLink(){
-
+  edit(link: Link) {
+    console.info(link);
+    let data = {...link};
+    delete data.id;
+    return updateDoc(doc(this.colRef, link.id), data);
   }
 
-  deleteLink(){
-
+  delete(link: Link) {
+    return deleteDoc(doc(this.colRef, link.id));
   }
 
   disconnect() {
@@ -65,7 +71,7 @@ const converter: FirestoreDataConverter<Link> = {
 
     return {
       ...linkData,
-      // id: snapshot.id,
+      id: snapshot.id,
       // expirationAt: room.expirationAt?.toDate(),
       // updatedAt: room.updatedAt?.toDate(),
       // createdAt: room.createdAt?.toDate(),

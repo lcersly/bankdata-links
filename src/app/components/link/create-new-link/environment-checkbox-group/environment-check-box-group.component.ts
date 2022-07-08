@@ -10,23 +10,23 @@ import {
 import {ThemePalette} from '@angular/material/core';
 
 @Component({
-  selector: 'app-checkbox-group',
-  templateUrl: './check-box-group.component.html',
-  styleUrls: ['./check-box-group.component.scss'],
+  selector: 'app-environment-checkbox-group',
+  templateUrl: './environment-check-box-group.component.html',
+  styleUrls: ['./environment-check-box-group.component.scss'],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
       multi: true,
-      useExisting: CheckBoxGroupComponent,
+      useExisting: EnvironmentCheckBoxGroupComponent,
     },
     {
       provide: NG_VALIDATORS,
       multi: true,
-      useExisting: CheckBoxGroupComponent,
+      useExisting: EnvironmentCheckBoxGroupComponent,
     },
   ],
 })
-export class CheckBoxGroupComponent implements ControlValueAccessor, Validator {
+export class EnvironmentCheckBoxGroupComponent implements ControlValueAccessor, Validator {
   onChange: ((selection: string[]) => void) = () => {
   };
   onTouched = () => {

@@ -1,6 +1,14 @@
-table{
+mat-table {
   width: 100%;
   max-width: 500px;
+
+  .mat-column-select {
+    flex: 0 0 10%;
+  }
+
+  .mat-column-edit {
+    flex: 0 0 10%;
+  }
 }
 
 .mat-column-select{

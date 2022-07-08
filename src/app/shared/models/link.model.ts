@@ -7,4 +7,5 @@ export interface Link<T = any> {
   tags: T[];
   environment: undefined | 'S' | 'P' | 'ALL';
   icon?: string;
+  id?: string;
 }

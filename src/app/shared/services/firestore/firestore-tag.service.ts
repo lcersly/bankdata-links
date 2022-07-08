@@ -9,7 +9,7 @@ import {
   Unsubscribe,
   updateDoc,
 } from '@angular/fire/firestore';
-import {BehaviorSubject} from 'rxjs';
+import {map, ReplaySubject} from 'rxjs';
 import {DocumentData, FirestoreDataConverter} from 'firebase/firestore';
 import {TagBasic, TagDatabase, TagDatabaseAfter, TagWithID} from '../../models/tag.model';
 
@@ -18,7 +18,7 @@ import {TagBasic, TagDatabase, TagDatabaseAfter, TagWithID} from '../../models/t
 })
 export class FirestoreTagService {
   private unsub: Unsubscribe | undefined;
-  private _data$ = new BehaviorSubject<TagDatabaseAfter[]>([]);
+  private _data$ = new ReplaySubject<TagDatabaseAfter[]>(1);
   public tags$ = this._data$.asObservable();
   public tags: TagDatabaseAfter[] = [];
 
@@ -28,27 +28,22 @@ export class FirestoreTagService {
     this.tags$.subscribe(t => console.debug(`Service - Tags updated (${t.length})`, t));
   }
 
-  public getURL(): string {
-    return `tags`;
+  private get collectionRef() {
+    return collection(this.firestore, `tags`)
+      .withConverter(converter);
   }
 
-  private get collectionRef() {
-    return collection(this.firestore, this.getURL())
-      .withConverter(converter);
+  public getTag(id: string) {
+    return this.tags$.pipe(map(tags => tags.find(tag => tag.id === id)));
   }
 
   public createNew(tag: TagBasic) {
     return addDoc(this.collectionRef, {key: tag.key, description: tag.description})
   }
 
-  public updateDescription(tag: TagWithID & TagBasic) {
-    return updateDoc(doc(this.collectionRef, tag.key), {description: tag.description})
+  public update(tag: TagWithID & TagBasic) {
+    return updateDoc(doc(this.collectionRef, tag.id), {description: tag.description, key: tag.key})
   }
-
-  // public rename(oldString: string, newString: string) {
-  //   //todo find all links with old string and rename them
-  //
-  // }
 
   private subscribeToTags() {
     this.unsub = onSnapshot(this.collectionRef,

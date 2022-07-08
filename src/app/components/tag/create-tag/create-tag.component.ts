@@ -2,7 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, Validators} from '@angular/forms';
 import {FirestoreTagService} from '../../../shared/services/firestore/firestore-tag.service';
 import {TagBasic} from '../../../shared/models/tag.model';
-import {Router} from '@angular/router';
+import {fieldHasError} from '../../../shared/util';
+import {NotificationService} from '../../../shared/services/notification.service';
 
 @Component({
   selector: 'app-create-tag',
@@ -18,7 +19,7 @@ export class CreateTagComponent implements OnInit {
 
   constructor(private fb: FormBuilder,
               private fireTagService: FirestoreTagService,
-              private router: Router,
+              private notification: NotificationService,
   ) {
   }
 
@@ -40,13 +41,9 @@ export class CreateTagComponent implements OnInit {
     }
 
     await this.fireTagService.createNew(this.form.value as TagBasic)
+
+    this.notification.tag.created(this.keyControl.value);
   }
 
-  hasError(urlControl: FormControl, errorCode: string) {
-    return urlControl.hasError(errorCode);
-  }
-
-  close() {
-    this.router.navigateByUrl('/tags');
-  }
+  public hasError = fieldHasError;
 }

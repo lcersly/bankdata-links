@@ -37,12 +37,21 @@
     class="single-line-field"
   ></app-tag-selector>
 
-  <app-checkbox-group [formControl]="environmentControl"></app-checkbox-group>
+  <app-environment-checkbox-group [formControl]="environmentControl"></app-environment-checkbox-group>
 
   <mat-form-field class="single-line-field">
     <mat-label>Base64 image</mat-label>
     <textarea matInput placeholder="Encoded image ..." [formControl]="iconControl"></textarea>
+    <button (click)="fetchIcon($event)" *ngIf="!iconControl.value && urlControl.valid" mat-icon-button matSuffix
+            type="button">
+      <mat-icon>dns</mat-icon>
+    </button>
   </mat-form-field>
 
-  <button mat-raised-button>Create</button>
+  <button color="primary" mat-fab routerLink="/link" type="button">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+  <button color="primary" mat-fab>
+    <mat-icon>save</mat-icon>
+  </button>
 </form>
