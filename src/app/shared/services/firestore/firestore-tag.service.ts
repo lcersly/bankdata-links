@@ -41,8 +41,8 @@ export class FirestoreTagService {
     return addDoc(this.collectionRef, {key: tag.key, description: tag.description})
   }
 
-  public update(tag: TagWithID & TagBasic) {
-    return updateDoc(doc(this.collectionRef, tag.id), {description: tag.description, key: tag.key})
+  public update(tag: TagBasic, id: string) {
+    return updateDoc(doc(this.collectionRef, id), {description: tag.description, key: tag.key})
   }
 
   private subscribeToTags() {

@@ -47,6 +47,14 @@ export class LinkService {
     return created;
   }
 
+  async delete(link: Link) {
+    if (!link.id) {
+      throw new Error('No id on link');
+    }
+
+    await this.fireLinkService.delete(link);
+  }
+
   private async createMissingTags(link: Link) {
     const created = {
       tags: 0,

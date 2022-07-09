@@ -49,8 +49,8 @@ export class FirestoreLinkService {
       let value = link[key];
       if (!value) {
         // @ts-ignore
-        delete link[key];
-        console.info('Deleting', key, value);
+        link[key] = '';
+        // console.info('Deleting', key, value);
       }
     }
 
@@ -77,7 +77,6 @@ export class FirestoreLinkService {
       this.unsub();
     }
   }
-
 }
 
 const converter: FirestoreDataConverter<Link> = {

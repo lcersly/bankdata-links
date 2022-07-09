@@ -12,8 +12,8 @@ import {
 import {combineLatest, map, startWith, Subject} from 'rxjs';
 import {MatChipInputEvent} from '@angular/material/chips';
 import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
-import {FirestoreTagService} from '../../../shared/services/firestore/firestore-tag.service';
-import {TagBasic, TagDatabaseAfter, TagSelection} from '../../../shared/models/tag.model';
+import {FirestoreTagService} from '../../../../shared/services/firestore/firestore-tag.service';
+import {TagBasic, TagDatabaseAfter, TagSelection} from '../../../../shared/models/tag.model';
 
 @Component({
   selector: 'app-tag-selector',
@@ -114,10 +114,6 @@ export class TagSelectorComponent implements ControlValueAccessor, Validator, On
     return this.selectedTags.filter(t => !t.exists).length;
   }
 
-  // getTagColor(tag: TagExists): ThemePalette {
-  //   return tag.exists ? 'primary' : 'accent';
-  // }
-
   registerOnChange(fn: any): void {
     this.onChange = fn;
   }
@@ -135,14 +131,12 @@ export class TagSelectorComponent implements ControlValueAccessor, Validator, On
     }
   }
 
-  writeValue(tagList: string[]): void {
+  writeValue(tagList: TagDatabaseAfter[]): void {
     if (!tagList) {
       this.selectedTags = [];
     } else {
-      //todo add each tag to the list
+      this.selectedTags.push(...tagList);
     }
-
-    // this.selectedTags = tagList;
   }
 
   markAsTouched() {
@@ -167,10 +161,14 @@ export class TagSelectorComponent implements ControlValueAccessor, Validator, On
     const filterValue = filter?.toLowerCase() || '';
     allTags = allTags || [];
 
-    if (!filterValue) {
+    if (!filterValue && this.selectedTags.length === 0) {
       return allTags.slice();
     }
 
-    return allTags.filter(tag => tag.key?.toLowerCase().includes(filterValue));
+    return allTags.filter(tag => {
+      const searchFilterMatches = tag.key?.toLowerCase().includes(filterValue);
+      const alreadySelected = !!this.selectedTags.find(t => t.key === tag.key);
+      return searchFilterMatches && !alreadySelected;
+    });
   }
 }

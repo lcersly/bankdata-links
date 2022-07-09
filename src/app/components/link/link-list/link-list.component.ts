@@ -16,7 +16,15 @@ import {DomSanitizer} from '@angular/platform-browser';
   // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
-  displayedColumns: string[] = ['icon', 'url', 'environment', 'tags', 'edit'];
+  displayedColumns: string[] = [
+    'icon',
+    'name',
+    'url',
+    'link',
+    'environment',
+    'tags',
+    'edit',
+  ];
   dataSource = new MatTableDataSource<Link>([]);
   @ViewChild(MatSort) matSort: MatSort | undefined
   private onDestroy = new Subject<void>();
@@ -48,6 +56,8 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
       .pipe(takeUntil(this.onDestroy))
       .subscribe(filters => this.filterService.setLinkFilters(filters));
 
+    this.searchControl.valueChanges.subscribe((value) => this.dataSource.filter = value);
+
     // subscribe to links
     this.linkService.links$
       .pipe(takeUntil(this.onDestroy))
@@ -62,6 +72,11 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
     this.router.navigate(['link', element.id])
   }
 
+  delete($event: MouseEvent, element: Link) {
+    $event.stopPropagation();
+    return this.linkService.delete(element);
+  }
+
   ngAfterViewInit(): void {
     if (this.matSort) {
       this.dataSource.sort = this.matSort;
@@ -73,32 +88,6 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
     this.onDestroy.complete();
   }
 
-
-  // searchChange() {
-  //   let searchValue = this.searchControl.value?.trim();
-  //   if (!searchValue && this.envControl.value?.length === this.environments.size) {
-  //     this.filteredList = this.groupedList;
-  //   } else {
-  //     const list = new Map<string, Link[]>();
-  //     for (const section of this.groupedList) {
-  //       let links = section[1].filter(link => this.linkMatch(link, searchValue, this.envControl.value));
-  //       if (links.length) {
-  //         list.set(section[0], links);
-  //       }
-  //     }
-  //     this.filteredList = list;
-  //   }
-  // }
-
-  // linkMatch(link: Link, searchString: string | undefined, environments: string[]) {
-  //   if (!environments.find(env => link.environment === env)) {
-  //     return false;
-  //   }
-  //
-  //   if (!searchString) return true;
-  //   const concat = (link.section + link.url + link.name + link.description + link.tags?.join()).toLowerCase();
-  //   return concat.includes(searchString.toLowerCase());
-  // }
   getSafeIcon(icon: string) {
     return this.sanitize.bypassSecurityTrustUrl('data:image/png;base64, ' + icon);
   }

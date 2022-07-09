@@ -5,7 +5,7 @@ import {ActivatedRoute} from '@angular/router';
 import {FormBuilder, FormControl, Validators} from '@angular/forms';
 import {fieldHasError} from '../../../shared/util';
 import {NotificationService} from '../../../shared/services/notification.service';
-import {TagBasic, TagWithID} from '../../../shared/models/tag.model';
+import {TagBasic} from '../../../shared/models/tag.model';
 
 @Component({
   selector: 'app-edit-tag',
@@ -18,6 +18,7 @@ export class EditTagComponent implements OnInit, OnDestroy {
     description: '',
     key: ['', Validators.required],
   });
+  private id: string | undefined;
 
   constructor(private tagService: FirestoreTagService,
               private route: ActivatedRoute,
@@ -29,7 +30,10 @@ export class EditTagComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.route.data
       .pipe(takeUntil(this.onDestroy))
-      .subscribe(({tag}) => this.form.patchValue(tag))
+      .subscribe(({tag}) => {
+        this.form.patchValue(tag);
+        this.id = tag.id;
+      })
   }
 
   ngOnDestroy(): void {
@@ -43,7 +47,7 @@ export class EditTagComponent implements OnInit, OnDestroy {
       return;
     }
 
-    await this.tagService.update(this.form.value as TagBasic & TagWithID)
+    await this.tagService.update(this.form.value as TagBasic, this.id!);
     this.notifications.tag.edited();
   }
 

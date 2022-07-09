@@ -1,65 +1,10 @@
 <app-top-bar title="Create new link"></app-top-bar>
 
 <form (ngSubmit)="create()">
-  <mat-form-field class="single-line-field">
-    <mat-label>URL</mat-label>
-    <textarea [formControl]="urlControl"
-              cdkAutosizeMaxRows="2"
-              cdkTextareaAutosize
-              matInput
-              placeholder="http://... or https://..."
-    ></textarea>
-    <mat-error *ngIf="hasError(urlControl, 'required')">Required</mat-error>
-    <mat-error *ngIf="hasError(urlControl, 'pattern')">Doesn't look like a valid URL</mat-error>
-  </mat-form-field>
-
-  <mat-form-field class="single-line-field">
-    <mat-label>Name</mat-label>
-    <input matInput placeholder="Short descriptive name" [formControl]="nameControl">
-    <mat-error *ngIf="hasError(nameControl, 'required')">Required</mat-error>
-  </mat-form-field>
-
-  <mat-form-field class="single-line-field">
-    <mat-label>Description</mat-label>
-    <input matInput placeholder="Extra description" [formControl]="descriptionControl">
-    <mat-error *ngIf="hasError(descriptionControl, 'required')">Required</mat-error>
-  </mat-form-field>
-
-  <mat-form-field class="single-line-field">
-    <mat-label>Path</mat-label>
-    <input matInput placeholder="Portal > LTE > Test" [formControl]="pathControl">
-    <mat-error *ngIf="hasError(pathControl, 'required')">Required</mat-error>
-  </mat-form-field>
-
-  <mat-form-field class="single-line-field">
-    <mat-label>Section</mat-label>
-    <input matInput placeholder="Section name" [formControl]="sectionControl">
-    <mat-error *ngIf="hasError(sectionControl, 'required')">Required</mat-error>
-  </mat-form-field>
-
-  <app-tag-selector
-    [formControl]="tagsControl"
-    class="single-line-field"
-  ></app-tag-selector>
-
-  <app-environment-checkbox-group [formControl]="environmentControl"></app-environment-checkbox-group>
-
-  <mat-form-field class="single-line-field">
-    <mat-label>Base64 image</mat-label>
-    <textarea [formControl]="iconControl"
-              cdkAutosizeMaxRows="10"
-              cdkTextareaAutosize
-              matInput
-              placeholder="Encoded image ..."
-    ></textarea>
-    <button (click)="fetchIcon($event)" *ngIf="!iconControl.value && urlControl.valid" mat-icon-button matSuffix
-            type="button">
-      <mat-icon>dns</mat-icon>
-    </button>
-  </mat-form-field>
+  <app-link-form [formControl]="link"></app-link-form>
 
   <button color="primary" mat-fab routerLink="/link" type="button">
-    <mat-icon>arrow_back</mat-icon>
+    <mat-icon>backspace</mat-icon>
   </button>
   <button color="primary" mat-fab>
     <mat-icon>save</mat-icon>

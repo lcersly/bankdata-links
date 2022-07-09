@@ -1,0 +1,12 @@
+<div id="person">
+  test
+</div>
+
+<div *ngFor="let link of links" id="links">
+  <button (click)="sideBar.toggle()"
+          [routerLink]="link.link"
+          mat-stroked-button
+  >
+    {{link.title}}
+  </button>
+</div>
