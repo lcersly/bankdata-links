@@ -1,3 +1,5 @@
+import {Icon} from './icon.model';
+
 export interface Link<T = any> {
   url: string;
   name: string;
@@ -6,6 +8,6 @@ export interface Link<T = any> {
   section: string;
   tags: T[];
   environment: undefined | 'S' | 'P' | 'ALL';
-  icon?: string;
+  icons: Icon[];
   id?: string;
 }

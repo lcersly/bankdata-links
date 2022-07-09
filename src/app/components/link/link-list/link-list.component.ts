@@ -7,7 +7,7 @@ import {FilterService} from '../../../shared/services/filter.service';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {Router} from '@angular/router';
-import {DomSanitizer} from '@angular/platform-browser';
+import {FavIconService} from '../../../shared/services/fav-icon.service';
 
 @Component({
   selector: 'app-link-list',
@@ -17,7 +17,7 @@ import {DomSanitizer} from '@angular/platform-browser';
 })
 export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
   displayedColumns: string[] = [
-    'icon',
+    'icons',
     'name',
     'url',
     'link',
@@ -37,7 +37,7 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
               private fb: FormBuilder,
               private filterService: FilterService,
               private router: Router,
-              private sanitize: DomSanitizer,
+              public fav: FavIconService,
   ) {
   }
 
@@ -86,9 +86,5 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnDestroy(): void {
     this.onDestroy.next();
     this.onDestroy.complete();
-  }
-
-  getSafeIcon(icon: string) {
-    return this.sanitize.bypassSecurityTrustUrl('data:image/png;base64, ' + icon);
   }
 }

@@ -30,10 +30,10 @@
     <mat-cell *matCellDef="let element">{{element.name}}</mat-cell>
   </ng-container>
 
-  <ng-container matColumnDef="icon">
+  <ng-container matColumnDef="icons">
     <mat-header-cell *matHeaderCellDef></mat-header-cell>
     <mat-cell *matCellDef="let element">
-      <img *ngIf="element.icon" [src]="getSafeIcon(element.icon)">
+      <img *ngIf="fav.hasIcon(element.icon)" [src]="fav.getBestIcon(element.icon)">
     </mat-cell>
   </ng-container>
 

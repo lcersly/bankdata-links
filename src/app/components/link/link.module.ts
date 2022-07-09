@@ -26,6 +26,7 @@ import {SharedModule} from '../../shared/shared.module';
 import {AppRoutingModule} from '../../app-routing.module';
 import {MatSortModule} from '@angular/material/sort';
 import {LinkFormComponent} from './link-form/link-form.component';
+import {IconFormComponent} from './link-form/icon-form/icon-form.component';
 
 
 @NgModule({
@@ -37,6 +38,7 @@ import {LinkFormComponent} from './link-form/link-form.component';
     CreateButtonComponent,
     LinkListComponent,
     LinkFormComponent,
+    IconFormComponent,
   ],
   imports: [
     CommonModule,

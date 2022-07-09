@@ -12,9 +12,7 @@ import {
 } from '@angular/forms';
 import {urlPattern} from '../constants';
 import {fieldHasError} from '../../../shared/util';
-import {FavIconService} from '../../../shared/services/fav-icon.service';
 import {Subject, takeUntil} from 'rxjs';
-import {DomSanitizer} from '@angular/platform-browser';
 
 @Component({
   selector: 'app-link-form',
@@ -38,19 +36,17 @@ export class LinkFormComponent implements ControlValueAccessor, Validator, OnDes
     url: ['', [Validators.required, Validators.pattern(urlPattern)]],
     name: ['', [Validators.required, Validators.minLength(3)]],
     description: '',
-    section: [''],
-    path: [''],
+    // section: [''],
+    // path: [''],
     tags: [[]],
     environment: ['', [Validators.required]],
-    icon: [''],
+    icons: [[]],
   });
   hasError = fieldHasError;
   private touched = false;
   private onDestroy = new Subject<void>();
 
   constructor(private fb: FormBuilder,
-              private favIconService: FavIconService,
-              private sanitize: DomSanitizer,
   ) {
   }
 
@@ -83,7 +79,7 @@ export class LinkFormComponent implements ControlValueAccessor, Validator, OnDes
   }
 
   public get iconControl(): FormControl {
-    return this.form.get('icon') as FormControl
+    return this.form.get('icons') as FormControl
   }
 
   onChange: ((data: any) => void) = () => {
@@ -108,16 +104,6 @@ export class LinkFormComponent implements ControlValueAccessor, Validator, OnDes
     this.onDestroy.complete();
   }
 
-  getSafeIcon(icon: string) {
-    return this.sanitize.bypassSecurityTrustUrl('data:image/png;base64, ' + icon);
-  }
-
-  fetchIcon(event: MouseEvent) {
-    event.stopPropagation();
-    this.favIconService.fetchFavIcon(this.urlControl.value)
-      .subscribe(data => this.iconControl.setValue(data.base64Image));
-  }
-
   registerOnChange(fn: any): void {
     this.form.valueChanges.subscribe(fn);
     this.form.valueChanges.subscribe(() => this.markAsTouched());
@@ -132,6 +118,7 @@ export class LinkFormComponent implements ControlValueAccessor, Validator, OnDes
   }
 
   writeValue(value: any): void {
+    console.info('Write value link-form', value);
     value && this.form.patchValue(value, {emitEvent: false})
   }
 

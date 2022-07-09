@@ -23,17 +23,17 @@
     <mat-error *ngIf="hasError(descriptionControl, 'required')">Required</mat-error>
   </mat-form-field>
 
-  <mat-form-field class="single-line-field">
-    <mat-label>Path</mat-label>
-    <input [formControl]="pathControl" matInput placeholder="Portal > LTE > Test">
-    <mat-error *ngIf="hasError(pathControl, 'required')">Required</mat-error>
-  </mat-form-field>
+  <!--  <mat-form-field class="single-line-field">-->
+  <!--    <mat-label>Path</mat-label>-->
+  <!--    <input [formControl]="pathControl" matInput placeholder="Portal > LTE > Test">-->
+  <!--    <mat-error *ngIf="hasError(pathControl, 'required')">Required</mat-error>-->
+  <!--  </mat-form-field>-->
 
-  <mat-form-field class="single-line-field">
-    <mat-label>Section</mat-label>
-    <input [formControl]="sectionControl" matInput placeholder="Section name">
-    <mat-error *ngIf="hasError(sectionControl, 'required')">Required</mat-error>
-  </mat-form-field>
+  <!--  <mat-form-field class="single-line-field">-->
+  <!--    <mat-label>Section</mat-label>-->
+  <!--    <input [formControl]="sectionControl" matInput placeholder="Section name">-->
+  <!--    <mat-error *ngIf="hasError(sectionControl, 'required')">Required</mat-error>-->
+  <!--  </mat-form-field>-->
 
   <app-tag-selector
     [formControl]="tagsControl"
@@ -42,27 +42,8 @@
 
   <app-environment-checkbox-group [formControl]="environmentControl"></app-environment-checkbox-group>
 
-  <div class="single-line-field">
-    <mat-form-field>
-      <mat-label>Base64 image</mat-label>
-      <textarea [formControl]="iconControl"
-                cdkAutosizeMaxRows="10"
-                cdkTextareaAutosize
-                matInput
-                placeholder="Encoded image ..."
-      ></textarea>
-      <button (click)="fetchIcon($event)" *ngIf="!iconControl.value && urlControl.valid" mat-icon-button matSuffix
-              matTooltip="Try to fetch image automatically"
-              type="button">
-        <mat-icon>dns</mat-icon>
-      </button>
-      <button (click)="iconControl.setValue('')" *ngIf="iconControl.value" mat-icon-button matSuffix
-              matTooltip="Clear"
-              type="button">
-        <mat-icon>close</mat-icon>
-      </button>
-    </mat-form-field>
-
-    <img *ngIf="iconControl.value" [src]="getSafeIcon(iconControl.value)">
-  </div>
+  <section>
+    <h3>Icons</h3>
+    <app-icon-selector [formControl]="iconControl" [url]="urlControl.value"></app-icon-selector>
+  </section>
 </form>
