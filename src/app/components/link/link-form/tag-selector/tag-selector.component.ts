@@ -14,6 +14,7 @@ import {MatChipInputEvent} from '@angular/material/chips';
 import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
 import {FirestoreTagService} from '../../../../shared/services/firestore/firestore-tag.service';
 import {TagBasic, TagDatabaseAfter, TagSelection} from '../../../../shared/models/tag.model';
+import {NotificationService} from '../../../../shared/services/notification.service';
 
 @Component({
   selector: 'app-tag-selector',
@@ -55,7 +56,9 @@ export class TagSelectorComponent implements ControlValueAccessor, Validator, On
 
   @ViewChild('tagInput') tagInput: ElementRef<HTMLInputElement> | undefined;
 
-  constructor(private tagService: FirestoreTagService) {
+  constructor(private tagService: FirestoreTagService,
+              private notifications: NotificationService
+  ) {
   }
 
   add(event: MatChipInputEvent): void {
@@ -68,14 +71,18 @@ export class TagSelectorComponent implements ControlValueAccessor, Validator, On
 
     // Add our tag
     if (value) {
-      let existingTag = this.tagService.tags.find(existingTag => existingTag.key.toLowerCase() === value.toLowerCase());
-      if (existingTag) {
-        this.selectedTags.push(existingTag);
-      } else {
-        this.selectedTags.push({key: value, description: '', exists: false});
-      }
+      if(this.selectedTags.find(t => t.key.toLowerCase() === value.toLowerCase())){
+        this.notifications.tag.tagAlreadyAdded(value);
+      }else{
+        let existingTag = this.tagService.tags.find(existingTag => existingTag.key.toLowerCase() === value.toLowerCase());
+        if (existingTag) {
+          this.selectedTags.push(existingTag);
+        } else {
+          this.selectedTags.push({key: value, description: '', exists: false});
+        }
 
-      this.onChange(this.selectedTags);
+        this.onChange(this.selectedTags);
+      }
     }
 
     // Clear the input value

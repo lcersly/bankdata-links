@@ -33,6 +33,9 @@ export class NotificationService {
     deleted: () => {
       this.snackBar.open('Successfully deleted tag', undefined, this.options);
     },
+    tagAlreadyAdded:(tagKey: string)=> {
+      this.snackBar.open(`Tag '${tagKey}' already exist on this URL`, undefined, this.options);
+    },
   }
 
   constructor(private snackBar: MatSnackBar) {

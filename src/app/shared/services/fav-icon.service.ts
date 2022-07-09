@@ -23,12 +23,11 @@ export class FavIconService {
             console.warn('No icons found', apiResponse);
             return EMPTY;
           }
-          return this.httpClient.get<{ rawImage: string, base64Image: string }>(
-            environment.functions.favIcon, {
-              params: {
-                url: apiResponse.icons[0].src,
-              },
-            })
+          console.debug("Received these FavIcon options", apiResponse.icons)
+          return this.httpClient.post<{ src: string, type: string, base64Image: string }[]>(
+            environment.functions.favIcon,
+            apiResponse.icons,
+          )
         })).pipe(
         tap(data => console.info('Data received from backend', data)),
       );

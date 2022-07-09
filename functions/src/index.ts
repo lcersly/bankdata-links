@@ -6,43 +6,50 @@ const cors = corsMain({origin: true});
 
 // // Start writing Firebase Functions
 // // https://firebase.google.com/docs/functions/typescript
-//
-export const favIcon = functions.https.onRequest((request, response) => {
-  const url = request.query['url'] as string;
+type Data = { src: string, type: string, base64Image?: string };
 
-  if (!url) {
-    response.status(400).json('No url param specified');
-    return;
-  }
+export const favIcon = functions.region('europe-west1').https.onRequest(
+  async (request, response) => {
+    const data: Data[] = request.body;
 
-  functions.logger.info('Downloading image from: ' + url);
-
-  cors(request, response, () => {
-    if (request.method !== 'GET') {
-      return response.status(401).json({
-        message: 'Not allowed',
-      });
+    if (!data || data.length == 0) {
+      response.status(400).json('No url param(s) specified in req body');
+      return;
     }
 
-    return axios.get(url, {
-      responseType: 'arraybuffer',
-    }).then((res) => {
-      functions.logger.info('Response from API - ' +
-        res.status + ' - ' +
-        res.statusText,
-      );
+    functions.logger.info('Downloading image(s)', data);
 
-      const buffer = Buffer.from(res.data, 'binary');
-      const base64Image = buffer.toString('base64');
-      const rawImage = buffer.toString('utf8');
+    cors(request, response, async () => {
+      if (request.method !== 'POST') {
+        return response.status(401).json({
+          message: 'Not allowed',
+        });
+      }
 
-      return response.status(200).json({
-        base64Image: base64Image,
-        rawImage: rawImage,
-      });
-    }).catch((err) =>
-      response.status(500).json({
-        error: err,
-      }));
-  });
-});
+      const promises = [];
+      for (const icon of data) {
+        promises.push(axios.get(icon.src, {
+          responseType: 'arraybuffer',
+        })
+          .then((axiosResponse) => {
+            functions.logger.info('Response from API for ' + icon.src + ' - ' +
+              axiosResponse.status + ' - ' +
+              axiosResponse.statusText,
+            );
+
+            const buffer = Buffer.from(axiosResponse.data, 'binary');
+            icon.base64Image = buffer.toString('base64');
+          }));
+      }
+
+      try {
+        await Promise.all(promises);
+        return response.status(200).json(data);
+      } catch (err) {
+        return response.status(500).json({
+          error: err,
+        });
+      }
+    });
+  },
+);

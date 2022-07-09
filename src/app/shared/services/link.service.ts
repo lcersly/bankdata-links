@@ -4,7 +4,6 @@ import {FirestoreLinkService} from './firestore/firestore-link.service';
 import {FirestoreTagService} from './firestore/firestore-tag.service';
 import {Link} from '../models/link.model';
 import {TagDatabaseAfter} from '../models/tag.model';
-import {DomSanitizer} from '@angular/platform-browser';
 
 @Injectable({
   providedIn: 'root',
@@ -20,7 +19,6 @@ export class LinkService {
 
   constructor(private fireLinkService: FirestoreLinkService,
               private firestoreTagService: FirestoreTagService,
-              private sanitizer: DomSanitizer,
   ) {
   }
 
