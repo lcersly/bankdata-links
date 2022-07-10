@@ -8,6 +8,7 @@ import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {Router} from '@angular/router';
 import {FavIconService} from '../../../shared/services/fav-icon.service';
+import {AuthService} from '../../../shared/services/auth.service';
 
 @Component({
   selector: 'app-link-list',
@@ -37,7 +38,8 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
               private fb: FormBuilder,
               private filterService: FilterService,
               private router: Router,
-              public fav: FavIconService,
+              private fav: FavIconService,
+              private authService: AuthService,
   ) {
   }
 
@@ -58,6 +60,23 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.searchControl.valueChanges.subscribe((value) => this.dataSource.filter = value);
 
+    this.authService.isSignedIn$.subscribe(signedIn => {
+      const columns = [
+        'icons',
+        'name',
+        'url',
+        'link',
+        'environment',
+        'tags',
+      ];
+
+      if (signedIn) {
+        columns.push('edit');
+      }
+
+      this.displayedColumns = columns;
+    })
+
     // subscribe to links
     this.linkService.links$
       .pipe(takeUntil(this.onDestroy))
@@ -75,6 +94,10 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
   delete($event: MouseEvent, element: Link) {
     $event.stopPropagation();
     return this.linkService.delete(element);
+  }
+
+  getBestIcon(element: Link) {
+    return this.fav.getBestIcon(element.icons);
   }
 
   ngAfterViewInit(): void {

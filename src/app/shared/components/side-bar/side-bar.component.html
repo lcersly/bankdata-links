@@ -1,12 +1,19 @@
 <div id="person">
-  test
+  <ng-container *ngIf="authService.isSignedIn">
+    {{authService.user?.displayName}}
+  </ng-container>
 </div>
 
-<div *ngFor="let link of links" id="links">
-  <button (click)="sideBar.toggle()"
-          [routerLink]="link.link"
-          mat-stroked-button
-  >
+
+<a (click)="sideBar.toggle()"
+   *ngFor="let link of links"
+   [routerLink]="link.link"
+   class="link">
+  <mat-icon>{{link.icon}}</mat-icon>
+
+  <span>
     {{link.title}}
-  </button>
-</div>
+  </span>
+</a>
+
+<button (click)="loginLogoff()" mat-flat-button>{{authService.isSignedIn ? 'Logoff' : 'Login'}}</button>

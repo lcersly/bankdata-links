@@ -33,7 +33,7 @@
   <ng-container matColumnDef="icons">
     <mat-header-cell *matHeaderCellDef></mat-header-cell>
     <mat-cell *matCellDef="let element">
-      <img *ngIf="fav.hasIcon(element.icon)" [src]="fav.getBestIcon(element.icon)">
+      <img *ngIf="getBestIcon(element)" [src]="getBestIcon(element)">
     </mat-cell>
   </ng-container>
 

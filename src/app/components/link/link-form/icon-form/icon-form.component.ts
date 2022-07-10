@@ -33,7 +33,9 @@ import {FavIconService} from '../../../../shared/services/fav-icon.service';
   ],
 })
 export class IconFormComponent implements ControlValueAccessor, Validator {
-  public icons = new FormArray([]);
+  public form = new FormGroup({
+    icons: new FormArray([]),
+  });
   @Input()
   public url: string | undefined;
   disabled = false;
@@ -48,7 +50,11 @@ export class IconFormComponent implements ControlValueAccessor, Validator {
   onTouched = () => {
   };
 
-  add(icon?: Icon): void {
+  public get icons() {
+    return this.form.get('icons') as FormArray;
+  }
+
+  add(icon?: Icon, emit = true): void {
     if (this.disabled) {
       return;
     }
@@ -58,7 +64,7 @@ export class IconFormComponent implements ControlValueAccessor, Validator {
       src: new FormControl(icon?.src || '', [Validators.required]),
       type: new FormControl(icon?.type || '', [Validators.required]),
       base64Image: new FormControl(icon?.base64Image || '', [Validators.required]),
-    }), {emitEvent: !icon});
+    }), {emitEvent: emit});
   }
 
   remove(index: number): void {
@@ -75,6 +81,7 @@ export class IconFormComponent implements ControlValueAccessor, Validator {
 
   registerOnChange(fn: any): void {
     this.icons.valueChanges.subscribe(fn);
+    this.icons.valueChanges.subscribe(this.markAsTouched);
   }
 
   registerOnTouched(fn: any): void {
@@ -91,11 +98,11 @@ export class IconFormComponent implements ControlValueAccessor, Validator {
   }
 
   writeValue(icons: Icon[]): void {
-    console.info('Write value icon form', icons);
+    // console.info('Write value icon form', icons);
     this.icons.clear();
     if (icons) {
       for (const icon of icons) {
-        this.add(icon)
+        this.add(icon, false)
       }
     }
   }
@@ -112,9 +119,9 @@ export class IconFormComponent implements ControlValueAccessor, Validator {
 
   addFromServer() {
     if (this.url) {
-      this.fav.fetchFavIcon(this.url).subscribe(data => {
-        for (const datum of data) {
-          this.add(datum);
+      this.fav.fetchFavIcon(this.url).subscribe(icons => {
+        for (const icon of icons) {
+          this.add(icon);
         }
       })
     }

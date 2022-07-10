@@ -16,8 +16,8 @@ export class NotificationService {
       }
       this.snackBar.open(message, undefined, this.options)
     },
-    edited: () => {
-      this.snackBar.open('Successfully edited link', undefined, this.options);
+    edited: (name: string) => {
+      this.snackBar.open('Successfully edited link: ' + name, undefined, this.options);
     },
     deleted: () => {
       this.snackBar.open('Successfully deleted link', undefined, this.options);
@@ -33,7 +33,7 @@ export class NotificationService {
     deleted: () => {
       this.snackBar.open('Successfully deleted tag', undefined, this.options);
     },
-    tagAlreadyAdded:(tagKey: string)=> {
+    tagAlreadyAdded: (tagKey: string) => {
       this.snackBar.open(`Tag '${tagKey}' already exist on this URL`, undefined, this.options);
     },
   }

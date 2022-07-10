@@ -50,7 +50,7 @@ export class FirestoreLinkService {
       if (!value) {
         // @ts-ignore
         link[key] = '';
-        // console.info('Deleting', key, value);
+        console.info('Deleting', key, value);
       }
     }
 

@@ -32,6 +32,6 @@
     </mat-form-field>
 
     <img *ngIf="fav.hasValidImage(iconControls.value)"
-         [src]="fav.getSafeIconURL(getControl(iconControls, 'base64Image').value)">
+         [src]="fav.getSafeIconURL(iconControls.value)">
   </div>
 </div>

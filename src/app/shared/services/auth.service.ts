@@ -10,16 +10,21 @@ import {
   signOut,
   User,
 } from '@angular/fire/auth';
-import {from, Subject} from 'rxjs';
+import {from, map, ReplaySubject} from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  public status$ = new Subject<User | null>();
+  public status$ = new ReplaySubject<User | null>();
+  public isSignedIn$ = this.status$.pipe(map((status => !!status)))
+  public isSignedIn: boolean | undefined;
+  public user: User | null = null;
 
   constructor(@Optional() private auth: Auth) {
     // this.status$.subscribe(value => console.info("AUTH", value));
+    this.isSignedIn$.subscribe((signedIn) => this.isSignedIn = signedIn);
+    this.status$.subscribe((user) => this.user = user);
 
     if (this.auth) {
       authState(this.auth).subscribe(value => this.status$.next(value));
@@ -45,6 +50,7 @@ export class AuthService {
   }
 
   async logout() {
-    return await signOut(this.auth);
+    await signOut(this.auth);
+    // this.status$.next(null);
   }
 }

@@ -4,6 +4,11 @@ app-create-button {
   right: 10px;
 }
 
+mat-form-field {
+  margin: 20px;
+  width: 500px;
+}
+
 mat-table {
   margin: 10px;
 
@@ -11,7 +16,7 @@ mat-table {
     flex: 0 0 80px;
   }
 
-  .mat-column-icon {
+  .mat-column-icons {
     flex: 0 0 50px;
   }
 
