@@ -1,12 +1,6 @@
 <mat-drawer-container class="example-container" autosize>
-  <mat-drawer class="example-sidenav" mode="over">
-    <div *ngFor="let link of links">
-      <button mat-stroked-button
-              [routerLink]="link.link"
-      >
-        {{link.title}}
-      </button>
-    </div>
+  <mat-drawer mode="over">
+    <app-side-bar></app-side-bar>
   </mat-drawer>
 
   <router-outlet></router-outlet>

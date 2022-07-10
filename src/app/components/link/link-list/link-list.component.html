@@ -1,30 +1,44 @@
 <app-top-bar title="Link list"></app-top-bar>
 
-<form>
-  <mat-form-field appearance="fill">
-    <mat-label>Search</mat-label>
-    <input [formControl]="searchControl" matInput type="text">
-    <button (click)="searchControl.setValue('')" *ngIf="searchControl.value" aria-label="Clear" mat-icon-button
-            matSuffix>
-      <mat-icon>close</mat-icon>
-    </button>
-  </mat-form-field>
-</form>
+<mat-form-field appearance="fill">
+  <mat-label>Search</mat-label>
+  <input [formControl]="searchControl" matInput type="text">
+  <button (click)="searchControl.setValue('')" *ngIf="searchControl.value" aria-label="Clear" mat-icon-button
+          matSuffix>
+    <mat-icon>close</mat-icon>
+  </button>
+</mat-form-field>
 
-<mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort>
+<mat-table [dataSource]="dataSource" class="mat-elevation-z8"
+           matSort
+           matSortActive="name"
+           matSortDirection="asc"
+>
 
   <ng-container matColumnDef="url">
-    <mat-header-cell *matHeaderCellDef> URL</mat-header-cell>
+    <mat-header-cell *matHeaderCellDef mat-sort-header="url"> URL</mat-header-cell>
+    <mat-cell *matCellDef="let element">{{element.url}}</mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="link">
+    <mat-header-cell *matHeaderCellDef> Link</mat-header-cell>
     <mat-cell *matCellDef="let element"><a [href]="element.url" target="_blank">{{element.name}}</a></mat-cell>
   </ng-container>
 
-  <ng-container matColumnDef="icon">
+  <ng-container matColumnDef="name">
+    <mat-header-cell *matHeaderCellDef mat-sort-header="name"> Name</mat-header-cell>
+    <mat-cell *matCellDef="let element">{{element.name}}</mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="icons">
     <mat-header-cell *matHeaderCellDef></mat-header-cell>
-    <mat-cell *matCellDef="let element"><img [src]="element.icon"></mat-cell>
+    <mat-cell *matCellDef="let element">
+      <img *ngIf="getBestIcon(element)" [src]="getBestIcon(element)">
+    </mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="section">
-    <mat-header-cell *matHeaderCellDef>Section</mat-header-cell>
+    <mat-header-cell *matHeaderCellDef mat-sort-header="section">Section</mat-header-cell>
     <mat-cell *matCellDef="let element"> {{element.section}} </mat-cell>
   </ng-container>
 
@@ -35,14 +49,28 @@
 
   <ng-container matColumnDef="tags">
     <mat-header-cell *matHeaderCellDef>Tags</mat-header-cell>
-    <mat-cell *matCellDef="let element"> {{element.tags}} </mat-cell>
+    <mat-cell *matCellDef="let element">
+      <mat-chip-list>
+        <mat-chip *ngFor="let tag of element.tags"
+                  [matTooltip]="tag.description"
+                  matTooltipPosition="above"
+        >
+          {{tag.key}}
+        </mat-chip>
+      </mat-chip-list>
+    </mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="edit">
     <mat-header-cell *matHeaderCellDef></mat-header-cell>
-    <mat-cell *matCellDef="let element"><button (click)="edit($event, element)" class="mat-elevation-z0" color="primary" mat-mini-fab>
-      <mat-icon>edit</mat-icon>
-    </button></mat-cell>
+    <mat-cell *matCellDef="let element">
+      <button (click)="edit($event, element)" class="mat-elevation-z0" color="primary" mat-mini-fab>
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button (click)="delete($event, element)" class="mat-elevation-z0" color="warn" mat-mini-fab>
+        <mat-icon>delete_outline</mat-icon>
+      </button>
+    </mat-cell>
   </ng-container>
 
   <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

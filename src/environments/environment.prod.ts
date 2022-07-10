@@ -8,4 +8,7 @@ export const environment = {
     messagingSenderId: '82420744310',
     appId: '1:82420744310:web:e5ce505338fc14ace49f57',
   },
+  functions: {
+    favIcon: 'https://europe-west1-links-test-df846.cloudfunctions.net/favIcon',
+  },
 };

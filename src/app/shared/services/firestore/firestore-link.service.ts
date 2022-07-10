@@ -44,10 +44,28 @@ export class FirestoreLinkService {
   }
 
   edit(link: Link) {
-    console.info(link);
-    let data = {...link};
-    delete data.id;
-    return updateDoc(doc(this.colRef, link.id), data);
+    for (const key of Object.keys(link)) {
+      // @ts-ignore
+      let value = link[key];
+      if (!value) {
+        // @ts-ignore
+        link[key] = '';
+        console.info('Deleting', key, value);
+      }
+    }
+
+    const tags = [];
+    for (const tag of link.tags) {
+      if (tag && tag.id) {
+        tags.push(tag.id);
+      }
+    }
+    link.tags = tags;
+
+    const id = link.id;
+    delete link.id;
+    console.debug('Update link', link);
+    return updateDoc(doc(this.colRef, id), link);
   }
 
   delete(link: Link) {
@@ -59,7 +77,6 @@ export class FirestoreLinkService {
       this.unsub();
     }
   }
-
 }
 
 const converter: FirestoreDataConverter<Link> = {

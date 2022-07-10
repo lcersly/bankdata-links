@@ -1,0 +1,22 @@
+@import "../../../form-style";
+
+.image-control-container {
+
+}
+
+.half-width {
+  display: flex;
+  width: 100%;
+
+  mat-form-field {
+    flex: 1;
+
+    &:first-of-type {
+      margin-right: 10px;
+    }
+  }
+
+  img {
+    align-self: center;
+  }
+}

@@ -6,14 +6,14 @@ import {MatInputModule} from '@angular/material/input';
 import {CreateNewLinkComponent} from './create-new-link/create-new-link.component';
 import {MatButtonModule} from '@angular/material/button';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {TagSelectorComponent} from './create-new-link/tag-selector/tag-selector.component';
+import {TagSelectorComponent} from './link-form/tag-selector/tag-selector.component';
 import {MatChipsModule} from '@angular/material/chips';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatIconModule} from '@angular/material/icon';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {
   EnvironmentCheckBoxGroupComponent,
-} from './create-new-link/environment-checkbox-group/environment-check-box-group.component';
+} from './link-form/environment-checkbox-group/environment-check-box-group.component';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatTableModule} from '@angular/material/table';
 import {MatListModule} from '@angular/material/list';
@@ -25,6 +25,8 @@ import {LinkListComponent} from './link-list/link-list.component';
 import {SharedModule} from '../../shared/shared.module';
 import {AppRoutingModule} from '../../app-routing.module';
 import {MatSortModule} from '@angular/material/sort';
+import {LinkFormComponent} from './link-form/link-form.component';
+import {IconFormComponent} from './link-form/icon-form/icon-form.component';
 
 
 @NgModule({
@@ -35,6 +37,8 @@ import {MatSortModule} from '@angular/material/sort';
     EnvironmentCheckBoxGroupComponent,
     CreateButtonComponent,
     LinkListComponent,
+    LinkFormComponent,
+    IconFormComponent,
   ],
   imports: [
     CommonModule,

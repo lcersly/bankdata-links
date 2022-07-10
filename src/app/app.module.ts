@@ -13,6 +13,7 @@ import {TagModule} from './components/tag/tag.module';
 import {HttpClientModule} from '@angular/common/http';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatButtonModule} from '@angular/material/button';
+import {SharedModule} from './shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -42,6 +43,7 @@ import {MatButtonModule} from '@angular/material/button';
     //Material
     MatSidenavModule,
     MatButtonModule,
+    SharedModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

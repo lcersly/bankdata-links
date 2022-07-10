@@ -7,6 +7,8 @@ import {FilterService} from '../../../shared/services/filter.service';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {Router} from '@angular/router';
+import {FavIconService} from '../../../shared/services/fav-icon.service';
+import {AuthService} from '../../../shared/services/auth.service';
 
 @Component({
   selector: 'app-link-list',
@@ -15,7 +17,15 @@ import {Router} from '@angular/router';
   // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
-  displayedColumns: string[] = ['icon', 'url', 'environment', 'tags', 'edit'];
+  displayedColumns: string[] = [
+    'icons',
+    'name',
+    'url',
+    'link',
+    'environment',
+    'tags',
+    'edit',
+  ];
   dataSource = new MatTableDataSource<Link>([]);
   @ViewChild(MatSort) matSort: MatSort | undefined
   private onDestroy = new Subject<void>();
@@ -28,6 +38,8 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
               private fb: FormBuilder,
               private filterService: FilterService,
               private router: Router,
+              private fav: FavIconService,
+              private authService: AuthService,
   ) {
   }
 
@@ -46,6 +58,25 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
       .pipe(takeUntil(this.onDestroy))
       .subscribe(filters => this.filterService.setLinkFilters(filters));
 
+    this.searchControl.valueChanges.subscribe((value) => this.dataSource.filter = value);
+
+    this.authService.isSignedIn$.subscribe(signedIn => {
+      const columns = [
+        'icons',
+        'name',
+        'url',
+        'link',
+        'environment',
+        'tags',
+      ];
+
+      if (signedIn) {
+        columns.push('edit');
+      }
+
+      this.displayedColumns = columns;
+    })
+
     // subscribe to links
     this.linkService.links$
       .pipe(takeUntil(this.onDestroy))
@@ -60,6 +91,15 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
     this.router.navigate(['link', element.id])
   }
 
+  delete($event: MouseEvent, element: Link) {
+    $event.stopPropagation();
+    return this.linkService.delete(element);
+  }
+
+  getBestIcon(element: Link) {
+    return this.fav.getBestIcon(element.icons);
+  }
+
   ngAfterViewInit(): void {
     if (this.matSort) {
       this.dataSource.sort = this.matSort;
@@ -70,31 +110,4 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
     this.onDestroy.next();
     this.onDestroy.complete();
   }
-
-
-  // searchChange() {
-  //   let searchValue = this.searchControl.value?.trim();
-  //   if (!searchValue && this.envControl.value?.length === this.environments.size) {
-  //     this.filteredList = this.groupedList;
-  //   } else {
-  //     const list = new Map<string, Link[]>();
-  //     for (const section of this.groupedList) {
-  //       let links = section[1].filter(link => this.linkMatch(link, searchValue, this.envControl.value));
-  //       if (links.length) {
-  //         list.set(section[0], links);
-  //       }
-  //     }
-  //     this.filteredList = list;
-  //   }
-  // }
-
-  // linkMatch(link: Link, searchString: string | undefined, environments: string[]) {
-  //   if (!environments.find(env => link.environment === env)) {
-  //     return false;
-  //   }
-  //
-  //   if (!searchString) return true;
-  //   const concat = (link.section + link.url + link.name + link.description + link.tags?.join()).toLowerCase();
-  //   return concat.includes(searchString.toLowerCase());
-  // }
 }

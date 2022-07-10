@@ -14,6 +14,7 @@ import {MatChipInputEvent} from '@angular/material/chips';
 import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
 import {FirestoreTagService} from '../../../../shared/services/firestore/firestore-tag.service';
 import {TagBasic, TagDatabaseAfter, TagSelection} from '../../../../shared/models/tag.model';
+import {NotificationService} from '../../../../shared/services/notification.service';
 
 @Component({
   selector: 'app-tag-selector',
@@ -55,7 +56,9 @@ export class TagSelectorComponent implements ControlValueAccessor, Validator, On
 
   @ViewChild('tagInput') tagInput: ElementRef<HTMLInputElement> | undefined;
 
-  constructor(private tagService: FirestoreTagService) {
+  constructor(private tagService: FirestoreTagService,
+              private notifications: NotificationService
+  ) {
   }
 
   add(event: MatChipInputEvent): void {
@@ -68,14 +71,18 @@ export class TagSelectorComponent implements ControlValueAccessor, Validator, On
 
     // Add our tag
     if (value) {
-      let existingTag = this.tagService.tags.find(existingTag => existingTag.key.toLowerCase() === value.toLowerCase());
-      if (existingTag) {
-        this.selectedTags.push(existingTag);
-      } else {
-        this.selectedTags.push({key: value, description: '', exists: false});
-      }
+      if(this.selectedTags.find(t => t.key.toLowerCase() === value.toLowerCase())){
+        this.notifications.tag.tagAlreadyAdded(value);
+      }else{
+        let existingTag = this.tagService.tags.find(existingTag => existingTag.key.toLowerCase() === value.toLowerCase());
+        if (existingTag) {
+          this.selectedTags.push(existingTag);
+        } else {
+          this.selectedTags.push({key: value, description: '', exists: false});
+        }
 
-      this.onChange(this.selectedTags);
+        this.onChange(this.selectedTags);
+      }
     }
 
     // Clear the input value
@@ -114,10 +121,6 @@ export class TagSelectorComponent implements ControlValueAccessor, Validator, On
     return this.selectedTags.filter(t => !t.exists).length;
   }
 
-  // getTagColor(tag: TagExists): ThemePalette {
-  //   return tag.exists ? 'primary' : 'accent';
-  // }
-
   registerOnChange(fn: any): void {
     this.onChange = fn;
   }
@@ -135,14 +138,12 @@ export class TagSelectorComponent implements ControlValueAccessor, Validator, On
     }
   }
 
-  writeValue(tagList: string[]): void {
+  writeValue(tagList: TagDatabaseAfter[]): void {
     if (!tagList) {
       this.selectedTags = [];
     } else {
-      //todo add each tag to the list
+      this.selectedTags.push(...tagList);
     }
-
-    // this.selectedTags = tagList;
   }
 
   markAsTouched() {
@@ -167,10 +168,14 @@ export class TagSelectorComponent implements ControlValueAccessor, Validator, On
     const filterValue = filter?.toLowerCase() || '';
     allTags = allTags || [];
 
-    if (!filterValue) {
+    if (!filterValue && this.selectedTags.length === 0) {
       return allTags.slice();
     }
 
-    return allTags.filter(tag => tag.key?.toLowerCase().includes(filterValue));
+    return allTags.filter(tag => {
+      const searchFilterMatches = tag.key?.toLowerCase().includes(filterValue);
+      const alreadySelected = !!this.selectedTags.find(t => t.key === tag.key);
+      return searchFilterMatches && !alreadySelected;
+    });
   }
 }
