@@ -5,10 +5,10 @@ import {AppComponent} from './app.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {PipeModule} from './shared/pipes/pipe.module';
 import {LinkModule} from './components/link/link.module';
-import {initializeApp, provideFirebaseApp} from '@angular/fire/app';
+import {getApp, initializeApp, provideFirebaseApp} from '@angular/fire/app';
 import {environment} from '../environments/environment';
 import {getAuth, provideAuth} from '@angular/fire/auth';
-import {getFirestore, provideFirestore} from '@angular/fire/firestore';
+import {getFirestore, initializeFirestore, provideFirestore} from '@angular/fire/firestore';
 import {TagModule} from './components/tag/tag.module';
 import {HttpClientModule} from '@angular/common/http';
 import {MatSidenavModule} from '@angular/material/sidenav';
@@ -23,7 +23,7 @@ import {SharedModule} from './shared/shared.module';
     // firebase init
     provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
     provideAuth(() => getAuth()),
-    provideFirestore(() => getFirestore()),
+    provideFirestore(() => initializeFirestore(getApp(), {experimentalForceLongPolling: true})),
 
     // standard modules
     BrowserModule,
