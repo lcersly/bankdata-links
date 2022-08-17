@@ -5,7 +5,6 @@
   </ng-container>
 </div>
 
-
 <a (click)="sideBar.toggle()"
    *ngFor="let link of links"
    [routerLink]="link.link"
@@ -17,4 +16,7 @@
   </span>
 </a>
 
-<button (click)="loginLogoff()" mat-flat-button>{{authService.isSignedIn ? 'Logoff' : 'Login'}}</button>
+
+<button (click)="loginLogoff()" mat-flat-button
+        id="menuoption"><mat-icon>login</mat-icon> {{authService.isSignedIn ? 'Logoff' : 'Login'}} </button>
+
