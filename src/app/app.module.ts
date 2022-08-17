@@ -8,12 +8,13 @@ import {LinkModule} from './components/link/link.module';
 import {getApp, initializeApp, provideFirebaseApp} from '@angular/fire/app';
 import {environment} from '../environments/environment';
 import {getAuth, provideAuth} from '@angular/fire/auth';
-import {getFirestore, initializeFirestore, provideFirestore} from '@angular/fire/firestore';
+import {initializeFirestore, provideFirestore} from '@angular/fire/firestore';
 import {TagModule} from './components/tag/tag.module';
 import {HttpClientModule} from '@angular/common/http';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatButtonModule} from '@angular/material/button';
 import {SharedModule} from './shared/shared.module';
+import {LoginModule} from './components/login/login.module';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import {SharedModule} from './shared/shared.module';
     // component modules
     LinkModule,
     TagModule,
+    LoginModule,
 
     // routing
     AppRoutingModule,

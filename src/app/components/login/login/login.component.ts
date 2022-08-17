@@ -15,8 +15,21 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  login(method: 'google') {
-    this.authService.loginWithGoogle().subscribe(() => {
+  login(method: 'google'|'github') {
+    let authObservable;
+
+    switch (method){
+      case 'google':
+        authObservable =this.authService.loginWithGoogle();
+        break;
+      case 'github':
+        authObservable =this.authService.loginGitHub();
+        break;
+      default:
+        throw new Error("Unhandled login method");
+    }
+
+    authObservable.subscribe(() => {
       this.router.navigateByUrl('/');
     })
   }
