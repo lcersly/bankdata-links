@@ -38,6 +38,15 @@ export class NotificationService {
     },
   }
 
+  authentication = {
+    loggedIn: () => {
+      this.snackBar.open('Successfully logged in', undefined, this.options)
+    },
+    loggedOut: () => {
+      this.snackBar.open('You have logged out', undefined, this.options)
+    },
+  }
+
   constructor(private snackBar: MatSnackBar) {
   }
 }

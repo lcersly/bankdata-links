@@ -13,4 +13,5 @@ export class BookmarkletComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  server = document.documentURI;
 }

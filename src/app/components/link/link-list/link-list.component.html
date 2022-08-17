@@ -1,5 +1,5 @@
 <app-top-bar title="Link list">
-  <app-create-button></app-create-button>
+  <app-create-button *ngIf="authService.isSignedIn"></app-create-button>
 </app-top-bar>
 
 <div id="search-pane">

@@ -39,7 +39,7 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
               private filterService: FilterService,
               private router: Router,
               private fav: FavIconService,
-              private authService: AuthService,
+              public authService: AuthService,
   ) {
   }
 
