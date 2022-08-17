@@ -1,5 +1,16 @@
 <app-top-bar title="Create new link"></app-top-bar>
 
+<p *ngIf="!params || !params.useParams">
+  Bookmarklet: <a
+  href="javascript:(function(){
+  var url = location.href;
+  var title = document.title ||
+
+  url;window.open('http://localhost:4200/link/create?url=' + encodeURIComponent(url)+'&title=' + encodeURIComponent(title)+'&description=' + encodeURIComponent(document.getSelection())+'&source=bookmarklet','_blank','menubar=no,height=700,width=500,toolbar=no,scrollbars=no,status=no,dialog=1');})();"
+>Add
+  to BD Links</a>
+</p>
+
 <form (ngSubmit)="create()">
   <app-link-form [formControl]="link"></app-link-form>
 
