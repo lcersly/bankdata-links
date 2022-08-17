@@ -5,7 +5,7 @@ import {LinkService} from '../../../shared/services/link.service';
 import {Link} from '../../../shared/models/link.model';
 import {fieldHasError} from '../../../shared/util';
 import {NotificationService} from '../../../shared/services/notification.service';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
   selector: 'app-create-new-link',
@@ -15,17 +15,26 @@ import {Router} from '@angular/router';
 export class CreateNewLinkComponent implements OnInit {
 
   public link = new FormControl();
+  public params: { url: string, title: string, useParams: boolean } | undefined;
 
   hasError = fieldHasError;
 
   constructor(private linkService: LinkService,
               private notifications: NotificationService,
               private router: Router,
+              private route: ActivatedRoute,
   ) {
   }
 
   ngOnInit(): void {
-    if (!environment.production) {
+    this.parseRouteParams();
+
+    if (this.params?.useParams) {
+      this.link.patchValue({
+        url: this.params.url,
+        name: this.params.title,
+      })
+    } else if (!environment.production) {
       this.link.patchValue({
         url: 'https://google.com',
         name: 'GoOgLe',
@@ -47,5 +56,12 @@ export class CreateNewLinkComponent implements OnInit {
 
     this.notifications.link.created(tags);
     this.router.navigateByUrl('/link');
+  }
+
+  parseRouteParams() {
+    let params = this.route.snapshot.queryParams;
+    const url = params['url'] as string;
+    const title = params['title'] as string;
+    this.params = {url, title, useParams: !!url || !!title}
   }
 }

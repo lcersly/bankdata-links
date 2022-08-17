@@ -1,6 +1,7 @@
 <div id="person">
   <ng-container *ngIf="authService.isSignedIn">
     {{authService.user?.displayName}}
+    {{authService.user?.photoURL}}
   </ng-container>
 </div>
 
