@@ -27,6 +27,9 @@ import {AppRoutingModule} from '../../app-routing.module';
 import {MatSortModule} from '@angular/material/sort';
 import {LinkFormComponent} from './link-form/link-form.component';
 import {IconFormComponent} from './link-form/icon-form/icon-form.component';
+import {BookmarkletComponent} from './create-new-link/bookmarklet/bookmarklet.component';
+import {DialogDeleteLinkComponent} from './edit-link/dialog-delete-link/dialog-delete-link.component';
+import {MatDialogModule} from '@angular/material/dialog';
 
 
 @NgModule({
@@ -39,6 +42,8 @@ import {IconFormComponent} from './link-form/icon-form/icon-form.component';
     LinkListComponent,
     LinkFormComponent,
     IconFormComponent,
+    BookmarkletComponent,
+    DialogDeleteLinkComponent,
   ],
   imports: [
     CommonModule,
@@ -60,6 +65,7 @@ import {IconFormComponent} from './link-form/icon-form/icon-form.component';
     SharedModule,
     AppRoutingModule,
     MatSortModule,
+    MatDialogModule,
   ],
   exports: [
     EditLinkComponent,

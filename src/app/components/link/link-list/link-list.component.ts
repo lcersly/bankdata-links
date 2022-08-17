@@ -63,10 +63,10 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
     this.authService.isSignedIn$.subscribe(signedIn => {
       const columns = [
         'icons',
-        'name',
-        'url',
+        // 'name',
+        // 'url',
         'link',
-        'environment',
+        // 'environment',
         'tags',
       ];
 

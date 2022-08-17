@@ -1,14 +1,17 @@
-<app-top-bar title="Edit link"></app-top-bar>
-
-<form (ngSubmit)="edit()">
-  <app-link-form [formControl]="link"></app-link-form>
-
-  <button color="primary" mat-fab routerLink="/link" type="button">
+<app-top-bar title="Edit link">
+  <button color="primary" mat-button routerLink="/link" type="button">
+    Cancel
     <mat-icon>backspace</mat-icon>
   </button>
-  <button color="primary" mat-fab>
+  <button color="primary" mat-button (click)="edit()" [disabled]="noChange">
+    Save
     <mat-icon>save</mat-icon>
   </button>
-</form>
+  <button color="warn" mat-button (click)="delete()">
+    <mat-icon>delete</mat-icon>
+  </button>
+</app-top-bar>
 
-<!--<pre>{{link.value | json}}</pre>-->
+<form>
+  <app-link-form [formControl]="link"></app-link-form>
+</form>

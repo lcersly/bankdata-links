@@ -1,13 +1,17 @@
-<app-top-bar title="Link list"></app-top-bar>
+<app-top-bar title="Link list">
+  <app-create-button></app-create-button>
+</app-top-bar>
 
-<mat-form-field appearance="fill">
-  <mat-label>Search</mat-label>
-  <input [formControl]="searchControl" matInput type="text">
-  <button (click)="searchControl.setValue('')" *ngIf="searchControl.value" aria-label="Clear" mat-icon-button
-          matSuffix>
-    <mat-icon>close</mat-icon>
-  </button>
-</mat-form-field>
+<div id="search-pane">
+  <mat-form-field appearance="fill">
+    <mat-label>Search links</mat-label>
+    <input [formControl]="searchControl" matInput type="text">
+    <button (click)="searchControl.setValue('')" *ngIf="searchControl.value" aria-label="Clear" mat-icon-button
+            matSuffix>
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field>
+</div>
 
 <mat-table [dataSource]="dataSource" class="mat-elevation-z8"
            matSort
@@ -64,17 +68,15 @@
   <ng-container matColumnDef="edit">
     <mat-header-cell *matHeaderCellDef></mat-header-cell>
     <mat-cell *matCellDef="let element">
-      <button (click)="edit($event, element)" class="mat-elevation-z0" color="primary" mat-mini-fab>
+      <button (click)="edit($event, element)" mat-icon-button>
         <mat-icon>edit</mat-icon>
       </button>
-      <button (click)="delete($event, element)" class="mat-elevation-z0" color="warn" mat-mini-fab>
-        <mat-icon>delete_outline</mat-icon>
-      </button>
+      <!--      <button (click)="delete($event, element)" mat-icon-button>-->
+      <!--        <mat-icon>delete_outline</mat-icon>-->
+      <!--      </button>-->
     </mat-cell>
   </ng-container>
 
   <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
   <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
 </mat-table>
-
-<app-create-button></app-create-button>

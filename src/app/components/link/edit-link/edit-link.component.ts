@@ -6,6 +6,9 @@ import {FavIconService} from '../../../shared/services/fav-icon.service';
 import {Link} from '../../../shared/models/link.model';
 import {Subject, takeUntil} from 'rxjs';
 import {ActivatedRoute, Router} from '@angular/router';
+import {MatDialog} from '@angular/material/dialog';
+import {DialogDeleteLinkComponent, DialogDeleteLinkData} from './dialog-delete-link/dialog-delete-link.component';
+import {arrayEquals} from '../../../shared/util';
 
 @Component({
   selector: 'app-create-link',
@@ -18,12 +21,14 @@ export class EditLinkComponent implements OnInit, OnDestroy {
 
   private id: string | undefined;
   public link = new FormControl()
+  public orgLink: Link | undefined;
 
   constructor(private linkService: LinkService,
               private notifications: NotificationService,
               private favIconService: FavIconService,
               private route: ActivatedRoute,
               private router: Router,
+              private dialog: MatDialog,
   ) {
   }
 
@@ -32,6 +37,7 @@ export class EditLinkComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.onDestroy))
       .subscribe(({link}) => {
         this.id = link.id;
+        this.orgLink = link;
         this.link.patchValue(link);
       })
   }
@@ -39,6 +45,17 @@ export class EditLinkComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.onDestroy.next();
     this.onDestroy.complete();
+  }
+
+  get noChange(): boolean {
+    if (!this.orgLink) return false;
+
+    let newValue = this.link.value;
+    return this.orgLink.name === newValue.name &&
+      this.orgLink.url === newValue.url &&
+      this.orgLink.description === newValue.description &&
+      arrayEquals(this.orgLink.icons, newValue.icons) &&
+      arrayEquals(this.orgLink.tags, newValue.tags)
   }
 
   async edit() {
@@ -54,7 +71,25 @@ export class EditLinkComponent implements OnInit, OnDestroy {
     console.info('Edit component', link, this.link.value);
     await this.linkService.edit(link);
 
-    this.notifications.link.edited(link.name);
+    this.navigateBack();
+  }
+
+  private navigateBack() {
     this.router.navigate(['..'], {relativeTo: this.route})
+  }
+
+  delete() {
+    if (!this.orgLink) {
+      return;
+    }
+    const dialogRef = this.dialog.open(DialogDeleteLinkComponent, {
+      width: '250px',
+      data: {link: this.orgLink} as DialogDeleteLinkData,
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result && this.orgLink) {
+        this.linkService.delete(this.orgLink).then(() => this.navigateBack());
+      }
+    });
   }
 }
