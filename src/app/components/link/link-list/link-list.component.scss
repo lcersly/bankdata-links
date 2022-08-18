@@ -1,28 +1,27 @@
-app-create-button {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-}
+#search-pane {
+  display: flex;
+  justify-content: center;
 
-mat-form-field {
-  margin: 20px;
-  width: 500px;
+  mat-form-field {
+    margin: 20px;
+    width: 500px;
+  }
 }
 
 mat-table {
   margin: 10px;
 
   .mat-column-edit {
-    flex: 0 0 80px;
+    flex: 0 0 40px;
   }
 
   .mat-column-icons {
     flex: 0 0 50px;
   }
 
-  .mat-column-environment {
-    flex: 0 0 50px;
-  }
+  //.mat-column-environment {
+  //  flex: 0 0 50px;
+  //}
 
   .mat-column-url {
   }

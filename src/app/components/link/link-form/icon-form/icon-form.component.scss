@@ -1,7 +1,15 @@
 @import "../../../form-style";
 
 .image-control-container {
+  mat-divider {
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
 
+}
+
+.icon-header{
+  display: flex;
 }
 
 .half-width {
@@ -11,8 +19,8 @@
   mat-form-field {
     flex: 1;
 
-    &:first-of-type {
-      margin-right: 10px;
+    &:not(:first-of-type) {
+      margin-left: 10px;
     }
   }
 

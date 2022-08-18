@@ -4,6 +4,7 @@ import {FirestoreLinkService} from './firestore/firestore-link.service';
 import {FirestoreTagService} from './firestore/firestore-tag.service';
 import {Link} from '../models/link.model';
 import {TagDatabaseAfter} from '../models/tag.model';
+import {NotificationService} from './notification.service';
 
 @Injectable({
   providedIn: 'root',
@@ -19,6 +20,7 @@ export class LinkService {
 
   constructor(private fireLinkService: FirestoreLinkService,
               private firestoreTagService: FirestoreTagService,
+              private notificationService: NotificationService,
   ) {
   }
 
@@ -30,7 +32,7 @@ export class LinkService {
     let created = await this.createMissingTags(link);
 
     await this.fireLinkService.create(link);
-
+    this.notificationService.link.created(created.tags);
     return created;
   }
 
@@ -41,6 +43,7 @@ export class LinkService {
     let created = await this.createMissingTags(link);
 
     await this.fireLinkService.edit(link);
+    this.notificationService.link.edited(link.name);
 
     return created;
   }
@@ -51,6 +54,7 @@ export class LinkService {
     }
 
     await this.fireLinkService.delete(link);
+    this.notificationService.link.deleted();
   }
 
   private async createMissingTags(link: Link) {
@@ -73,10 +77,10 @@ export class LinkService {
    * @param link the link to replace tags in
    * @param tags the list of tags available
    */
-  private replaceTagIdsWithFullTag(link: Link, tags: TagDatabaseAfter[]): Link {
+  private replaceTagIdsWithFullTag(link: Link, tags: TagDatabaseAfter[]): Link<TagDatabaseAfter> {
     return {
       ...link,
-      tags: link.tags.map(id => tags.find(tag => tag.id === id)),
+      tags: link.tags.map(id => tags.find(tag => tag.id === id)).filter(tag => !!tag) as TagDatabaseAfter[],
     }
   }
 }

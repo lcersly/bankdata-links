@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthService} from '../../../shared/services/auth.service';
 import {Router} from '@angular/router';
+import {NotificationService} from '../../../shared/services/notification.service';
 
 @Component({
   selector: 'app-login',
@@ -9,27 +10,30 @@ import {Router} from '@angular/router';
 })
 export class LoginComponent implements OnInit {
 
-  constructor(public authService: AuthService, private router: Router) {
+  constructor(public authService: AuthService,
+              private router: Router,
+              private notificationService: NotificationService) {
   }
 
   ngOnInit(): void {
   }
 
-  login(method: 'google'|'github') {
+  login(method: 'google' | 'github') {
     let authObservable;
 
-    switch (method){
+    switch (method) {
       case 'google':
-        authObservable =this.authService.loginWithGoogle();
+        authObservable = this.authService.loginWithGoogle();
         break;
       case 'github':
-        authObservable =this.authService.loginGitHub();
+        authObservable = this.authService.loginGitHub();
         break;
       default:
-        throw new Error("Unhandled login method");
+        throw new Error('Unhandled login method');
     }
 
     authObservable.subscribe(() => {
+      this.notificationService.authentication.loggedIn()
       this.router.navigateByUrl('/');
     })
   }

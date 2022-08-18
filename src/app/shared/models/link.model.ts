@@ -7,7 +7,6 @@ export interface Link<T = any> {
   path: string;
   section: string;
   tags: T[];
-  environment: undefined | 'S' | 'P' | 'ALL';
   icons: Icon[];
   id?: string;
 }
