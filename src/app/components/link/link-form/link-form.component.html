@@ -40,11 +40,10 @@
     class="single-line-field"
   ></app-tag-selector>
 
-  <app-environment-checkbox-group [formControl]="environmentControl"></app-environment-checkbox-group>
+<!--  <app-environment-checkbox-group [formControl]="environmentControl"></app-environment-checkbox-group>-->
 
   <section>
-    <h3>Icons</h3>
-    <app-icon-selector [formControl]="iconControl" [url]="urlControl.value"></app-icon-selector>
+    <app-icon-selector [formControl]="iconControl" [url]="urlControl.value" [validURL]="urlControl.valid"></app-icon-selector>
   </section>
 </form>
 

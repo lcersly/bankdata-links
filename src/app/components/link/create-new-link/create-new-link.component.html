@@ -1,23 +1,17 @@
-<app-top-bar title="Create new link"></app-top-bar>
+<app-top-bar title="Create new link">
+  <button mat-button routerLink="/link" type="button" class="top-bar">
+    Cancel
+  </button>
+  <button mat-button class="top-bar" (click)="create()">
+    Create
+    <mat-icon>bookmark_add</mat-icon>
+  </button>
+</app-top-bar>
 
 <p *ngIf="!params || !params.useParams">
-  Bookmarklet: <a
-  href="javascript:(function(){
-  var url = location.href;
-  var title = document.title ||
-
-  url;window.open('http://localhost:4200/link/create?url=' + encodeURIComponent(url)+'&title=' + encodeURIComponent(title)+'&description=' + encodeURIComponent(document.getSelection())+'&source=bookmarklet','_blank','menubar=no,height=700,width=500,toolbar=no,scrollbars=no,status=no,dialog=1');})();"
->Add
-  to BD Links</a>
+  <app-bookmarklet></app-bookmarklet>
 </p>
 
-<form (ngSubmit)="create()">
+<form>
   <app-link-form [formControl]="link"></app-link-form>
-
-  <button color="primary" mat-fab routerLink="/link" type="button">
-    <mat-icon>backspace</mat-icon>
-  </button>
-  <button color="primary" mat-fab>
-    <mat-icon>save</mat-icon>
-  </button>
 </form>

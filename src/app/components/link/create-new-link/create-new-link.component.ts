@@ -3,7 +3,6 @@ import {FormControl} from '@angular/forms';
 import {environment} from '../../../../environments/environment';
 import {LinkService} from '../../../shared/services/link.service';
 import {Link} from '../../../shared/models/link.model';
-import {fieldHasError} from '../../../shared/util';
 import {NotificationService} from '../../../shared/services/notification.service';
 import {ActivatedRoute, Router} from '@angular/router';
 
@@ -16,8 +15,6 @@ export class CreateNewLinkComponent implements OnInit {
 
   public link = new FormControl();
   public params: { url: string, title: string, useParams: boolean } | undefined;
-
-  hasError = fieldHasError;
 
   constructor(private linkService: LinkService,
               private notifications: NotificationService,
@@ -49,13 +46,21 @@ export class CreateNewLinkComponent implements OnInit {
   async create() {
     this.link.markAllAsTouched();
     if (!this.link.valid) {
+      console.info(this.link.errors)
       return;
     }
 
-    const {tags} = await this.linkService.createLinkAndTags(this.link.value as Link);
+    let formValue = {
+      ...this.link.value,
+      tags: this.link.value.tags || [],
+    } as Link
+    await this.linkService.createLinkAndTags(formValue);
 
-    this.notifications.link.created(tags);
-    this.router.navigateByUrl('/link');
+    if (this.params?.useParams) {
+      window.close();
+    } else {
+      this.router.navigateByUrl('/link');
+    }
   }
 
   parseRouteParams() {
