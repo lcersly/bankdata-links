@@ -1,9 +1,9 @@
 import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Link} from '../../../shared/models/link.model';
-import {first, Subject, takeUntil} from 'rxjs';
+import {debounceTime, first, Subject, takeUntil} from 'rxjs';
 import {FormBuilder, FormControl} from '@angular/forms';
 import {LinkService} from '../../../shared/services/link.service';
-import {FilterService} from '../../../shared/services/filter.service';
+import {FilterService, LinkFilters} from '../../../shared/services/filter.service';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {Router} from '@angular/router';
@@ -19,19 +19,17 @@ import {AuthService} from '../../../shared/services/auth.service';
 export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
   displayedColumns: string[] = [
     'icons',
-    'name',
-    'url',
     'link',
-    'environment',
     'tags',
-    'edit',
   ];
   dataSource = new MatTableDataSource<Link>([]);
+
   @ViewChild(MatSort) matSort: MatSort | undefined
   private onDestroy = new Subject<void>();
 
   searchForm = this.fb.group({
     searchString: this.fb.control(''),
+    searchTags: this.fb.control(''),
   });
 
   constructor(private linkService: LinkService,
@@ -47,26 +45,38 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
     return this.searchForm.get('searchString') as FormControl
   }
 
+  get searchTagControl() {
+    return this.searchForm.get('searchTags') as FormControl
+  }
+
   ngOnInit(): void {
-    // initial search filters
+    // set initial search filters from what is stored in service
     this.filterService.linkFilters$
       .pipe(first())
       .subscribe(linkFilters => this.searchForm.patchValue(linkFilters))
 
-    // store all subsequent changes in the service
+    // store all subsequent search changes in the service
     this.searchForm.valueChanges
-      .pipe(takeUntil(this.onDestroy))
-      .subscribe(filters => this.filterService.setLinkFilters(filters));
+      .pipe(
+        takeUntil(this.onDestroy),
+        debounceTime(200),
+      )
+      .subscribe((filters: LinkFilters) => {
+        this.filterService.setLinkFilters(filters);
+      });
 
-    this.searchControl.valueChanges.subscribe((value) => this.dataSource.filter = value);
+    // subscribe to links
+    this.filterService.filteredLinks$.pipe(
+      takeUntil(this.onDestroy),
+    ).subscribe((links) => {
+      this.dataSource.data = links;
+      this.dataSource._updateChangeSubscription();
+    })
 
     this.authService.isSignedIn$.subscribe(signedIn => {
       const columns = [
         'icons',
-        // 'name',
-        // 'url',
         'link',
-        // 'environment',
         'tags',
       ];
 
@@ -76,14 +86,6 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
 
       this.displayedColumns = columns;
     })
-
-    // subscribe to links
-    this.linkService.links$
-      .pipe(takeUntil(this.onDestroy))
-      .subscribe(links => {
-        this.dataSource.data = links;
-        this.dataSource._updateChangeSubscription();
-      });
   }
 
   edit($event: MouseEvent, element: Link) {
@@ -97,6 +99,7 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getBestIcon(element: Link) {
+    if (!element.icons) return undefined;
     return this.fav.getBestIcon(element.icons);
   }
 

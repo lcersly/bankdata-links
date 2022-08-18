@@ -1,16 +1,18 @@
 <div class="icon-header">
-  <h3>Icons</h3>
+  <h2>Icons</h2>
   <button (click)="addFromServer()" mat-icon-button [disabled]="!validURL" matTooltip="Load icons from URL">
     <mat-icon>dns</mat-icon>
   </button>
 </div>
 
 <div *ngFor="let iconControls of icons.controls; let i = index" class="image-control-container single-line-field">
-  <h1>Image {{i}}
+  <mat-divider *ngIf="i > 0"></mat-divider>
+
+  <h3>Image {{i}}
     <button type="button" mat-icon-button (click)="remove(i)">
-      <mat-icon >delete</mat-icon>
+      <mat-icon>delete</mat-icon>
     </button>
-  </h1>
+  </h3>
   <div class="half-width">
     <mat-form-field appearance="fill">
       <mat-label>Src</mat-label>
@@ -35,10 +37,11 @@
     </mat-form-field>
 
     <img *ngIf="fav.hasValidImage(iconControls.value)"
-         [src]="fav.getSafeIconURL(iconControls.value)">
+         [src]="fav.getSafeIconURL(iconControls.value)" alt="favorite icon">
   </div>
 </div>
 
-<button (click)="add()" mat-icon-button>
+<button (click)="add()" mat-button>
   <mat-icon>add</mat-icon>
+  Add another icon
 </button>

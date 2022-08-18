@@ -8,7 +8,7 @@ import {Subject, takeUntil} from 'rxjs';
 import {ActivatedRoute, Router} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
 import {DialogDeleteLinkComponent, DialogDeleteLinkData} from './dialog-delete-link/dialog-delete-link.component';
-import {arrayEquals} from '../../../shared/util';
+import {isEqual} from 'lodash';
 
 @Component({
   selector: 'app-create-link',
@@ -50,12 +50,7 @@ export class EditLinkComponent implements OnInit, OnDestroy {
   get noChange(): boolean {
     if (!this.orgLink) return false;
 
-    let newValue = this.link.value;
-    return this.orgLink.name === newValue.name &&
-      this.orgLink.url === newValue.url &&
-      this.orgLink.description === newValue.description &&
-      arrayEquals(this.orgLink.icons, newValue.icons) &&
-      arrayEquals(this.orgLink.tags, newValue.tags)
+    return isEqual(this.orgLink, this.link.value);
   }
 
   async edit() {

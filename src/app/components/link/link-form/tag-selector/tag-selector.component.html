@@ -23,7 +23,7 @@
   </mat-chip-list>
   <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
     <mat-option *ngFor="let tag of filteredTags | async" [value]="tag.key">
-      {{tag.key}} - {{tag.description}}
+      {{tag.key}} {{tag.description ? '-' : ''}} {{tag.description}}
     </mat-option>
   </mat-autocomplete>
   <mat-hint *ngIf="newTagsCount === 0">Find previously tags here or create new ones</mat-hint>

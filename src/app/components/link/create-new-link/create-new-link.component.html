@@ -1,9 +1,10 @@
 <app-top-bar title="Create new link">
-  <button color="primary" mat-flat-button routerLink="/link" type="button" class="top-bar">
+  <button mat-button routerLink="/link" type="button" class="top-bar">
     Cancel
   </button>
-  <button color="primary" mat-flat-button class="top-bar">
+  <button mat-button class="top-bar" (click)="create()">
     Create
+    <mat-icon>bookmark_add</mat-icon>
   </button>
 </app-top-bar>
 
@@ -11,8 +12,6 @@
   <app-bookmarklet></app-bookmarklet>
 </p>
 
-<form (ngSubmit)="create()">
+<form>
   <app-link-form [formControl]="link"></app-link-form>
-
-
 </form>
