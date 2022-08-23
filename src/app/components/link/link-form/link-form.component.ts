@@ -39,7 +39,6 @@ export class LinkFormComponent implements ControlValueAccessor, Validator, OnDes
     // section: [''],
     // path: [''],
     tags: [[]],
-    environment: ['', [Validators.required]],
     icons: [[]],
   });
   hasError = fieldHasError;
@@ -72,10 +71,6 @@ export class LinkFormComponent implements ControlValueAccessor, Validator, OnDes
 
   public get tagsControl(): FormControl {
     return this.form.get('tags') as FormControl
-  }
-
-  public get environmentControl(): FormControl {
-    return this.form.get('environment') as FormControl
   }
 
   public get iconControl(): FormControl {

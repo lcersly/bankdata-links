@@ -38,6 +38,8 @@ export class IconFormComponent implements ControlValueAccessor, Validator {
   });
   @Input()
   public url: string | undefined;
+  @Input()
+  public validURL = false;
   disabled = false;
 
   constructor(
