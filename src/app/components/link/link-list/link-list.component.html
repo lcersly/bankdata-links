@@ -1,9 +1,9 @@
-<app-top-bar title="Link list">
+<app-top-bar title="Links">
   <app-create-button *ngIf="authService.isSignedIn"></app-create-button>
 </app-top-bar>
 
 <div id="search-pane">
-  <mat-form-field appearance="fill" class="mat-elevation-z8">
+  <mat-form-field appearance="fill">
     <mat-label>Search all</mat-label>
     <input [formControl]="searchControl" matInput type="text">
     <button (click)="searchControl.setValue('')" *ngIf="searchControl.value" aria-label="Clear" mat-icon-button
@@ -12,7 +12,7 @@
     </button>
   </mat-form-field>
 
-  <mat-form-field appearance="fill" class="mat-elevation-z8">
+  <mat-form-field appearance="fill">
     <mat-label>Search tags</mat-label>
     <input [formControl]="searchTagControl" matInput type="text">
     <button (click)="searchTagControl.setValue('')" *ngIf="searchTagControl.value" aria-label="Clear" mat-icon-button
