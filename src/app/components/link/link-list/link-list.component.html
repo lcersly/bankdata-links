@@ -1,6 +1,6 @@
 <app-top-bar title="Link list"></app-top-bar>
 
-<mat-form-field appearance="fill">
+<mat-form-field appearance="fill" class="mat-elevation-z8">
   <mat-label>Search</mat-label>
   <input [formControl]="searchControl" matInput type="text">
   <button (click)="searchControl.setValue('')" *ngIf="searchControl.value" aria-label="Clear" mat-icon-button
@@ -21,7 +21,7 @@
   </ng-container>
 
   <ng-container matColumnDef="link">
-    <mat-header-cell *matHeaderCellDef> Link</mat-header-cell>
+    <mat-header-cell *matHeaderCellDef>Link</mat-header-cell>
     <mat-cell *matCellDef="let element"><a [href]="element.url" target="_blank">{{element.name}}</a></mat-cell>
   </ng-container>
 

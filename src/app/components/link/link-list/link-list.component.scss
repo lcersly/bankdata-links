@@ -1,3 +1,7 @@
+@use '@angular/material' as mat;
+
+
+$dark-primary: mat.define-palette(mat.$blue-palette, 900);
 app-create-button {
   position: absolute;
   bottom: 10px;
@@ -7,6 +11,7 @@ app-create-button {
 mat-form-field {
   margin: 20px;
   width: 500px;
+  height: 50px;
 }
 
 mat-table {
@@ -25,5 +30,9 @@ mat-table {
   }
 
   .mat-column-url {
+  }
+  .mat-header-cell{
+    background: mat.get-color-from-palette($dark-primary);
+    color: white;
   }
 }

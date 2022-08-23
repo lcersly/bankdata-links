@@ -1,0 +1,8 @@
+@use '@angular/material' as mat;
+
+
+$dark-primary: mat.define-palette(mat.$purple-palette);
+.mat-toolbar {
+  background: mat.get-color-from-palette($dark-primary,900);
+  color: white;
+}
