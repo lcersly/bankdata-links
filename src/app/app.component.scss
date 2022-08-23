@@ -1,5 +1,5 @@
 @use '@angular/material' as mat;
-@include mat.core();
+
 mat-drawer-container{
   width: 100%;
   height: 100%;
@@ -10,5 +10,3 @@ $dark-primary: mat.define-palette(mat.$amber-palette);
 .dark-theme-side-nav {
   background: mat.get-color-from-palette($dark-primary);
 }
-
-
