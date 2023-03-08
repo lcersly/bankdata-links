@@ -2,6 +2,7 @@
   "name": "bankdata-links",
   "version": "0.0.0",
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
@@ -29,6 +30,7 @@
     "lodash": "^4.17.21",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
+    "webpack": "5",
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
