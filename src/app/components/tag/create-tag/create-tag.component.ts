@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormControl, Validators} from '@angular/forms';
+import {UntypedFormBuilder, UntypedFormControl, Validators} from '@angular/forms';
 import {FirestoreTagService} from '../../../shared/services/firestore/firestore-tag.service';
 import {TagBasic} from '../../../shared/models/tag.model';
 import {fieldHasError} from '../../../shared/util';
@@ -17,7 +17,7 @@ export class CreateTagComponent implements OnInit {
     key: ['', Validators.required]
   });
 
-  constructor(private fb: FormBuilder,
+  constructor(private fb: UntypedFormBuilder,
               private fireTagService: FirestoreTagService,
               private notification: NotificationService,
   ) {
@@ -26,12 +26,12 @@ export class CreateTagComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  public get keyControl(): FormControl {
-    return this.form.get('key') as FormControl
+  public get keyControl(): UntypedFormControl {
+    return this.form.get('key') as UntypedFormControl
   }
 
-  public get descriptionControl(): FormControl {
-    return this.form.get('description') as FormControl
+  public get descriptionControl(): UntypedFormControl {
+    return this.form.get('description') as UntypedFormControl
   }
 
   async create() {

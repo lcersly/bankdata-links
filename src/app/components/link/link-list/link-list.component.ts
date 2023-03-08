@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Link} from '../../../shared/models/link.model';
 import {debounceTime, first, Subject, takeUntil} from 'rxjs';
-import {FormBuilder, FormControl} from '@angular/forms';
+import {UntypedFormBuilder, UntypedFormControl} from '@angular/forms';
 import {LinkService} from '../../../shared/services/link.service';
 import {FilterService, LinkFilters} from '../../../shared/services/filter.service';
 import {MatSort} from '@angular/material/sort';
@@ -33,7 +33,7 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
   });
 
   constructor(private linkService: LinkService,
-              private fb: FormBuilder,
+              private fb: UntypedFormBuilder,
               private filterService: FilterService,
               private router: Router,
               private fav: FavIconService,
@@ -42,11 +42,11 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   get searchControl() {
-    return this.searchForm.get('searchString') as FormControl
+    return this.searchForm.get('searchString') as UntypedFormControl
   }
 
   get searchTagControl() {
-    return this.searchForm.get('searchTags') as FormControl
+    return this.searchForm.get('searchTags') as UntypedFormControl
   }
 
   ngOnInit(): void {

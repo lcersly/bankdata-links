@@ -1,5 +1,5 @@
-import {FormControl} from '@angular/forms';
+import {UntypedFormControl} from '@angular/forms';
 
-export function fieldHasError(urlControl: FormControl, errorCode: string) {
+export function fieldHasError(urlControl: UntypedFormControl, errorCode: string) {
   return urlControl.hasError(errorCode);
 }

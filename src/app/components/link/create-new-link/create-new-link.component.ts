@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {FormControl} from '@angular/forms';
+import {UntypedFormControl} from '@angular/forms';
 import {environment} from '../../../../environments/environment';
 import {LinkService} from '../../../shared/services/link.service';
 import {Link} from '../../../shared/models/link.model';
@@ -13,7 +13,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 })
 export class CreateNewLinkComponent implements OnInit {
 
-  public link = new FormControl();
+  public link = new UntypedFormControl();
   public params: { url: string, title: string, useParams: boolean } | undefined;
 
   constructor(private linkService: LinkService,

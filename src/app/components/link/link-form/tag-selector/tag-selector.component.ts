@@ -3,7 +3,7 @@ import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import {
   AbstractControl,
   ControlValueAccessor,
-  FormControl,
+  UntypedFormControl,
   NG_VALIDATORS,
   NG_VALUE_ACCESSOR,
   ValidationErrors,
@@ -35,7 +35,7 @@ import {NotificationService} from '../../../../shared/services/notification.serv
 })
 export class TagSelectorComponent implements ControlValueAccessor, Validator, OnInit, OnDestroy {
   separatorKeysCodes: number[] = [ENTER, COMMA];
-  tagCtrl = new FormControl('');
+  tagCtrl = new UntypedFormControl('');
   filteredTags = combineLatest([
     this.tagCtrl.valueChanges,
     this.tagService.tags$.pipe(

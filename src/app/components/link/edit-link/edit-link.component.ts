@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {FormControl} from '@angular/forms';
+import {UntypedFormControl} from '@angular/forms';
 import {LinkService} from '../../../shared/services/link.service';
 import {NotificationService} from '../../../shared/services/notification.service';
 import {FavIconService} from '../../../shared/services/fav-icon.service';
@@ -20,7 +20,7 @@ export class EditLinkComponent implements OnInit, OnDestroy {
   private onDestroy = new Subject<void>();
 
   private id: string | undefined;
-  public link = new FormControl()
+  public link = new UntypedFormControl()
   public orgLink: Link | undefined;
 
   constructor(private linkService: LinkService,

@@ -2,9 +2,9 @@ import {Component, Input} from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
-  FormArray,
-  FormControl,
-  FormGroup,
+  UntypedFormArray,
+  UntypedFormControl,
+  UntypedFormGroup,
   NG_VALIDATORS,
   NG_VALUE_ACCESSOR,
   ValidationErrors,
@@ -33,8 +33,8 @@ import {FavIconService} from '../../../../shared/services/fav-icon.service';
   ],
 })
 export class IconFormComponent implements ControlValueAccessor, Validator {
-  public form = new FormGroup({
-    icons: new FormArray([]),
+  public form = new UntypedFormGroup({
+    icons: new UntypedFormArray([]),
   });
   @Input()
   public url: string | undefined;
@@ -53,7 +53,7 @@ export class IconFormComponent implements ControlValueAccessor, Validator {
   };
 
   public get icons() {
-    return this.form.get('icons') as FormArray;
+    return this.form.get('icons') as UntypedFormArray;
   }
 
   add(icon?: Icon, emit = true): void {
@@ -62,10 +62,10 @@ export class IconFormComponent implements ControlValueAccessor, Validator {
     }
     this.markAsTouched();
 
-    this.icons.push(new FormGroup({
-      src: new FormControl(icon?.src || '', [Validators.required]),
-      type: new FormControl(icon?.type || '', [Validators.required]),
-      base64Image: new FormControl(icon?.base64Image || '', [Validators.required]),
+    this.icons.push(new UntypedFormGroup({
+      src: new UntypedFormControl(icon?.src || '', [Validators.required]),
+      type: new UntypedFormControl(icon?.type || '', [Validators.required]),
+      base64Image: new UntypedFormControl(icon?.base64Image || '', [Validators.required]),
     }), {emitEvent: emit});
   }
 
@@ -78,7 +78,7 @@ export class IconFormComponent implements ControlValueAccessor, Validator {
   }
 
   getControl(group: AbstractControl, key: string) {
-    return group.get(key) as FormControl;
+    return group.get(key) as UntypedFormControl;
   }
 
   registerOnChange(fn: any): void {

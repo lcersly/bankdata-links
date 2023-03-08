@@ -2,8 +2,8 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
-  FormBuilder,
-  FormControl,
+  UntypedFormBuilder,
+  UntypedFormControl,
   NG_VALIDATORS,
   NG_VALUE_ACCESSOR,
   ValidationErrors,
@@ -45,36 +45,36 @@ export class LinkFormComponent implements ControlValueAccessor, Validator, OnDes
   private touched = false;
   private onDestroy = new Subject<void>();
 
-  constructor(private fb: FormBuilder,
+  constructor(private fb: UntypedFormBuilder,
   ) {
   }
 
-  public get urlControl(): FormControl {
-    return this.form.get('url') as FormControl
+  public get urlControl(): UntypedFormControl {
+    return this.form.get('url') as UntypedFormControl
   }
 
-  public get nameControl(): FormControl {
-    return this.form.get('name') as FormControl
+  public get nameControl(): UntypedFormControl {
+    return this.form.get('name') as UntypedFormControl
   }
 
-  public get descriptionControl(): FormControl {
-    return this.form.get('description') as FormControl
+  public get descriptionControl(): UntypedFormControl {
+    return this.form.get('description') as UntypedFormControl
   }
 
-  public get sectionControl(): FormControl {
-    return this.form.get('section') as FormControl
+  public get sectionControl(): UntypedFormControl {
+    return this.form.get('section') as UntypedFormControl
   }
 
-  public get pathControl(): FormControl {
-    return this.form.get('path') as FormControl
+  public get pathControl(): UntypedFormControl {
+    return this.form.get('path') as UntypedFormControl
   }
 
-  public get tagsControl(): FormControl {
-    return this.form.get('tags') as FormControl
+  public get tagsControl(): UntypedFormControl {
+    return this.form.get('tags') as UntypedFormControl
   }
 
-  public get iconControl(): FormControl {
-    return this.form.get('icons') as FormControl
+  public get iconControl(): UntypedFormControl {
+    return this.form.get('icons') as UntypedFormControl
   }
 
   onChange: ((data: any) => void) = () => {
