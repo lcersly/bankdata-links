@@ -1,15 +1,32 @@
-import {Component, OnInit} from '@angular/core';
-import {UntypedFormControl} from '@angular/forms';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ReactiveFormsModule, UntypedFormControl} from '@angular/forms';
 import {environment} from '../../../../environments/environment';
 import {LinkService} from '../../../shared/services/link.service';
 import {Link} from '../../../shared/models/link.model';
 import {NotificationService} from '../../../shared/services/notification.service';
 import {ActivatedRoute, Router} from '@angular/router';
+import {TopBarComponent} from '../../../shared/components/top-bar/top-bar.component';
+import {MatButtonModule} from '@angular/material/button';
+import {BookmarkletComponent} from './bookmarklet/bookmarklet.component';
+import {NgIf} from '@angular/common';
+import {LinkFormComponent} from '../link-form/link-form.component';
+import {MatIconModule} from '@angular/material/icon';
 
 @Component({
   selector: 'app-create-new-link',
   templateUrl: './create-new-link.component.html',
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./create-new-link.component.scss'],
+  imports: [
+    TopBarComponent,
+    MatButtonModule,
+    BookmarkletComponent,
+    NgIf,
+    LinkFormComponent,
+    ReactiveFormsModule,
+    MatIconModule
+  ],
 })
 export class CreateNewLinkComponent implements OnInit {
 

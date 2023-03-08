@@ -1,11 +1,12 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
-  UntypedFormBuilder,
-  UntypedFormControl,
   NG_VALIDATORS,
   NG_VALUE_ACCESSOR,
+  ReactiveFormsModule,
+  UntypedFormBuilder,
+  UntypedFormControl,
   ValidationErrors,
   Validator,
   Validators,
@@ -13,11 +14,19 @@ import {
 import {urlPattern} from '../constants';
 import {fieldHasError} from '../../../shared/util';
 import {Subject, takeUntil} from 'rxjs';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {TextFieldModule} from '@angular/cdk/text-field';
+import {MatInputModule} from '@angular/material/input';
+import {NgIf} from '@angular/common';
+import {TagSelectorComponent} from './tag-selector/tag-selector.component';
+import {IconFormComponent} from './icon-form/icon-form.component';
 
 @Component({
   selector: 'app-link-form',
   templateUrl: './link-form.component.html',
   styleUrls: ['./link-form.component.scss'],
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -29,6 +38,15 @@ import {Subject, takeUntil} from 'rxjs';
       multi: true,
       useExisting: LinkFormComponent,
     },
+  ],
+  imports: [
+    MatFormFieldModule,
+    TextFieldModule,
+    MatInputModule,
+    NgIf,
+    ReactiveFormsModule,
+    TagSelectorComponent,
+    IconFormComponent,
   ],
 })
 export class LinkFormComponent implements ControlValueAccessor, Validator, OnDestroy, OnInit {

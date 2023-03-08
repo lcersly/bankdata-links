@@ -10,7 +10,9 @@
     "build:stats": "ng build --stats-json",
     "analyze": "webpack-bundle-analyzer dist/bankdata-links/stats.json",
     "test": "ng test",
-    "lint": "eslint --ext .ts src/"
+    "lint": "eslint --ext .ts src/",
+    "emulators:start": "firebase emulators:start --only firestore,functions,auth --export-on-exit=./saved-data --import=./saved-data --project=default",
+    "emulators:force-kill": "npx kill-port --port 8080,9099,5001"
   },
   "private": true,
   "dependencies": {

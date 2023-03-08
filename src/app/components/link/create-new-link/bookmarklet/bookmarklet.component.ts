@@ -1,12 +1,14 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {DomSanitizer} from '@angular/platform-browser';
 
 @Component({
   selector: 'app-bookmarklet',
   templateUrl: './bookmarklet.component.html',
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./bookmarklet.component.scss'],
 })
-export class BookmarkletComponent implements OnInit {
+export class BookmarkletComponent {
 
   // language=JavaScript
   href = this.sanitizer.bypassSecurityTrustUrl(`javascript:(function () {
@@ -19,6 +21,4 @@ export class BookmarkletComponent implements OnInit {
   constructor(private sanitizer: DomSanitizer) {
   }
 
-  ngOnInit(): void {
-  }
 }

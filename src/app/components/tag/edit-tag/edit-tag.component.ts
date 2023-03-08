@@ -1,16 +1,35 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from '@angular/core';
 import {FirestoreTagService} from '../../../shared/services/firestore/firestore-tag.service';
 import {Subject, takeUntil} from 'rxjs';
-import {ActivatedRoute} from '@angular/router';
-import {UntypedFormBuilder, UntypedFormControl, Validators} from '@angular/forms';
+import {ActivatedRoute, RouterLink} from '@angular/router';
+import {FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormControl, Validators} from '@angular/forms';
 import {fieldHasError} from '../../../shared/util';
 import {NotificationService} from '../../../shared/services/notification.service';
 import {TagBasic} from '../../../shared/models/tag.model';
+import {TopBarComponent} from '../../../shared/components/top-bar/top-bar.component';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {MatButtonModule} from '@angular/material/button';
+import {NgIf} from '@angular/common';
+import {MatIconModule} from '@angular/material/icon';
 
 @Component({
   selector: 'app-edit-tag',
   templateUrl: './edit-tag.component.html',
   styleUrls: ['./edit-tag.component.scss'],
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    TopBarComponent,
+    MatFormFieldModule,
+    MatInputModule,
+    ReactiveFormsModule,
+    RouterLink,
+    MatButtonModule,
+    NgIf,
+    FormsModule,
+    MatIconModule,
+  ],
 })
 export class EditTagComponent implements OnInit, OnDestroy {
   private onDestroy = new Subject<void>();

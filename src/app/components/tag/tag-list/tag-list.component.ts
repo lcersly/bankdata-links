@@ -1,15 +1,36 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
 import {FirestoreTagService} from '../../../shared/services/firestore/firestore-tag.service';
 import {MatLegacyTableDataSource as MatTableDataSource} from '@angular/material/legacy-table';
 import {TagDatabaseAfter} from '../../../shared/models/tag.model';
 import {SelectionModel} from '@angular/cdk/collections';
 import {Router} from '@angular/router';
-import {MatSort} from '@angular/material/sort';
+import {MatSort, MatSortModule} from '@angular/material/sort';
+import {TopBarComponent} from '../../../shared/components/top-bar/top-bar.component';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {MatTableModule} from '@angular/material/table';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatIconModule} from '@angular/material/icon';
+import {MatButtonModule} from '@angular/material/button';
+import {CreateTagButtonComponent} from './create-tag-button/create-tag-button.component';
 
 @Component({
   selector: 'app-tag-list',
   templateUrl: './tag-list.component.html',
   styleUrls: ['./tag-list.component.scss'],
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    TopBarComponent,
+    MatFormFieldModule,
+    MatInputModule,
+    MatTableModule,
+    MatSortModule,
+    MatCheckboxModule,
+    MatIconModule,
+    MatButtonModule,
+    CreateTagButtonComponent,
+  ],
 })
 export class TagListComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = ['select', 'key', 'description', 'edit'];

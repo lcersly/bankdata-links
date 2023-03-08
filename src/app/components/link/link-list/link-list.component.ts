@@ -1,20 +1,46 @@
-import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Link} from '../../../shared/models/link.model';
 import {debounceTime, first, Subject, takeUntil} from 'rxjs';
-import {UntypedFormBuilder, UntypedFormControl} from '@angular/forms';
+import {ReactiveFormsModule, UntypedFormBuilder, UntypedFormControl} from '@angular/forms';
 import {LinkService} from '../../../shared/services/link.service';
 import {FilterService, LinkFilters} from '../../../shared/services/filter.service';
-import {MatSort} from '@angular/material/sort';
+import {MatSort, MatSortModule} from '@angular/material/sort';
 import {MatLegacyTableDataSource as MatTableDataSource} from '@angular/material/legacy-table';
 import {Router} from '@angular/router';
 import {FavIconService} from '../../../shared/services/fav-icon.service';
 import {AuthService} from '../../../shared/services/auth.service';
+import {TopBarComponent} from '../../../shared/components/top-bar/top-bar.component';
+import {CreateButtonComponent} from './create-button/create-button.component';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatIconModule} from '@angular/material/icon';
+import {NgForOf, NgIf} from '@angular/common';
+import {MatButtonModule} from '@angular/material/button';
+import {MatInputModule} from '@angular/material/input';
+import {MatTableModule} from '@angular/material/table';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatLegacyChipsModule} from '@angular/material/legacy-chips';
 
 @Component({
   selector: 'app-link-list',
   templateUrl: './link-list.component.html',
   styleUrls: ['./link-list.component.scss'],
-  // changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    TopBarComponent,
+    CreateButtonComponent,
+    MatFormFieldModule,
+    ReactiveFormsModule,
+    MatIconModule,
+    NgIf,
+    MatButtonModule,
+    MatInputModule,
+    MatTableModule,
+    MatSortModule,
+    MatTooltipModule,
+    MatLegacyChipsModule,
+    NgForOf,
+  ],
 })
 export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
   displayedColumns: string[] = [

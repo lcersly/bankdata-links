@@ -1,25 +1,35 @@
-import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import {
   AbstractControl,
   ControlValueAccessor,
-  UntypedFormControl,
   NG_VALIDATORS,
   NG_VALUE_ACCESSOR,
+  ReactiveFormsModule,
+  UntypedFormControl,
   ValidationErrors,
   Validator,
 } from '@angular/forms';
 import {combineLatest, map, startWith, Subject} from 'rxjs';
-import {MatLegacyChipInputEvent as MatChipInputEvent} from '@angular/material/legacy-chips';
-import {MatLegacyAutocompleteSelectedEvent as MatAutocompleteSelectedEvent} from '@angular/material/legacy-autocomplete';
+import {MatLegacyChipInputEvent as MatChipInputEvent, MatLegacyChipsModule} from '@angular/material/legacy-chips';
+import {
+  MatLegacyAutocompleteSelectedEvent as MatAutocompleteSelectedEvent,
+} from '@angular/material/legacy-autocomplete';
 import {FirestoreTagService} from '../../../../shared/services/firestore/firestore-tag.service';
 import {TagBasic, TagDatabaseAfter, TagSelection} from '../../../../shared/models/tag.model';
 import {NotificationService} from '../../../../shared/services/notification.service';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {AsyncPipe, NgForOf, NgIf} from '@angular/common';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatIconModule} from '@angular/material/icon';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
 
 @Component({
   selector: 'app-tag-selector',
   templateUrl: './tag-selector.component.html',
   styleUrls: ['./tag-selector.component.scss'],
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -32,8 +42,19 @@ import {NotificationService} from '../../../../shared/services/notification.serv
       useExisting: TagSelectorComponent,
     },
   ],
+  imports: [
+    MatFormFieldModule,
+    MatLegacyChipsModule,
+    NgForOf,
+    MatTooltipModule,
+    MatIconModule,
+    ReactiveFormsModule,
+    MatAutocompleteModule,
+    AsyncPipe,
+    NgIf,
+  ],
 })
-export class TagSelectorComponent implements ControlValueAccessor, Validator, OnInit, OnDestroy {
+export class TagSelectorComponent implements ControlValueAccessor, Validator, OnDestroy {
   separatorKeysCodes: number[] = [ENTER, COMMA];
   tagCtrl = new UntypedFormControl('');
   filteredTags = combineLatest([
@@ -57,7 +78,7 @@ export class TagSelectorComponent implements ControlValueAccessor, Validator, On
   @ViewChild('tagInput') tagInput: ElementRef<HTMLInputElement> | undefined;
 
   constructor(private tagService: FirestoreTagService,
-              private notifications: NotificationService
+              private notifications: NotificationService,
   ) {
   }
 
@@ -71,9 +92,9 @@ export class TagSelectorComponent implements ControlValueAccessor, Validator, On
 
     // Add our tag
     if (value) {
-      if(this.selectedTags.find(t => t.key.toLowerCase() === value.toLowerCase())){
+      if (this.selectedTags.find(t => t.key.toLowerCase() === value.toLowerCase())) {
         this.notifications.tag.tagAlreadyAdded(value);
-      }else{
+      } else {
         let existingTag = this.tagService.tags.find(existingTag => existingTag.key.toLowerCase() === value.toLowerCase());
         if (existingTag) {
           this.selectedTags.push(existingTag);
@@ -117,7 +138,7 @@ export class TagSelectorComponent implements ControlValueAccessor, Validator, On
     this.tagCtrl.setValue(null);
   }
 
-  get newTagsCount(){
+  get newTagsCount() {
     return this.selectedTags.filter(t => !t.exists).length;
   }
 
@@ -159,9 +180,6 @@ export class TagSelectorComponent implements ControlValueAccessor, Validator, On
   ngOnDestroy(): void {
     this.onDestroy.next();
     this.onDestroy.complete();
-  }
-
-  ngOnInit(): void {
   }
 
   private _filter<T extends TagBasic>(filter: string | undefined, allTags: T[] | null): T[] {

@@ -1,16 +1,36 @@
-import {Component, OnInit} from '@angular/core';
-import {UntypedFormBuilder, UntypedFormControl, Validators} from '@angular/forms';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormControl, Validators} from '@angular/forms';
 import {FirestoreTagService} from '../../../shared/services/firestore/firestore-tag.service';
 import {TagBasic} from '../../../shared/models/tag.model';
 import {fieldHasError} from '../../../shared/util';
 import {NotificationService} from '../../../shared/services/notification.service';
+import {TopBarComponent} from '../../../shared/components/top-bar/top-bar.component';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {NgIf} from '@angular/common';
+import {MatButtonModule} from '@angular/material/button';
+import {RouterLink} from '@angular/router';
+import {MatIconModule} from '@angular/material/icon';
 
 @Component({
   selector: 'app-create-tag',
   templateUrl: './create-tag.component.html',
   styleUrls: ['./create-tag.component.scss'],
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    TopBarComponent,
+    MatFormFieldModule,
+    MatInputModule,
+    ReactiveFormsModule,
+    NgIf,
+    MatButtonModule,
+    RouterLink,
+    FormsModule,
+    MatIconModule,
+  ],
 })
-export class CreateTagComponent implements OnInit {
+export class CreateTagComponent {
 
   public form = this.fb.group({
     description: '',
@@ -21,9 +41,6 @@ export class CreateTagComponent implements OnInit {
               private fireTagService: FirestoreTagService,
               private notification: NotificationService,
   ) {
-  }
-
-  ngOnInit(): void {
   }
 
   public get keyControl(): UntypedFormControl {

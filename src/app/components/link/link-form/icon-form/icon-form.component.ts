@@ -1,12 +1,13 @@
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
+  NG_VALIDATORS,
+  NG_VALUE_ACCESSOR,
+  ReactiveFormsModule,
   UntypedFormArray,
   UntypedFormControl,
   UntypedFormGroup,
-  NG_VALIDATORS,
-  NG_VALUE_ACCESSOR,
   ValidationErrors,
   Validator,
   Validators,
@@ -14,10 +15,19 @@ import {
 import {TagSelection} from '../../../../shared/models/tag.model';
 import {Icon} from '../../../../shared/models/icon.model';
 import {FavIconService} from '../../../../shared/services/fav-icon.service';
+import {MatIconModule} from '@angular/material/icon';
+import {MatButtonModule} from '@angular/material/button';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import {NgForOf, NgIf} from '@angular/common';
+import {MatDividerModule} from '@angular/material/divider';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
 
 @Component({
   selector: 'app-icon-selector',
   templateUrl: './icon-form.component.html',
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./icon-form.component.scss'],
   providers: [
     {
@@ -30,6 +40,17 @@ import {FavIconService} from '../../../../shared/services/fav-icon.service';
       multi: true,
       useExisting: IconFormComponent,
     },
+  ],
+  imports: [
+    MatIconModule,
+    MatButtonModule,
+    MatTooltipModule,
+    NgForOf,
+    MatDividerModule,
+    NgIf,
+    MatFormFieldModule,
+    ReactiveFormsModule,
+    MatInputModule,
   ],
 })
 export class IconFormComponent implements ControlValueAccessor, Validator {
