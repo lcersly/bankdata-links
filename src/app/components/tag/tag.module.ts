@@ -1,11 +1,11 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {TagListComponent} from './tag-list/tag-list.component';
-import {MatButtonModule} from '@angular/material/button';
+import {MatLegacyButtonModule as MatButtonModule} from '@angular/material/legacy-button';
 import {MatToolbarModule} from '@angular/material/toolbar';
-import {MatTableModule} from '@angular/material/table';
-import {MatCheckboxModule} from '@angular/material/checkbox';
-import {MatInputModule} from '@angular/material/input';
+import {MatLegacyTableModule as MatTableModule} from '@angular/material/legacy-table';
+import {MatLegacyCheckboxModule as MatCheckboxModule} from '@angular/material/legacy-checkbox';
+import {MatLegacyInputModule as MatInputModule} from '@angular/material/legacy-input';
 import {CreateTagComponent} from './create-tag/create-tag.component';
 import {CreateTagButtonComponent} from './tag-list/create-tag-button/create-tag-button.component';
 import {MatIconModule} from '@angular/material/icon';

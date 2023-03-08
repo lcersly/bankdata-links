@@ -10,8 +10,8 @@ import {
   Validator,
 } from '@angular/forms';
 import {combineLatest, map, startWith, Subject} from 'rxjs';
-import {MatChipInputEvent} from '@angular/material/chips';
-import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
+import {MatLegacyChipInputEvent as MatChipInputEvent} from '@angular/material/legacy-chips';
+import {MatLegacyAutocompleteSelectedEvent as MatAutocompleteSelectedEvent} from '@angular/material/legacy-autocomplete';
 import {FirestoreTagService} from '../../../../shared/services/firestore/firestore-tag.service';
 import {TagBasic, TagDatabaseAfter, TagSelection} from '../../../../shared/models/tag.model';
 import {NotificationService} from '../../../../shared/services/notification.service';

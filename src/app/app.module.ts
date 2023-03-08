@@ -12,7 +12,7 @@ import {initializeFirestore, provideFirestore} from '@angular/fire/firestore';
 import {TagModule} from './components/tag/tag.module';
 import {HttpClientModule} from '@angular/common/http';
 import {MatSidenavModule} from '@angular/material/sidenav';
-import {MatButtonModule} from '@angular/material/button';
+import {MatLegacyButtonModule as MatButtonModule} from '@angular/material/legacy-button';
 import {SharedModule} from './shared/shared.module';
 import {LoginModule} from './components/login/login.module';
 

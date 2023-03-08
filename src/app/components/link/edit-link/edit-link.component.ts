@@ -6,7 +6,7 @@ import {FavIconService} from '../../../shared/services/fav-icon.service';
 import {Link} from '../../../shared/models/link.model';
 import {Subject, takeUntil} from 'rxjs';
 import {ActivatedRoute, Router} from '@angular/router';
-import {MatDialog} from '@angular/material/dialog';
+import {MatLegacyDialog as MatDialog} from '@angular/material/legacy-dialog';
 import {DialogDeleteLinkComponent, DialogDeleteLinkData} from './dialog-delete-link/dialog-delete-link.component';
 import {isEqual} from 'lodash';
 

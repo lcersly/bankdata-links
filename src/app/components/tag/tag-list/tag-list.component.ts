@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {FirestoreTagService} from '../../../shared/services/firestore/firestore-tag.service';
-import {MatTableDataSource} from '@angular/material/table';
+import {MatLegacyTableDataSource as MatTableDataSource} from '@angular/material/legacy-table';
 import {TagDatabaseAfter} from '../../../shared/models/tag.model';
 import {SelectionModel} from '@angular/cdk/collections';
 import {Router} from '@angular/router';

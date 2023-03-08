@@ -5,7 +5,7 @@ import {UntypedFormBuilder, UntypedFormControl} from '@angular/forms';
 import {LinkService} from '../../../shared/services/link.service';
 import {FilterService, LinkFilters} from '../../../shared/services/filter.service';
 import {MatSort} from '@angular/material/sort';
-import {MatTableDataSource} from '@angular/material/table';
+import {MatLegacyTableDataSource as MatTableDataSource} from '@angular/material/legacy-table';
 import {Router} from '@angular/router';
 import {FavIconService} from '../../../shared/services/fav-icon.service';
 import {AuthService} from '../../../shared/services/auth.service';
