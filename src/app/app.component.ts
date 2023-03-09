@@ -1,8 +1,9 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {SideBarService} from './shared/services/side-bar.service';
-import {MatDrawer, MatSidenavModule} from '@angular/material/sidenav';
+import {Component, HostBinding, OnInit} from '@angular/core';
+import {MatSidenavModule} from '@angular/material/sidenav';
 import {RouterOutlet} from '@angular/router';
-import {SideBarComponent} from './shared/components/side-bar/side-bar.component';
+import {MatDialog} from '@angular/material/dialog';
+import {OverlayContainer} from '@angular/cdk/overlay';
+import {ThemeService} from './shared/services/theme.service';
 
 @Component({
   selector: 'app-root',
@@ -12,18 +13,24 @@ import {SideBarComponent} from './shared/components/side-bar/side-bar.component'
   imports: [
     MatSidenavModule,
     RouterOutlet,
-    SideBarComponent,
   ],
 })
 export class AppComponent implements OnInit {
-  title = 'Bankdata Links';
+  title = 'BD Links';
 
-  @ViewChild(MatDrawer) drawer: MatDrawer | undefined;
+  @HostBinding('class') className = '';
 
-  constructor(public sideBar: SideBarService) {
-  }
+  constructor(private dialog: MatDialog, private overlay: OverlayContainer, private themeService: ThemeService) { }
 
   ngOnInit(): void {
-    this.sideBar.toggle$.subscribe(() => this.drawer?.toggle())
+    this.themeService.darkMode$.subscribe((darkMode) => {
+      const darkClassName = 'darkMode';
+      this.className = darkMode ? darkClassName : '';
+      if (darkMode) {
+        this.overlay.getContainerElement().classList.add(darkClassName);
+      } else {
+        this.overlay.getContainerElement().classList.remove(darkClassName);
+      }
+    });
   }
 }

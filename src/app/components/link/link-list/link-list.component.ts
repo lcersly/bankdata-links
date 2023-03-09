@@ -5,7 +5,7 @@ import {ReactiveFormsModule, UntypedFormBuilder, UntypedFormControl} from '@angu
 import {LinkService} from '../../../shared/services/link.service';
 import {FilterService, LinkFilters} from '../../../shared/services/filter.service';
 import {MatSort, MatSortModule} from '@angular/material/sort';
-import {MatLegacyTableDataSource as MatTableDataSource} from '@angular/material/legacy-table';
+import {MatTableDataSource, MatTableModule} from '@angular/material/table';
 import {Router} from '@angular/router';
 import {FavIconService} from '../../../shared/services/fav-icon.service';
 import {AuthService} from '../../../shared/services/auth.service';
@@ -16,9 +16,8 @@ import {MatIconModule} from '@angular/material/icon';
 import {NgForOf, NgIf} from '@angular/common';
 import {MatButtonModule} from '@angular/material/button';
 import {MatInputModule} from '@angular/material/input';
-import {MatTableModule} from '@angular/material/table';
 import {MatTooltipModule} from '@angular/material/tooltip';
-import {MatLegacyChipsModule} from '@angular/material/legacy-chips';
+import {MatChipsModule} from '@angular/material/chips';
 
 @Component({
   selector: 'app-link-list',
@@ -38,7 +37,7 @@ import {MatLegacyChipsModule} from '@angular/material/legacy-chips';
     MatTableModule,
     MatSortModule,
     MatTooltipModule,
-    MatLegacyChipsModule,
+    MatChipsModule,
     NgForOf,
   ],
 })

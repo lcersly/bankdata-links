@@ -1,7 +1,7 @@
 <mat-form-field appearance="fill">
   <mat-label>Tags</mat-label>
-  <mat-chip-list #chipList aria-label="Search for or create a tag...">
-    <mat-chip
+  <mat-chip-grid #chipList aria-label="Search for or create a tag...">
+    <mat-chip-row
       *ngFor="let tag of selectedTags"
       (removed)="remove(tag)"
       matTooltipPosition="above"
@@ -11,7 +11,7 @@
       <button matChipRemove>
         <mat-icon>cancel</mat-icon>
       </button>
-    </mat-chip>
+    </mat-chip-row>
     <input
       placeholder="Search for tag..."
       #tagInput
@@ -20,7 +20,7 @@
       [matChipInputFor]="chipList"
       [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
       (matChipInputTokenEnd)="add($event)">
-  </mat-chip-list>
+  </mat-chip-grid>
   <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
     <mat-option *ngFor="let tag of filteredTags | async" [value]="tag.key">
       {{tag.key}} {{tag.description ? '-' : ''}} {{tag.description}}

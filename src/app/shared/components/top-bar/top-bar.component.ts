@@ -1,8 +1,11 @@
-import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
-import {SideBarService} from '../../services/side-bar.service';
+import {ChangeDetectionStrategy, Component, Input, OnInit} from '@angular/core';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import {FormControl, ReactiveFormsModule} from '@angular/forms';
+import {ThemeService} from '../../services/theme.service';
+import {first} from 'rxjs';
 
 @Component({
   selector: 'app-top-bar',
@@ -13,17 +16,27 @@ import {MatButtonModule} from '@angular/material/button';
     MatToolbarModule,
     MatIconModule,
     MatButtonModule,
+    MatSlideToggleModule,
+    ReactiveFormsModule,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TopBarComponent {
+export class TopBarComponent implements OnInit {
   @Input()
   title: string = '';
 
-  constructor(private sideBar: SideBarService) {
+  toggleControl = new FormControl(false);
+
+  constructor(private themeService: ThemeService) {
   }
 
-  toggleMenu() {
-    this.sideBar.toggle();
+  ngOnInit(): void {
+    this.themeService.darkMode$.pipe(
+      first(),
+    )      .subscribe(isEnabled => this.toggleControl.setValue(isEnabled));
+
+    this.toggleControl.valueChanges.subscribe(enabled => this.themeService.setDarkMode(enabled))
   }
+
+
 }

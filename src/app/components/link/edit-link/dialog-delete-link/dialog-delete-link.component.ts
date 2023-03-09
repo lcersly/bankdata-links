@@ -1,10 +1,6 @@
 import {ChangeDetectionStrategy, Component, Inject} from '@angular/core';
-import {
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-  MatLegacyDialogRef as MatDialogRef,
-} from '@angular/material/legacy-dialog';
+import {MAT_DIALOG_DATA, MatDialogModule, MatDialogRef} from '@angular/material/dialog';
 import {Link} from '../../../../shared/models/link.model';
-import {MatDialogModule} from '@angular/material/dialog';
 import {JsonPipe} from '@angular/common';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';

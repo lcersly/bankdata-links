@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "start-dev": "concurrently -n,emulators,frontend \"npm run emulators:start\" \"npm run start\"",
+    "start-dev": "concurrently -n emulators,frontend \"npm run emulators:start\" \"npm run start\"",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "build:stats": "ng build --stats-json",

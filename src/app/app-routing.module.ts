@@ -20,9 +20,9 @@ const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
 const redirectLoggedInToItems = () => redirectLoggedInTo(['link']);
 
 const routes: Routes = [
-  {path: '', pathMatch: 'full', redirectTo: 'link'},
+  {path: '', pathMatch: 'full', redirectTo: 'links'},
   {
-    path: 'link', children: [
+    path: 'links', children: [
       {path: '', pathMatch: 'full', component: LinkListComponent},
       {
         path: 'create',
@@ -39,7 +39,7 @@ const routes: Routes = [
     ],
   },
   {
-    path: 'tag', children: [
+    path: 'tags', children: [
       {path: '', pathMatch: 'full', component: TagListComponent},
       {
         path: 'create',

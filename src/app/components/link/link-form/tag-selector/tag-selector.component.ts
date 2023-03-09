@@ -11,10 +11,8 @@ import {
   Validator,
 } from '@angular/forms';
 import {combineLatest, map, startWith, Subject} from 'rxjs';
-import {MatLegacyChipInputEvent as MatChipInputEvent, MatLegacyChipsModule} from '@angular/material/legacy-chips';
-import {
-  MatLegacyAutocompleteSelectedEvent as MatAutocompleteSelectedEvent,
-} from '@angular/material/legacy-autocomplete';
+import {MatChipInputEvent, MatChipsModule} from '@angular/material/chips';
+import {MatAutocompleteModule, MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
 import {FirestoreTagService} from '../../../../shared/services/firestore/firestore-tag.service';
 import {TagBasic, TagDatabaseAfter, TagSelection} from '../../../../shared/models/tag.model';
 import {NotificationService} from '../../../../shared/services/notification.service';
@@ -22,7 +20,6 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {AsyncPipe, NgForOf, NgIf} from '@angular/common';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatIconModule} from '@angular/material/icon';
-import {MatAutocompleteModule} from '@angular/material/autocomplete';
 
 @Component({
   selector: 'app-tag-selector',
@@ -44,7 +41,7 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
   ],
   imports: [
     MatFormFieldModule,
-    MatLegacyChipsModule,
+    MatChipsModule,
     NgForOf,
     MatTooltipModule,
     MatIconModule,

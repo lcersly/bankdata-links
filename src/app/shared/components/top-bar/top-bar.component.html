@@ -1,8 +1,11 @@
 <mat-toolbar color="primary">
-  <button (click)="toggleMenu()" mat-icon-button>
-    <mat-icon>menu</mat-icon>
-  </button>
   <span>{{title}}</span>
+
   <div class="spacer"></div>
-  <ng-content></ng-content>
+
+  <mat-icon>brightness_5</mat-icon>
+  <mat-slide-toggle [formControl]="toggleControl">
+  </mat-slide-toggle>
+  <mat-icon>bedtime</mat-icon>
+
 </mat-toolbar>

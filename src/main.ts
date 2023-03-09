@@ -8,6 +8,7 @@ import {provideHttpClient} from '@angular/common/http';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import '@angular/common/locales/global/da';
+import {FirebaseModule} from './app/modules/firebase.module';
 
 if (environment.production) {
   enableProdMode();
@@ -21,6 +22,7 @@ bootstrapApplication(AppComponent, {
       AppRoutingModule,
       MatDialogModule,
       MatSnackBarModule,
+      FirebaseModule,
     ),
     {
       provide: APP_INITIALIZER,

@@ -63,14 +63,14 @@
   <ng-container matColumnDef="tags">
     <mat-header-cell *matHeaderCellDef>Tags</mat-header-cell>
     <mat-cell *matCellDef="let element">
-      <mat-chip-list>
-        <mat-chip *ngFor="let tag of element.tags"
+      <mat-chip-listbox>
+        <mat-chip-option *ngFor="let tag of element.tags"
                   [matTooltip]="tag.description"
                   matTooltipPosition="above"
         >
           {{tag.key}}
-        </mat-chip>
-      </mat-chip-list>
+        </mat-chip-option>
+      </mat-chip-listbox>
     </mat-cell>
   </ng-container>
 
