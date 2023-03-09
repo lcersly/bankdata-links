@@ -1,22 +1,18 @@
-@use '@angular/material' as mat;
-
-$dark-primary: mat.define-palette(mat.$blue-palette, 900);
-
 #search-pane {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
+  padding-top: 1em;
 
   mat-form-field {
-    margin: 20px;
-    width: 500px;
+    flex: 1;
+
+    &:last-of-type {
+      margin-left: 1em;
+    }
   }
 }
 
-/* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
-/* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
 mat-table {
-  margin: 10px;
-
   .mat-column-edit {
     flex: 0 0 40px;
   }
@@ -28,8 +24,4 @@ mat-table {
   .mat-column-url {
   }
 
-  .mat-mdc-header-cell{
-    background: mat.get-color-from-palette($dark-primary);
-    color: white;
-  }
 }

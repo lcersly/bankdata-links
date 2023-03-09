@@ -9,7 +9,6 @@ import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
 import {DialogDeleteLinkComponent, DialogDeleteLinkData} from './dialog-delete-link/dialog-delete-link.component';
 import {isEqual} from 'lodash';
-import {TopBarComponent} from '../../../shared/components/top-bar/top-bar.component';
 import {MatButtonModule} from '@angular/material/button';
 import {LinkFormComponent} from '../link-form/link-form.component';
 import {MatIconModule} from '@angular/material/icon';
@@ -21,7 +20,6 @@ import {MatIconModule} from '@angular/material/icon';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    TopBarComponent,
     MatButtonModule,
     RouterLink,
     LinkFormComponent,

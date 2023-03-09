@@ -5,7 +5,6 @@ import {LinkService} from '../../../shared/services/link.service';
 import {Link} from '../../../shared/models/link.model';
 import {NotificationService} from '../../../shared/services/notification.service';
 import {ActivatedRoute, Router} from '@angular/router';
-import {TopBarComponent} from '../../../shared/components/top-bar/top-bar.component';
 import {MatButtonModule} from '@angular/material/button';
 import {BookmarkletComponent} from './bookmarklet/bookmarklet.component';
 import {NgIf} from '@angular/common';
@@ -19,7 +18,6 @@ import {MatIconModule} from '@angular/material/icon';
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./create-new-link.component.scss'],
   imports: [
-    TopBarComponent,
     MatButtonModule,
     BookmarkletComponent,
     NgIf,

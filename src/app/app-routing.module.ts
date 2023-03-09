@@ -34,9 +34,9 @@ const routes: Routes = [
         component: EditLinkComponent,
         resolve: {link: LinkResolverService},
         ...canActivate(redirectUnauthorizedToLogin),
-
       },
     ],
+    ...canActivate(redirectUnauthorizedToLogin),
   },
   {
     path: 'tags', children: [
@@ -52,6 +52,7 @@ const routes: Routes = [
         resolve: {tag: TagResolverService}, ...canActivate(redirectUnauthorizedToLogin),
       },
     ],
+    ...canActivate(redirectUnauthorizedToLogin),
   },
   {path: 'login', component: LoginComponent, ...canActivate(redirectLoggedInToItems)},
 ];

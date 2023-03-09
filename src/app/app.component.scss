@@ -1,8 +1,19 @@
-.content{
+.content {
   height: 100%;
 
-  div{
+  .centered-content {
     max-width: 800px;
     margin: auto;
   }
+}
+
+#logout {
+  margin-right: 10px;
+}
+
+#theme-selector  {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-width: 100px;
 }

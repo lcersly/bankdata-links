@@ -6,7 +6,6 @@ import {FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormControl
 import {fieldHasError} from '../../../shared/util';
 import {NotificationService} from '../../../shared/services/notification.service';
 import {TagBasic} from '../../../shared/models/tag.model';
-import {TopBarComponent} from '../../../shared/components/top-bar/top-bar.component';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
@@ -20,7 +19,6 @@ import {MatIconModule} from '@angular/material/icon';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    TopBarComponent,
     MatFormFieldModule,
     MatInputModule,
     ReactiveFormsModule,

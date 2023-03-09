@@ -1,16 +1,16 @@
-<app-top-bar title="Edit link">
-  <button mat-button routerLink="/link" type="button">
-    Cancel
-    <mat-icon>backspace</mat-icon>
-  </button>
-  <button color="primary" mat-button (click)="edit()" [disabled]="noChange">
-    Save
-    <mat-icon>save</mat-icon>
-  </button>
-  <button color="warn" mat-button (click)="delete()">
-    <mat-icon>delete</mat-icon>
-  </button>
-</app-top-bar>
+<!--<app-top-bar title="Edit link">-->
+<!--  <button mat-button routerLink="/link" type="button">-->
+<!--    Cancel-->
+<!--    <mat-icon>backspace</mat-icon>-->
+<!--  </button>-->
+<!--  <button color="primary" mat-button (click)="edit()" [disabled]="noChange">-->
+<!--    Save-->
+<!--    <mat-icon>save</mat-icon>-->
+<!--  </button>-->
+<!--  <button color="warn" mat-button (click)="delete()">-->
+<!--    <mat-icon>delete</mat-icon>-->
+<!--  </button>-->
+<!--</app-top-bar>-->
 
 <form>
   <app-link-form [formControl]="link"></app-link-form>

@@ -9,7 +9,6 @@ import {MatTableDataSource, MatTableModule} from '@angular/material/table';
 import {Router} from '@angular/router';
 import {FavIconService} from '../../../shared/services/fav-icon.service';
 import {AuthService} from '../../../shared/services/auth.service';
-import {TopBarComponent} from '../../../shared/components/top-bar/top-bar.component';
 import {CreateButtonComponent} from './create-button/create-button.component';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
@@ -26,7 +25,6 @@ import {MatChipsModule} from '@angular/material/chips';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    TopBarComponent,
     CreateButtonComponent,
     MatFormFieldModule,
     ReactiveFormsModule,

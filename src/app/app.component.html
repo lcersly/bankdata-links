@@ -1,5 +1,34 @@
 <div class="content mat-app-background">
-  <div>
-    <router-outlet></router-outlet>
+  <div class="centered-content">
+    <mat-toolbar>
+      <mat-icon (click)="authService.logout()" matTooltip="Logout" class="clickable" id="logout">logout</mat-icon>
+      <span>{{title}}</span>
+
+      <div class="spacer"></div>
+
+      <nav mat-tab-nav-bar [tabPanel]="tabPanel">
+        <a mat-tab-link *ngFor="let link of links"
+           [routerLink]="link.route"
+           routerLinkActive=""
+           #rla="routerLinkActive"
+           [active]="rla.isActive"
+        > {{link.display}} </a>
+      </nav>
+
+      <div class="spacer"></div>
+
+      <div id="theme-selector">
+        <mat-icon>brightness_5</mat-icon>
+        <mat-slide-toggle [formControl]="toggleControl">
+        </mat-slide-toggle>
+        <mat-icon>bedtime</mat-icon>
+      </div>
+
+    </mat-toolbar>
+
+    <mat-tab-nav-panel #tabPanel>
+      <router-outlet></router-outlet>
+    </mat-tab-nav-panel>
+
   </div>
 </div>

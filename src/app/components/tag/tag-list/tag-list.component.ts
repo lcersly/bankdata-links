@@ -5,7 +5,6 @@ import {TagDatabaseAfter} from '../../../shared/models/tag.model';
 import {SelectionModel} from '@angular/cdk/collections';
 import {Router} from '@angular/router';
 import {MatSort, MatSortModule} from '@angular/material/sort';
-import {TopBarComponent} from '../../../shared/components/top-bar/top-bar.component';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {MatCheckboxModule} from '@angular/material/checkbox';
@@ -20,7 +19,6 @@ import {CreateTagButtonComponent} from './create-tag-button/create-tag-button.co
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    TopBarComponent,
     MatFormFieldModule,
     MatInputModule,
     MatTableModule,
