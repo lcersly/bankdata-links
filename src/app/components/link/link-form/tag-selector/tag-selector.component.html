@@ -26,7 +26,5 @@
       {{tag.key}} {{tag.description ? '-' : ''}} {{tag.description}}
     </mat-option>
   </mat-autocomplete>
-  <mat-hint *ngIf="newTagsCount === 0">Find previously tags here or create new ones</mat-hint>
-  <mat-hint *ngIf="newTagsCount === 1">1 new tag will be created</mat-hint>
-  <mat-hint *ngIf="newTagsCount > 1">{{newTagsCount}} new tags will be created</mat-hint>
+  <mat-hint>Already created tags can be found here</mat-hint>
 </mat-form-field>

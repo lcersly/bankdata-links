@@ -63,8 +63,10 @@
     <mat-cell *matCellDef="let element">
       <mat-chip-listbox>
         <mat-chip-option *ngFor="let tag of element.tags"
-                  [matTooltip]="tag.description"
-                  matTooltipPosition="above"
+                         [matTooltip]="tag.description"
+                         [selectable]="false"
+                         matTooltipPosition="above"
+                         (click)="cancelClick($event)"
         >
           {{tag.key}}
         </mat-chip-option>
@@ -86,7 +88,7 @@
 
   <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
   <mat-row *matRowDef="let row; columns: displayedColumns; let i = index" class="clickable"
-           (click)="openLinkService.openLink(row)"
+           (click)="rowClicked(row)"
   >
 
   </mat-row>

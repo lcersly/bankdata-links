@@ -61,7 +61,7 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
               private filterService: FilterService,
               private router: Router,
               private fav: FavIconService,
-              public openLinkService: OpenLinkService,
+              private openLinkService: OpenLinkService,
   ) {
   }
 
@@ -122,5 +122,13 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnDestroy(): void {
     this.onDestroy.next();
     this.onDestroy.complete();
+  }
+
+  cancelClick($event: MouseEvent) {
+    $event.stopPropagation();
+  }
+
+  rowClicked(row: Link) {
+    this.openLinkService.openLink(row);
   }
 }
