@@ -63,7 +63,6 @@ export class CreateNewLinkComponent implements OnInit {
   async create() {
     this.link.markAllAsTouched();
     if (!this.link.valid) {
-      console.info(this.link.errors)
       return;
     }
 

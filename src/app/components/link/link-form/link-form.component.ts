@@ -131,7 +131,6 @@ export class LinkFormComponent implements ControlValueAccessor, Validator, OnDes
   }
 
   writeValue(value: any): void {
-    console.info('Write value link-form', value);
     value && this.form.patchValue(value, {emitEvent: false})
   }
 

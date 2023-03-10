@@ -68,7 +68,6 @@ export class EditLinkComponent implements OnInit, OnDestroy {
       ...this.link.value,
       id: this.id,
     };
-    console.info('Edit component', link, this.link.value);
     await this.linkService.edit(link);
 
     this.navigateBack();
