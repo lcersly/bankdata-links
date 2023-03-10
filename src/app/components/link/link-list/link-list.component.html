@@ -1,7 +1,3 @@
-<!--<app-top-bar title="Links">-->
-<!--  <app-create-button *ngIf="authService.isSignedIn"></app-create-button>-->
-<!--</app-top-bar>-->
-
 <div id="search-pane">
   <mat-form-field appearance="outline">
     <mat-label>Search all</mat-label>
@@ -89,3 +85,5 @@
   <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
   <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
 </mat-table>
+
+<app-create-button></app-create-button>

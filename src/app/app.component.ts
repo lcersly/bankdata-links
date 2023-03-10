@@ -13,25 +13,27 @@ import {AuthService} from './shared/services/auth.service';
 import {first} from 'rxjs';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {NgForOf} from '@angular/common';
+import {IfLoggedInDirective} from "./shared/directives/if-logged-in.directive";
 
 @Component({
   selector: 'app-root',
   standalone: true,
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  imports: [
-    MatSidenavModule,
-    RouterOutlet,
-    MatToolbarModule,
-    MatIconModule,
-    MatTooltipModule,
-    MatTabsModule,
-    MatSlideToggleModule,
-    ReactiveFormsModule,
-    RouterLink,
-    NgForOf,
-    RouterLinkActive,
-  ],
+    imports: [
+        MatSidenavModule,
+        RouterOutlet,
+        MatToolbarModule,
+        MatIconModule,
+        MatTooltipModule,
+        MatTabsModule,
+        MatSlideToggleModule,
+        ReactiveFormsModule,
+        RouterLink,
+        NgForOf,
+        RouterLinkActive,
+        IfLoggedInDirective,
+    ],
 })
 export class AppComponent implements OnInit {
   @HostBinding('class') className = '';

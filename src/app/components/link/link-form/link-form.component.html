@@ -1,50 +1,49 @@
-<form>
-  <mat-form-field class="single-line-field">
-    <mat-label>URL</mat-label>
-    <textarea [formControl]="urlControl"
-              cdkTextareaAutosize
-              matInput
-              placeholder="http://... or https://..."
-    >
+<mat-form-field class="single-line-field">
+  <mat-label>URL</mat-label>
+  <textarea [formControl]="urlControl"
+            cdkTextareaAutosize
+            matInput
+            placeholder="http://... or https://..."
+  >
     </textarea>
-    <mat-error *ngIf="hasError(urlControl, 'required')">Required</mat-error>
-    <mat-error *ngIf="hasError(urlControl, 'pattern')">Doesn't look like a valid URL</mat-error>
-  </mat-form-field>
+  <mat-error *ngIf="hasError(urlControl, 'required')">Required</mat-error>
+  <mat-error *ngIf="hasError(urlControl, 'pattern')">Doesn't look like a valid URL</mat-error>
+</mat-form-field>
 
-  <mat-form-field class="single-line-field">
-    <mat-label>Name</mat-label>
-    <input [formControl]="nameControl" matInput placeholder="Short descriptive name">
-    <mat-error *ngIf="hasError(nameControl, 'required')">Required</mat-error>
-  </mat-form-field>
+<mat-form-field class="single-line-field">
+  <mat-label>Name</mat-label>
+  <input [formControl]="nameControl" matInput placeholder="Short descriptive name">
+  <mat-error *ngIf="hasError(nameControl, 'required')">Required</mat-error>
+</mat-form-field>
 
-  <mat-form-field class="single-line-field">
-    <mat-label>Description</mat-label>
-    <input [formControl]="descriptionControl" matInput placeholder="Extra description">
-    <mat-error *ngIf="hasError(descriptionControl, 'required')">Required</mat-error>
-  </mat-form-field>
+<mat-form-field class="single-line-field">
+  <mat-label>Description</mat-label>
+  <input [formControl]="descriptionControl" matInput placeholder="Extra description">
+  <mat-error *ngIf="hasError(descriptionControl, 'required')">Required</mat-error>
+</mat-form-field>
 
-  <!--  <mat-form-field class="single-line-field">-->
-  <!--    <mat-label>Path</mat-label>-->
-  <!--    <input [formControl]="pathControl" matInput placeholder="Portal > LTE > Test">-->
-  <!--    <mat-error *ngIf="hasError(pathControl, 'required')">Required</mat-error>-->
-  <!--  </mat-form-field>-->
+<!--  <mat-form-field class="single-line-field">-->
+<!--    <mat-label>Path</mat-label>-->
+<!--    <input [formControl]="pathControl" matInput placeholder="Portal > LTE > Test">-->
+<!--    <mat-error *ngIf="hasError(pathControl, 'required')">Required</mat-error>-->
+<!--  </mat-form-field>-->
 
-  <!--  <mat-form-field class="single-line-field">-->
-  <!--    <mat-label>Section</mat-label>-->
-  <!--    <input [formControl]="sectionControl" matInput placeholder="Section name">-->
-  <!--    <mat-error *ngIf="hasError(sectionControl, 'required')">Required</mat-error>-->
-  <!--  </mat-form-field>-->
+<!--  <mat-form-field class="single-line-field">-->
+<!--    <mat-label>Section</mat-label>-->
+<!--    <input [formControl]="sectionControl" matInput placeholder="Section name">-->
+<!--    <mat-error *ngIf="hasError(sectionControl, 'required')">Required</mat-error>-->
+<!--  </mat-form-field>-->
 
-  <app-tag-selector
-    [formControl]="tagsControl"
-    class="single-line-field"
-  ></app-tag-selector>
+<app-tag-selector
+  [formControl]="tagsControl"
+  class="single-line-field"
+></app-tag-selector>
 
 <!--  <app-environment-checkbox-group [formControl]="environmentControl"></app-environment-checkbox-group>-->
 
-  <section>
-    <app-icon-selector [formControl]="iconControl" [url]="urlControl.value" [validURL]="urlControl.valid"></app-icon-selector>
-  </section>
-</form>
+<!--<section>-->
+<!--  <app-icon-selector [formControl]="iconControl" [url]="urlControl.value"-->
+<!--                     [validURL]="urlControl.valid"></app-icon-selector>-->
+<!--</section>-->
 
 <!--<pre>{{form.value | json}}</pre>-->

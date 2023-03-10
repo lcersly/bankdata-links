@@ -4,7 +4,7 @@ import {environment} from '../../../../environments/environment';
 import {LinkService} from '../../../shared/services/link.service';
 import {Link} from '../../../shared/models/link.model';
 import {NotificationService} from '../../../shared/services/notification.service';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {MatButtonModule} from '@angular/material/button';
 import {BookmarkletComponent} from './bookmarklet/bookmarklet.component';
 import {NgIf} from '@angular/common';
@@ -17,14 +17,15 @@ import {MatIconModule} from '@angular/material/icon';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./create-new-link.component.scss'],
-  imports: [
-    MatButtonModule,
-    BookmarkletComponent,
-    NgIf,
-    LinkFormComponent,
-    ReactiveFormsModule,
-    MatIconModule
-  ],
+    imports: [
+        MatButtonModule,
+        BookmarkletComponent,
+        NgIf,
+        LinkFormComponent,
+        ReactiveFormsModule,
+        MatIconModule,
+        RouterLink
+    ],
 })
 export class CreateNewLinkComponent implements OnInit {
 

@@ -43,10 +43,20 @@ body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
-.clickable{
+.clickable {
   cursor: pointer;
 }
 
-.spacer{
+.spacer {
   flex-grow: 1;
+}
+
+.centered-content {
+  max-width: 1200px;
+  margin: auto;
+}
+
+.simple-form {
+  margin: auto;
+  max-width: 500px;
 }

@@ -1,12 +1,20 @@
 <div class="content mat-app-background">
   <div class="centered-content">
     <mat-toolbar>
-      <mat-icon (click)="authService.logout()" matTooltip="Logout" class="clickable" id="logout">logout</mat-icon>
+      <mat-icon
+        (click)="authService.logout()"
+        matTooltip="Logout"
+        class="clickable"
+        id="logout"
+        *appIfLoggedIn
+      >
+        logout
+      </mat-icon>
       <span>{{title}}</span>
 
       <div class="spacer"></div>
 
-      <nav mat-tab-nav-bar [tabPanel]="tabPanel">
+      <nav mat-tab-nav-bar [tabPanel]="tabPanel" *appIfLoggedIn>
         <a mat-tab-link *ngFor="let link of links"
            [routerLink]="link.route"
            routerLinkActive=""

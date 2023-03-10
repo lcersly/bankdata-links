@@ -12,8 +12,8 @@ import {LoginComponent} from './components/login/login/login.component';
 import {canActivate, redirectLoggedInTo, redirectUnauthorizedTo} from '@angular/fire/auth-guard';
 
 export const PATHS_URLS = {
-  createLink: 'link/create',
-  createTag: 'tag/create',
+  createLink: 'links/create',
+  createTag: 'tags/create',
 };
 
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
