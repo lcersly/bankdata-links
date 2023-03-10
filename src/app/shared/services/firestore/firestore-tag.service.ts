@@ -28,6 +28,10 @@ export class FirestoreTagService {
     this.tags$.subscribe(t => console.debug(`Service - Tags updated (${t.length})`, t));
   }
 
+  public hasMatchingTag(key: string): TagDatabaseAfter | undefined {
+    return this.tags.find(existingTag => existingTag.key.toLowerCase() === key.toLowerCase())
+  }
+
   private get collectionRef() {
     return collection(this.firestore, `tags`)
       .withConverter(converter);

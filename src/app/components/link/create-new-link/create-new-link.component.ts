@@ -1,19 +1,36 @@
-import {Component, OnInit} from '@angular/core';
-import {FormControl} from '@angular/forms';
+import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ReactiveFormsModule, UntypedFormControl} from '@angular/forms';
 import {environment} from '../../../../environments/environment';
 import {LinkService} from '../../../shared/services/link.service';
 import {Link} from '../../../shared/models/link.model';
 import {NotificationService} from '../../../shared/services/notification.service';
-import {ActivatedRoute, Router} from '@angular/router';
+import {ActivatedRoute, Router, RouterLink} from '@angular/router';
+import {MatButtonModule} from '@angular/material/button';
+import {BookmarkletComponent} from './bookmarklet/bookmarklet.component';
+import {NgIf} from '@angular/common';
+import {LinkFormComponent} from '../link-form/link-form.component';
+import {MatIconModule} from '@angular/material/icon';
+import {PATHS_URLS} from '../../../urls';
 
 @Component({
   selector: 'app-create-new-link',
   templateUrl: './create-new-link.component.html',
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./create-new-link.component.scss'],
+    imports: [
+        MatButtonModule,
+        BookmarkletComponent,
+        NgIf,
+        LinkFormComponent,
+        ReactiveFormsModule,
+        MatIconModule,
+        RouterLink
+    ],
 })
 export class CreateNewLinkComponent implements OnInit {
 
-  public link = new FormControl();
+  public link = new UntypedFormControl();
   public params: { url: string, title: string, useParams: boolean } | undefined;
 
   constructor(private linkService: LinkService,
@@ -46,7 +63,6 @@ export class CreateNewLinkComponent implements OnInit {
   async create() {
     this.link.markAllAsTouched();
     if (!this.link.valid) {
-      console.info(this.link.errors)
       return;
     }
 
@@ -59,7 +75,7 @@ export class CreateNewLinkComponent implements OnInit {
     if (this.params?.useParams) {
       window.close();
     } else {
-      this.router.navigateByUrl('/link');
+      this.router.navigateByUrl(PATHS_URLS.links);
     }
   }
 

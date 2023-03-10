@@ -1,2 +1,5 @@
 @import "src/app/components/form-style";
-@import "src/app/components/top-bar-style";
+
+:host {
+  margin: auto;
+}

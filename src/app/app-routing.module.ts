@@ -10,19 +10,15 @@ import {TagResolverService} from './components/tag/tag-resolver.service';
 import {LinkResolverService} from './components/link/link-resolver.service';
 import {LoginComponent} from './components/login/login/login.component';
 import {canActivate, redirectLoggedInTo, redirectUnauthorizedTo} from '@angular/fire/auth-guard';
-
-export const PATHS_URLS = {
-  createLink: 'link/create',
-  createTag: 'tag/create',
-};
+import {PATHS_URLS} from './urls';
 
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
 const redirectLoggedInToItems = () => redirectLoggedInTo(['link']);
 
 const routes: Routes = [
-  {path: '', pathMatch: 'full', redirectTo: 'link'},
+  {path: '', pathMatch: 'full', redirectTo: PATHS_URLS.links},
   {
-    path: 'link', children: [
+    path: PATHS_URLS.links, children: [
       {path: '', pathMatch: 'full', component: LinkListComponent},
       {
         path: 'create',
@@ -34,12 +30,12 @@ const routes: Routes = [
         component: EditLinkComponent,
         resolve: {link: LinkResolverService},
         ...canActivate(redirectUnauthorizedToLogin),
-
       },
     ],
+    ...canActivate(redirectUnauthorizedToLogin),
   },
   {
-    path: 'tag', children: [
+    path: PATHS_URLS.tags, children: [
       {path: '', pathMatch: 'full', component: TagListComponent},
       {
         path: 'create',
@@ -52,8 +48,9 @@ const routes: Routes = [
         resolve: {tag: TagResolverService}, ...canActivate(redirectUnauthorizedToLogin),
       },
     ],
+    ...canActivate(redirectUnauthorizedToLogin),
   },
-  {path: 'login', component: LoginComponent, ...canActivate(redirectLoggedInToItems)},
+  {path: PATHS_URLS.login, component: LoginComponent, ...canActivate(redirectLoggedInToItems)},
 ];
 
 @NgModule({

@@ -1,18 +1,24 @@
-import {Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
+  FormsModule,
   NG_VALIDATORS,
   NG_VALUE_ACCESSOR,
   ValidationErrors,
   Validator,
 } from '@angular/forms';
 import {ThemePalette} from '@angular/material/core';
+import {MatInputModule} from '@angular/material/input';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {NgForOf} from '@angular/common';
 
 @Component({
   selector: 'app-environment-checkbox-group',
   templateUrl: './environment-check-box-group.component.html',
   styleUrls: ['./environment-check-box-group.component.scss'],
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -24,6 +30,12 @@ import {ThemePalette} from '@angular/material/core';
       multi: true,
       useExisting: EnvironmentCheckBoxGroupComponent,
     },
+  ],
+  imports: [
+    MatInputModule,
+    MatCheckboxModule,
+    NgForOf,
+    FormsModule,
   ],
 })
 export class EnvironmentCheckBoxGroupComponent implements ControlValueAccessor, Validator {

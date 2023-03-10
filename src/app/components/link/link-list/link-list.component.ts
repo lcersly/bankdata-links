@@ -1,26 +1,50 @@
-import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Link} from '../../../shared/models/link.model';
 import {debounceTime, first, Subject, takeUntil} from 'rxjs';
-import {FormBuilder, FormControl} from '@angular/forms';
+import {ReactiveFormsModule, UntypedFormBuilder, UntypedFormControl} from '@angular/forms';
 import {LinkService} from '../../../shared/services/link.service';
 import {FilterService, LinkFilters} from '../../../shared/services/filter.service';
-import {MatSort} from '@angular/material/sort';
-import {MatTableDataSource} from '@angular/material/table';
+import {MatSort, MatSortModule} from '@angular/material/sort';
+import {MatTableDataSource, MatTableModule} from '@angular/material/table';
 import {Router} from '@angular/router';
 import {FavIconService} from '../../../shared/services/fav-icon.service';
-import {AuthService} from '../../../shared/services/auth.service';
+import {CreateButtonComponent} from './create-button/create-button.component';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatIconModule} from '@angular/material/icon';
+import {NgForOf, NgIf} from '@angular/common';
+import {MatButtonModule} from '@angular/material/button';
+import {MatInputModule} from '@angular/material/input';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatChipsModule} from '@angular/material/chips';
+import {OpenLinkService} from '../../../shared/services/open-link.service';
+import {PATHS_URLS} from '../../../urls';
 
 @Component({
   selector: 'app-link-list',
   templateUrl: './link-list.component.html',
   styleUrls: ['./link-list.component.scss'],
-  // changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    CreateButtonComponent,
+    MatFormFieldModule,
+    ReactiveFormsModule,
+    MatIconModule,
+    NgIf,
+    MatButtonModule,
+    MatInputModule,
+    MatTableModule,
+    MatSortModule,
+    MatTooltipModule,
+    MatChipsModule,
+    NgForOf,
+  ],
 })
 export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
   displayedColumns: string[] = [
-    'icons',
-    'link',
+    'name',
     'tags',
+    'edit',
   ];
   dataSource = new MatTableDataSource<Link>([]);
 
@@ -33,20 +57,20 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
   });
 
   constructor(private linkService: LinkService,
-              private fb: FormBuilder,
+              private fb: UntypedFormBuilder,
               private filterService: FilterService,
               private router: Router,
               private fav: FavIconService,
-              public authService: AuthService,
+              private openLinkService: OpenLinkService,
   ) {
   }
 
   get searchControl() {
-    return this.searchForm.get('searchString') as FormControl
+    return this.searchForm.get('searchString') as UntypedFormControl
   }
 
   get searchTagControl() {
-    return this.searchForm.get('searchTags') as FormControl
+    return this.searchForm.get('searchTags') as UntypedFormControl
   }
 
   ngOnInit(): void {
@@ -72,25 +96,11 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
       this.dataSource.data = links;
       this.dataSource._updateChangeSubscription();
     })
-
-    this.authService.isSignedIn$.subscribe(signedIn => {
-      const columns = [
-        'icons',
-        'link',
-        'tags',
-      ];
-
-      if (signedIn) {
-        columns.push('edit');
-      }
-
-      this.displayedColumns = columns;
-    })
   }
 
   edit($event: MouseEvent, element: Link) {
     $event.stopPropagation();
-    this.router.navigate(['link', element.id])
+    this.router.navigate([PATHS_URLS.links, element.id])
   }
 
   delete($event: MouseEvent, element: Link) {
@@ -112,5 +122,13 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnDestroy(): void {
     this.onDestroy.next();
     this.onDestroy.complete();
+  }
+
+  cancelClick($event: MouseEvent) {
+    $event.stopPropagation();
+  }
+
+  rowClicked(row: Link) {
+    this.openLinkService.openLink(row);
   }
 }

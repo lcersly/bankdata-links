@@ -1,12 +1,13 @@
-import {Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
-  FormArray,
-  FormControl,
-  FormGroup,
   NG_VALIDATORS,
   NG_VALUE_ACCESSOR,
+  ReactiveFormsModule,
+  UntypedFormArray,
+  UntypedFormControl,
+  UntypedFormGroup,
   ValidationErrors,
   Validator,
   Validators,
@@ -14,10 +15,19 @@ import {
 import {TagSelection} from '../../../../shared/models/tag.model';
 import {Icon} from '../../../../shared/models/icon.model';
 import {FavIconService} from '../../../../shared/services/fav-icon.service';
+import {MatIconModule} from '@angular/material/icon';
+import {MatButtonModule} from '@angular/material/button';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import {NgForOf, NgIf} from '@angular/common';
+import {MatDividerModule} from '@angular/material/divider';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
 
 @Component({
   selector: 'app-icon-selector',
   templateUrl: './icon-form.component.html',
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./icon-form.component.scss'],
   providers: [
     {
@@ -31,10 +41,21 @@ import {FavIconService} from '../../../../shared/services/fav-icon.service';
       useExisting: IconFormComponent,
     },
   ],
+  imports: [
+    MatIconModule,
+    MatButtonModule,
+    MatTooltipModule,
+    NgForOf,
+    MatDividerModule,
+    NgIf,
+    MatFormFieldModule,
+    ReactiveFormsModule,
+    MatInputModule,
+  ],
 })
 export class IconFormComponent implements ControlValueAccessor, Validator {
-  public form = new FormGroup({
-    icons: new FormArray([]),
+  public form = new UntypedFormGroup({
+    icons: new UntypedFormArray([]),
   });
   @Input()
   public url: string | undefined;
@@ -53,7 +74,7 @@ export class IconFormComponent implements ControlValueAccessor, Validator {
   };
 
   public get icons() {
-    return this.form.get('icons') as FormArray;
+    return this.form.get('icons') as UntypedFormArray;
   }
 
   add(icon?: Icon, emit = true): void {
@@ -62,10 +83,10 @@ export class IconFormComponent implements ControlValueAccessor, Validator {
     }
     this.markAsTouched();
 
-    this.icons.push(new FormGroup({
-      src: new FormControl(icon?.src || '', [Validators.required]),
-      type: new FormControl(icon?.type || '', [Validators.required]),
-      base64Image: new FormControl(icon?.base64Image || '', [Validators.required]),
+    this.icons.push(new UntypedFormGroup({
+      src: new UntypedFormControl(icon?.src || '', [Validators.required]),
+      type: new UntypedFormControl(icon?.type || '', [Validators.required]),
+      base64Image: new UntypedFormControl(icon?.base64Image || '', [Validators.required]),
     }), {emitEvent: emit});
   }
 
@@ -78,7 +99,7 @@ export class IconFormComponent implements ControlValueAccessor, Validator {
   }
 
   getControl(group: AbstractControl, key: string) {
-    return group.get(key) as FormControl;
+    return group.get(key) as UntypedFormControl;
   }
 
   registerOnChange(fn: any): void {

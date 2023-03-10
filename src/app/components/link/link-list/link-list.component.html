@@ -1,10 +1,6 @@
-<app-top-bar title="Links">
-  <app-create-button *ngIf="authService.isSignedIn"></app-create-button>
-</app-top-bar>
-
 <div id="search-pane">
-  <mat-form-field appearance="fill">
-    <mat-label>Search all</mat-label>
+  <mat-form-field appearance="outline">
+    <mat-label>Search everything (name, url, description, tags, etc...)</mat-label>
     <input [formControl]="searchControl" matInput type="text">
     <button (click)="searchControl.setValue('')" *ngIf="searchControl.value" aria-label="Clear" mat-icon-button
             matSuffix>
@@ -12,8 +8,8 @@
     </button>
   </mat-form-field>
 
-  <mat-form-field appearance="fill">
-    <mat-label>Search tags</mat-label>
+  <mat-form-field appearance="outline">
+    <mat-label>Search tags only</mat-label>
     <input [formControl]="searchTagControl" matInput type="text">
     <button (click)="searchTagControl.setValue('')" *ngIf="searchTagControl.value" aria-label="Clear" mat-icon-button
             matSuffix>
@@ -40,7 +36,9 @@
 
   <ng-container matColumnDef="name">
     <mat-header-cell *matHeaderCellDef mat-sort-header="name"> Name</mat-header-cell>
-    <mat-cell *matCellDef="let element">{{element.name}}</mat-cell>
+    <mat-cell *matCellDef="let element">
+      <span [matTooltip]="element.description">{{element.name}}</span>
+    </mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="icons">
@@ -63,21 +61,23 @@
   <ng-container matColumnDef="tags">
     <mat-header-cell *matHeaderCellDef>Tags</mat-header-cell>
     <mat-cell *matCellDef="let element">
-      <mat-chip-list>
-        <mat-chip *ngFor="let tag of element.tags"
-                  [matTooltip]="tag.description"
-                  matTooltipPosition="above"
+      <mat-chip-listbox>
+        <mat-chip-option *ngFor="let tag of element.tags"
+                         [matTooltip]="tag.description"
+                         [selectable]="false"
+                         matTooltipPosition="above"
+                         (click)="cancelClick($event)"
         >
           {{tag.key}}
-        </mat-chip>
-      </mat-chip-list>
+        </mat-chip-option>
+      </mat-chip-listbox>
     </mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="edit">
     <mat-header-cell *matHeaderCellDef></mat-header-cell>
     <mat-cell *matCellDef="let element">
-      <button (click)="edit($event, element)" mat-icon-button>
+      <button (click)="edit($event, element)" mat-icon-button class="hide-until-hover">
         <mat-icon>edit</mat-icon>
       </button>
       <!--      <button (click)="delete($event, element)" mat-icon-button>-->
@@ -87,5 +87,11 @@
   </ng-container>
 
   <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-  <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  <mat-row *matRowDef="let row; columns: displayedColumns; let i = index" class="clickable"
+           (click)="rowClicked(row)"
+  >
+
+  </mat-row>
 </mat-table>
+
+<app-create-button></app-create-button>

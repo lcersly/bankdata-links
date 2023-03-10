@@ -12,6 +12,8 @@ import {
 } from '@angular/fire/auth';
 import {from, map, ReplaySubject, shareReplay} from 'rxjs';
 import {NotificationService} from './notification.service';
+import {Router} from '@angular/router';
+import {PATHS_URLS} from '../../urls';
 
 @Injectable({
   providedIn: 'root',
@@ -22,7 +24,7 @@ export class AuthService {
   public isSignedIn: boolean | undefined;
   public user: User | null = null;
 
-  constructor(@Optional() private auth: Auth, private notificationService: NotificationService) {
+  constructor(@Optional() private auth: Auth, private notificationService: NotificationService, private router: Router) {
     // this.status$.subscribe(value => console.info("AUTH", value));
     this.isSignedIn$.subscribe((signedIn) => this.isSignedIn = signedIn);
     this.status$.subscribe((user) => this.user = user);
@@ -52,6 +54,7 @@ export class AuthService {
 
   async logout() {
     await signOut(this.auth);
+    await this.router.navigateByUrl(PATHS_URLS.login);
     this.notificationService.authentication.loggedOut();
     // this.status$.next(null);
   }

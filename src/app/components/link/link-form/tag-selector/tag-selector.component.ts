@@ -1,25 +1,31 @@
-import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import {
   AbstractControl,
   ControlValueAccessor,
-  FormControl,
   NG_VALIDATORS,
   NG_VALUE_ACCESSOR,
+  ReactiveFormsModule,
+  UntypedFormControl,
   ValidationErrors,
   Validator,
 } from '@angular/forms';
 import {combineLatest, map, startWith, Subject} from 'rxjs';
-import {MatChipInputEvent} from '@angular/material/chips';
-import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
+import {MatChipInputEvent, MatChipsModule} from '@angular/material/chips';
+import {MatAutocompleteModule, MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
 import {FirestoreTagService} from '../../../../shared/services/firestore/firestore-tag.service';
 import {TagBasic, TagDatabaseAfter, TagSelection} from '../../../../shared/models/tag.model';
-import {NotificationService} from '../../../../shared/services/notification.service';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {AsyncPipe, NgForOf, NgIf} from '@angular/common';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatIconModule} from '@angular/material/icon';
 
 @Component({
   selector: 'app-tag-selector',
   templateUrl: './tag-selector.component.html',
   styleUrls: ['./tag-selector.component.scss'],
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -32,10 +38,21 @@ import {NotificationService} from '../../../../shared/services/notification.serv
       useExisting: TagSelectorComponent,
     },
   ],
+  imports: [
+    MatFormFieldModule,
+    MatChipsModule,
+    NgForOf,
+    MatTooltipModule,
+    MatIconModule,
+    ReactiveFormsModule,
+    MatAutocompleteModule,
+    AsyncPipe,
+    NgIf,
+  ],
 })
-export class TagSelectorComponent implements ControlValueAccessor, Validator, OnInit, OnDestroy {
+export class TagSelectorComponent implements ControlValueAccessor, Validator, OnDestroy {
   separatorKeysCodes: number[] = [ENTER, COMMA];
-  tagCtrl = new FormControl('');
+  tagCtrl = new UntypedFormControl('');
   filteredTags = combineLatest([
     this.tagCtrl.valueChanges,
     this.tagService.tags$.pipe(
@@ -57,7 +74,6 @@ export class TagSelectorComponent implements ControlValueAccessor, Validator, On
   @ViewChild('tagInput') tagInput: ElementRef<HTMLInputElement> | undefined;
 
   constructor(private tagService: FirestoreTagService,
-              private notifications: NotificationService
   ) {
   }
 
@@ -69,26 +85,12 @@ export class TagSelectorComponent implements ControlValueAccessor, Validator, On
 
     const value = (event.value || '').trim();
 
-    // Add our tag
-    if (value) {
-      if(this.selectedTags.find(t => t.key.toLowerCase() === value.toLowerCase())){
-        this.notifications.tag.tagAlreadyAdded(value);
-      }else{
-        let existingTag = this.tagService.tags.find(existingTag => existingTag.key.toLowerCase() === value.toLowerCase());
-        if (existingTag) {
-          this.selectedTags.push(existingTag);
-        } else {
-          this.selectedTags.push({key: value, description: '', exists: false});
-        }
+    if(this.tagService.hasMatchingTag(value)){
+      // Clear the input value
+      event.chipInput!.clear();
 
-        this.onChange(this.selectedTags);
-      }
+      this.tagCtrl.setValue(null);
     }
-
-    // Clear the input value
-    event.chipInput!.clear();
-
-    this.tagCtrl.setValue(null);
   }
 
   remove(tag: TagBasic): void {
@@ -103,7 +105,7 @@ export class TagSelectorComponent implements ControlValueAccessor, Validator, On
   selected(event: MatAutocompleteSelectedEvent): void {
     this.markAsTouched();
     let key = event.option.value;
-    let existingTag = this.tagService.tags.find(existingTag => existingTag.key.toLowerCase() === key.toLowerCase());
+    let existingTag = this.tagService.hasMatchingTag(key);
     if (existingTag) {
       console.debug('Found matching tag for key: ' + key, existingTag);
       this.selectedTags.push(existingTag);
@@ -115,10 +117,6 @@ export class TagSelectorComponent implements ControlValueAccessor, Validator, On
       this.tagInput.nativeElement.value = '';
     }
     this.tagCtrl.setValue(null);
-  }
-
-  get newTagsCount(){
-    return this.selectedTags.filter(t => !t.exists).length;
   }
 
   registerOnChange(fn: any): void {
@@ -159,9 +157,6 @@ export class TagSelectorComponent implements ControlValueAccessor, Validator, On
   ngOnDestroy(): void {
     this.onDestroy.next();
     this.onDestroy.complete();
-  }
-
-  ngOnInit(): void {
   }
 
   private _filter<T extends TagBasic>(filter: string | undefined, allTags: T[] | null): T[] {

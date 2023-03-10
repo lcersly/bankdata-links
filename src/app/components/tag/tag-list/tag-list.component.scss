@@ -1,3 +1,5 @@
+@import "../../constants";
+
 mat-table {
   width: 100%;
   max-width: 500px;
@@ -7,7 +9,15 @@ mat-table {
   }
 
   .mat-column-edit {
-    flex: 0 0 10%;
+    flex: 0 0 $editButtonWidth;
+  }
+
+  .mat-column-description{
+    flex-grow: 2;
+  }
+
+  .mat-column-key{
+    flex-grow: 1;
   }
 }
 
@@ -19,4 +29,8 @@ app-create-tag-button{
   position: absolute;
   right: 10px;
   bottom: 10px;
+}
+
+mat-form-field{
+  width: 100%;
 }

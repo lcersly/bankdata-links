@@ -1,37 +1,54 @@
-import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormControl, Validators} from '@angular/forms';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormControl, Validators} from '@angular/forms';
 import {FirestoreTagService} from '../../../shared/services/firestore/firestore-tag.service';
 import {TagBasic} from '../../../shared/models/tag.model';
 import {fieldHasError} from '../../../shared/util';
 import {NotificationService} from '../../../shared/services/notification.service';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {NgIf} from '@angular/common';
+import {MatButtonModule} from '@angular/material/button';
+import {Router, RouterLink} from '@angular/router';
+import {MatIconModule} from '@angular/material/icon';
+import {PATHS_URLS} from '../../../urls';
 
 @Component({
   selector: 'app-create-tag',
   templateUrl: './create-tag.component.html',
   styleUrls: ['./create-tag.component.scss'],
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    MatFormFieldModule,
+    MatInputModule,
+    ReactiveFormsModule,
+    NgIf,
+    MatButtonModule,
+    RouterLink,
+    FormsModule,
+    MatIconModule,
+  ],
 })
-export class CreateTagComponent implements OnInit {
+export class CreateTagComponent {
 
   public form = this.fb.group({
     description: '',
     key: ['', Validators.required]
   });
 
-  constructor(private fb: FormBuilder,
+  constructor(private fb: UntypedFormBuilder,
               private fireTagService: FirestoreTagService,
               private notification: NotificationService,
+              private router: Router,
   ) {
   }
 
-  ngOnInit(): void {
+  public get keyControl(): UntypedFormControl {
+    return this.form.get('key') as UntypedFormControl
   }
 
-  public get keyControl(): FormControl {
-    return this.form.get('key') as FormControl
-  }
-
-  public get descriptionControl(): FormControl {
-    return this.form.get('description') as FormControl
+  public get descriptionControl(): UntypedFormControl {
+    return this.form.get('description') as UntypedFormControl
   }
 
   async create() {
@@ -43,6 +60,8 @@ export class CreateTagComponent implements OnInit {
     await this.fireTagService.createNew(this.form.value as TagBasic)
 
     this.notification.tag.created(this.keyControl.value);
+
+    await this.router.navigateByUrl(PATHS_URLS.tags);
   }
 
   public hasError = fieldHasError;

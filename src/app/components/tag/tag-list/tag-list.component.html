@@ -1,6 +1,4 @@
-<app-top-bar title="Tags"></app-top-bar>
-
-<mat-form-field appearance="standard">
+<mat-form-field appearance="outline">
   <mat-label>Filter</mat-label>
   <input matInput (keyup)="applyFilter($event)" placeholder="Ex. Test...">
 </mat-form-field>
@@ -45,7 +43,7 @@
   <ng-container matColumnDef="edit">
     <mat-header-cell *matHeaderCellDef></mat-header-cell>
     <mat-cell *matCellDef="let element">
-      <button (click)="edit($event, element)" class="mat-elevation-z0" color="primary" mat-mini-fab>
+      <button (click)="edit($event, element)" class="hide-until-hover" mat-icon-button>
         <mat-icon>edit</mat-icon>
       </button>
     </mat-cell>
@@ -56,7 +54,5 @@
            *matRowDef="let row; columns: displayedColumns;">
   </mat-row>
 </mat-table>
-
-<button mat-button [disabled]="!isAnySelected" (click)="deleteSelected()">Delete</button>
 
 <app-create-tag-button></app-create-tag-button>

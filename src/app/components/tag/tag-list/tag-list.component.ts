@@ -1,18 +1,37 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
 import {FirestoreTagService} from '../../../shared/services/firestore/firestore-tag.service';
-import {MatTableDataSource} from '@angular/material/table';
+import {MatTableDataSource, MatTableModule} from '@angular/material/table';
 import {TagDatabaseAfter} from '../../../shared/models/tag.model';
 import {SelectionModel} from '@angular/cdk/collections';
 import {Router} from '@angular/router';
-import {MatSort} from '@angular/material/sort';
+import {MatSort, MatSortModule} from '@angular/material/sort';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatIconModule} from '@angular/material/icon';
+import {MatButtonModule} from '@angular/material/button';
+import {CreateTagButtonComponent} from './create-tag-button/create-tag-button.component';
+import {PATHS_URLS} from '../../../urls';
 
 @Component({
   selector: 'app-tag-list',
   templateUrl: './tag-list.component.html',
   styleUrls: ['./tag-list.component.scss'],
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    MatFormFieldModule,
+    MatInputModule,
+    MatTableModule,
+    MatSortModule,
+    MatCheckboxModule,
+    MatIconModule,
+    MatButtonModule,
+    CreateTagButtonComponent,
+  ],
 })
 export class TagListComponent implements OnInit, AfterViewInit {
-  displayedColumns: string[] = ['select', 'key', 'description', 'edit'];
+  displayedColumns: string[] = ['key', 'description', 'edit'];
   dataSource = new MatTableDataSource<TagDatabaseAfter>([]);
   selection = new SelectionModel<TagDatabaseAfter>(true, []);
 
@@ -82,6 +101,6 @@ export class TagListComponent implements OnInit, AfterViewInit {
 
   edit($event: MouseEvent, element: TagDatabaseAfter) {
     $event.stopPropagation();
-    this.router.navigate(['tag', element.id])
+    this.router.navigate([PATHS_URLS.tags, element.id])
   }
 }

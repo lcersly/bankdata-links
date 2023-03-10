@@ -1,12 +1,20 @@
-@use '@angular/material' as mat;
+@import "components/constants";
 
-mat-drawer-container{
-  width: 100%;
+.content {
   height: 100%;
 }
-// Define a dark theme
-$dark-primary: mat.define-palette(mat.$amber-palette);
 
-.dark-theme-side-nav {
-  background: mat.get-color-from-palette($dark-primary);
+#logout {
+  margin-right: 10px;
+}
+
+#theme-selector  {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-width: 100px;
+}
+
+mat-toolbar{
+  margin-bottom: $small-spacing;
 }

@@ -1,4 +1,4 @@
-<app-top-bar title="Create new tag"></app-top-bar>
+<!--<app-top-bar title="Create new tag"></app-top-bar>-->
 
 <form (ngSubmit)="create()">
   <mat-form-field class="single-line-field">
@@ -13,10 +13,12 @@
     <mat-error *ngIf="hasError(descriptionControl, 'required')">Required</mat-error>
   </mat-form-field>
 
-  <button mat-fab routerLink="/tag">
+  <button mat-button routerLink="..">
+    Cancel
     <mat-icon>backspace</mat-icon>
   </button>
-  <button color="primary" mat-fab>
+  <button mat-button>
+    Create
     <mat-icon>new_label</mat-icon>
   </button>
 </form>

@@ -1,21 +1,24 @@
-import {Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {AuthService} from '../../../shared/services/auth.service';
 import {Router} from '@angular/router';
 import {NotificationService} from '../../../shared/services/notification.service';
+import {MatButtonModule} from '@angular/material/button';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    MatButtonModule,
+  ],
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
 
   constructor(public authService: AuthService,
               private router: Router,
               private notificationService: NotificationService) {
-  }
-
-  ngOnInit(): void {
   }
 
   login(method: 'google' | 'github') {

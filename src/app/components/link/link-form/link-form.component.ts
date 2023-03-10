@@ -1,11 +1,12 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
-  FormBuilder,
-  FormControl,
   NG_VALIDATORS,
   NG_VALUE_ACCESSOR,
+  ReactiveFormsModule,
+  UntypedFormBuilder,
+  UntypedFormControl,
   ValidationErrors,
   Validator,
   Validators,
@@ -13,11 +14,19 @@ import {
 import {urlPattern} from '../constants';
 import {fieldHasError} from '../../../shared/util';
 import {Subject, takeUntil} from 'rxjs';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {TextFieldModule} from '@angular/cdk/text-field';
+import {MatInputModule} from '@angular/material/input';
+import {NgIf} from '@angular/common';
+import {TagSelectorComponent} from './tag-selector/tag-selector.component';
+import {IconFormComponent} from './icon-form/icon-form.component';
 
 @Component({
   selector: 'app-link-form',
   templateUrl: './link-form.component.html',
   styleUrls: ['./link-form.component.scss'],
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -29,6 +38,15 @@ import {Subject, takeUntil} from 'rxjs';
       multi: true,
       useExisting: LinkFormComponent,
     },
+  ],
+  imports: [
+    MatFormFieldModule,
+    TextFieldModule,
+    MatInputModule,
+    NgIf,
+    ReactiveFormsModule,
+    TagSelectorComponent,
+    IconFormComponent,
   ],
 })
 export class LinkFormComponent implements ControlValueAccessor, Validator, OnDestroy, OnInit {
@@ -45,36 +63,36 @@ export class LinkFormComponent implements ControlValueAccessor, Validator, OnDes
   private touched = false;
   private onDestroy = new Subject<void>();
 
-  constructor(private fb: FormBuilder,
+  constructor(private fb: UntypedFormBuilder,
   ) {
   }
 
-  public get urlControl(): FormControl {
-    return this.form.get('url') as FormControl
+  public get urlControl(): UntypedFormControl {
+    return this.form.get('url') as UntypedFormControl
   }
 
-  public get nameControl(): FormControl {
-    return this.form.get('name') as FormControl
+  public get nameControl(): UntypedFormControl {
+    return this.form.get('name') as UntypedFormControl
   }
 
-  public get descriptionControl(): FormControl {
-    return this.form.get('description') as FormControl
+  public get descriptionControl(): UntypedFormControl {
+    return this.form.get('description') as UntypedFormControl
   }
 
-  public get sectionControl(): FormControl {
-    return this.form.get('section') as FormControl
+  public get sectionControl(): UntypedFormControl {
+    return this.form.get('section') as UntypedFormControl
   }
 
-  public get pathControl(): FormControl {
-    return this.form.get('path') as FormControl
+  public get pathControl(): UntypedFormControl {
+    return this.form.get('path') as UntypedFormControl
   }
 
-  public get tagsControl(): FormControl {
-    return this.form.get('tags') as FormControl
+  public get tagsControl(): UntypedFormControl {
+    return this.form.get('tags') as UntypedFormControl
   }
 
-  public get iconControl(): FormControl {
-    return this.form.get('icons') as FormControl
+  public get iconControl(): UntypedFormControl {
+    return this.form.get('icons') as UntypedFormControl
   }
 
   onChange: ((data: any) => void) = () => {
@@ -113,7 +131,6 @@ export class LinkFormComponent implements ControlValueAccessor, Validator, OnDes
   }
 
   writeValue(value: any): void {
-    console.info('Write value link-form', value);
     value && this.form.patchValue(value, {emitEvent: false})
   }
 

@@ -1,33 +1,38 @@
-@use '@angular/material' as mat;
-
-$dark-primary: mat.define-palette(mat.$blue-palette, 900);
+@import "../../constants";
 
 #search-pane {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
 
   mat-form-field {
-    margin: 20px;
-    width: 500px;
+    flex: 1;
+
+    &:last-of-type {
+      margin-left: $small-spacing;
+    }
   }
 }
 
 mat-table {
-  margin: 10px;
-
   .mat-column-edit {
-    flex: 0 0 40px;
+    flex: 0 0 $editButtonWidth;
   }
 
   .mat-column-icons {
     flex: 0 0 50px;
   }
 
-  .mat-column-url {
+  .mat-column-url, .mat-column-name, .mat-column-link {
+    flex-grow: 1;
   }
 
-  .mat-header-cell{
-    background: mat.get-color-from-palette($dark-primary);
-    color: white;
+  .mat-column-tags {
+    flex-grow: 2;
   }
+}
+
+app-create-button{
+  position: absolute;
+  bottom: 2em;
+  right: 2em;
 }
