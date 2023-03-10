@@ -13,6 +13,7 @@ import {
 import {from, map, ReplaySubject, shareReplay} from 'rxjs';
 import {NotificationService} from './notification.service';
 import {Router} from '@angular/router';
+import {PATHS_URLS} from '../../urls';
 
 @Injectable({
   providedIn: 'root',
@@ -53,7 +54,7 @@ export class AuthService {
 
   async logout() {
     await signOut(this.auth);
-    await this.router.navigateByUrl("login");
+    await this.router.navigateByUrl(PATHS_URLS.login);
     this.notificationService.authentication.loggedOut();
     // this.status$.next(null);
   }

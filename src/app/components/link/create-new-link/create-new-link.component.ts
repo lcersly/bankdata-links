@@ -10,6 +10,7 @@ import {BookmarkletComponent} from './bookmarklet/bookmarklet.component';
 import {NgIf} from '@angular/common';
 import {LinkFormComponent} from '../link-form/link-form.component';
 import {MatIconModule} from '@angular/material/icon';
+import {PATHS_URLS} from '../../../urls';
 
 @Component({
   selector: 'app-create-new-link',
@@ -75,7 +76,7 @@ export class CreateNewLinkComponent implements OnInit {
     if (this.params?.useParams) {
       window.close();
     } else {
-      this.router.navigateByUrl('/link');
+      this.router.navigateByUrl(PATHS_URLS.links);
     }
   }
 

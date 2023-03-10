@@ -11,6 +11,7 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import {CreateTagButtonComponent} from './create-tag-button/create-tag-button.component';
+import {PATHS_URLS} from '../../../urls';
 
 @Component({
   selector: 'app-tag-list',
@@ -30,7 +31,7 @@ import {CreateTagButtonComponent} from './create-tag-button/create-tag-button.co
   ],
 })
 export class TagListComponent implements OnInit, AfterViewInit {
-  displayedColumns: string[] = ['select', 'key', 'description', 'edit'];
+  displayedColumns: string[] = ['key', 'description', 'edit'];
   dataSource = new MatTableDataSource<TagDatabaseAfter>([]);
   selection = new SelectionModel<TagDatabaseAfter>(true, []);
 
@@ -100,6 +101,6 @@ export class TagListComponent implements OnInit, AfterViewInit {
 
   edit($event: MouseEvent, element: TagDatabaseAfter) {
     $event.stopPropagation();
-    this.router.navigate(['tag', element.id])
+    this.router.navigate([PATHS_URLS.tags, element.id])
   }
 }

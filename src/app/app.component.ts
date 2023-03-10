@@ -13,35 +13,36 @@ import {AuthService} from './shared/services/auth.service';
 import {first} from 'rxjs';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {NgForOf} from '@angular/common';
-import {IfLoggedInDirective} from "./shared/directives/if-logged-in.directive";
+import {IfLoggedInDirective} from './shared/directives/if-logged-in.directive';
+import {PATHS_URLS} from './urls';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-    imports: [
-        MatSidenavModule,
-        RouterOutlet,
-        MatToolbarModule,
-        MatIconModule,
-        MatTooltipModule,
-        MatTabsModule,
-        MatSlideToggleModule,
-        ReactiveFormsModule,
-        RouterLink,
-        NgForOf,
-        RouterLinkActive,
-        IfLoggedInDirective,
-    ],
+  imports: [
+    MatSidenavModule,
+    RouterOutlet,
+    MatToolbarModule,
+    MatIconModule,
+    MatTooltipModule,
+    MatTabsModule,
+    MatSlideToggleModule,
+    ReactiveFormsModule,
+    RouterLink,
+    NgForOf,
+    RouterLinkActive,
+    IfLoggedInDirective,
+  ],
 })
 export class AppComponent implements OnInit {
   @HostBinding('class') className = '';
 
   toggleControl = new FormControl(false);
   links = [
-    {route: '/links', display: 'Links'},
-    {route: '/tags', display: 'Tags'},
+    {route: '/' + PATHS_URLS.links, display: 'Links'},
+    {route: '/' + PATHS_URLS.tags, display: 'Tags'},
   ];
   // activeLink = this.links[0];
   title = 'BD Links';

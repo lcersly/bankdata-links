@@ -13,6 +13,12 @@
     <mat-error *ngIf="hasError(descriptionControl, 'required')">Required</mat-error>
   </mat-form-field>
 
-  <button mat-raised-button routerLink="/tag">backspace</button>
-  <button mat-mini-fab color="primary"><mat-icon>save</mat-icon></button>
+  <button mat-button routerLink="..">
+    Cancel
+    <mat-icon>backspace</mat-icon>
+  </button>
+  <button mat-button>
+    Save
+    <mat-icon>save</mat-icon>
+  </button>
 </form>

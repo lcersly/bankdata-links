@@ -1,8 +1,8 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {Router} from '@angular/router';
-import {PATHS_URLS} from '../../../../app-routing.module';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
+import {PATHS_URLS} from '../../../../urls';
 
 @Component({
   selector: 'app-create-button',

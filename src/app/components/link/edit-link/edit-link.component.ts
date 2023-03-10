@@ -8,7 +8,6 @@ import {Subject, takeUntil} from 'rxjs';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
 import {DialogDeleteLinkComponent, DialogDeleteLinkData} from './dialog-delete-link/dialog-delete-link.component';
-import {isEqual} from 'lodash';
 import {MatButtonModule} from '@angular/material/button';
 import {LinkFormComponent} from '../link-form/link-form.component';
 import {MatIconModule} from '@angular/material/icon';
@@ -59,13 +58,7 @@ export class EditLinkComponent implements OnInit, OnDestroy {
     this.onDestroy.complete();
   }
 
-  get noChange(): boolean {
-    if (!this.orgLink) return false;
-
-    return isEqual(this.orgLink, this.link.value);
-  }
-
-  async edit() {
+  async save() {
     this.link.markAllAsTouched();
     if (!this.link.valid) {
       return;

@@ -8,7 +8,6 @@ import {MatSort, MatSortModule} from '@angular/material/sort';
 import {MatTableDataSource, MatTableModule} from '@angular/material/table';
 import {Router} from '@angular/router';
 import {FavIconService} from '../../../shared/services/fav-icon.service';
-import {AuthService} from '../../../shared/services/auth.service';
 import {CreateButtonComponent} from './create-button/create-button.component';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
@@ -17,6 +16,8 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatInputModule} from '@angular/material/input';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatChipsModule} from '@angular/material/chips';
+import {OpenLinkService} from '../../../shared/services/open-link.service';
+import {PATHS_URLS} from '../../../urls';
 
 @Component({
   selector: 'app-link-list',
@@ -41,9 +42,9 @@ import {MatChipsModule} from '@angular/material/chips';
 })
 export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
   displayedColumns: string[] = [
-    'icons',
-    'link',
+    'name',
     'tags',
+    'edit',
   ];
   dataSource = new MatTableDataSource<Link>([]);
 
@@ -60,7 +61,7 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
               private filterService: FilterService,
               private router: Router,
               private fav: FavIconService,
-              public authService: AuthService,
+              public openLinkService: OpenLinkService,
   ) {
   }
 
@@ -95,25 +96,11 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
       this.dataSource.data = links;
       this.dataSource._updateChangeSubscription();
     })
-
-    this.authService.isSignedIn$.subscribe(signedIn => {
-      const columns = [
-        'icons',
-        'link',
-        'tags',
-      ];
-
-      if (signedIn) {
-        columns.push('edit');
-      }
-
-      this.displayedColumns = columns;
-    })
   }
 
   edit($event: MouseEvent, element: Link) {
     $event.stopPropagation();
-    this.router.navigate(['link', element.id])
+    this.router.navigate([PATHS_URLS.links, element.id])
   }
 
   delete($event: MouseEvent, element: Link) {

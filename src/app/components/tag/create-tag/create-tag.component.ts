@@ -8,8 +8,9 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {NgIf} from '@angular/common';
 import {MatButtonModule} from '@angular/material/button';
-import {RouterLink} from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 import {MatIconModule} from '@angular/material/icon';
+import {PATHS_URLS} from '../../../urls';
 
 @Component({
   selector: 'app-create-tag',
@@ -38,6 +39,7 @@ export class CreateTagComponent {
   constructor(private fb: UntypedFormBuilder,
               private fireTagService: FirestoreTagService,
               private notification: NotificationService,
+              private router: Router,
   ) {
   }
 
@@ -58,6 +60,8 @@ export class CreateTagComponent {
     await this.fireTagService.createNew(this.form.value as TagBasic)
 
     this.notification.tag.created(this.keyControl.value);
+
+    await this.router.navigateByUrl(PATHS_URLS.tags);
   }
 
   public hasError = fieldHasError;

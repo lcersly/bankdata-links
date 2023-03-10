@@ -60,3 +60,13 @@ body {
   margin: auto;
   max-width: 500px;
 }
+
+mat-row .hide-until-hover {
+  opacity: 0;
+  transition: opacity 300ms;
+}
+
+mat-row:hover .hide-until-hover {
+  opacity: 1;
+  transition: opacity 300ms;
+}

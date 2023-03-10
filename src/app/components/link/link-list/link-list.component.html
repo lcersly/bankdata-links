@@ -1,6 +1,6 @@
 <div id="search-pane">
   <mat-form-field appearance="outline">
-    <mat-label>Search all</mat-label>
+    <mat-label>Search everything (name, url, description, tags, etc...)</mat-label>
     <input [formControl]="searchControl" matInput type="text">
     <button (click)="searchControl.setValue('')" *ngIf="searchControl.value" aria-label="Clear" mat-icon-button
             matSuffix>
@@ -9,7 +9,7 @@
   </mat-form-field>
 
   <mat-form-field appearance="outline">
-    <mat-label>Search tags</mat-label>
+    <mat-label>Search tags only</mat-label>
     <input [formControl]="searchTagControl" matInput type="text">
     <button (click)="searchTagControl.setValue('')" *ngIf="searchTagControl.value" aria-label="Clear" mat-icon-button
             matSuffix>
@@ -36,7 +36,9 @@
 
   <ng-container matColumnDef="name">
     <mat-header-cell *matHeaderCellDef mat-sort-header="name"> Name</mat-header-cell>
-    <mat-cell *matCellDef="let element">{{element.name}}</mat-cell>
+    <mat-cell *matCellDef="let element">
+      <span [matTooltip]="element.description">{{element.name}}</span>
+    </mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="icons">
@@ -73,7 +75,7 @@
   <ng-container matColumnDef="edit">
     <mat-header-cell *matHeaderCellDef></mat-header-cell>
     <mat-cell *matCellDef="let element">
-      <button (click)="edit($event, element)" mat-icon-button>
+      <button (click)="edit($event, element)" mat-icon-button class="hide-until-hover">
         <mat-icon>edit</mat-icon>
       </button>
       <!--      <button (click)="delete($event, element)" mat-icon-button>-->
@@ -83,7 +85,11 @@
   </ng-container>
 
   <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-  <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  <mat-row *matRowDef="let row; columns: displayedColumns; let i = index" class="clickable"
+           (click)="openLinkService.openLink(row)"
+  >
+
+  </mat-row>
 </mat-table>
 
 <app-create-button></app-create-button>

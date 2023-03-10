@@ -1,27 +1,33 @@
+@import "../../constants";
+
 #search-pane {
   display: flex;
   justify-content: space-between;
-  padding-top: 1em;
 
   mat-form-field {
     flex: 1;
 
     &:last-of-type {
-      margin-left: 1em;
+      margin-left: $small-spacing;
     }
   }
 }
 
 mat-table {
   .mat-column-edit {
-    flex: 0 0 40px;
+    flex: 0 0 $editButtonWidth;
   }
 
   .mat-column-icons {
     flex: 0 0 50px;
   }
 
-  .mat-column-url {
+  .mat-column-url, .mat-column-name, .mat-column-link {
+    flex-grow: 1;
+  }
+
+  .mat-column-tags {
+    flex-grow: 2;
   }
 }
 
