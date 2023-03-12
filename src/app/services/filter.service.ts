@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {BehaviorSubject, combineLatest, map, shareReplay, startWith} from 'rxjs';
 import {LinkService} from './link.service';
 import {Link} from '../models/link.model';
-import {TagDatabaseAfter} from '../models/tag.model';
+import {Tag} from '../models/tag.model';
 
 export type LinkFilters = {
   searchString: string,
@@ -21,12 +21,12 @@ export class FilterService {
     startWith([]),
   )
 
-  private matches(link: Link<TagDatabaseAfter>, filters: LinkFilters) {
+  private matches(link: Link, filters: LinkFilters) {
     // search through tags
     const delimit = '◬';
     if (filters.searchTags) {
       const found = link.tags
-        .reduce((prevValue: string, t: TagDatabaseAfter) => prevValue + delimit + t.key + delimit + t.description + delimit + t.id, '')
+        .reduce((prevValue: string, t: Tag) => prevValue + delimit + t.key + delimit + t.description, '')
         .indexOf(filters.searchTags) != -1;
       if (!found) {
         return false;

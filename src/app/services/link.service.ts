@@ -1,20 +1,19 @@
 import {Injectable} from '@angular/core';
-import {combineLatest, map, shareReplay} from 'rxjs';
-import {FirestoreLinkService} from './firestore/firestore-link.service';
+import {combineLatestWith, map, Observable, shareReplay} from 'rxjs';
+import {FirestoreLinkService, LinkDatabaseAndId} from './firestore/firestore-link.service';
 import {FirestoreTagService} from './firestore/firestore-tag.service';
 import {Link} from '../models/link.model';
-import {TagDatabaseAfter} from '../models/tag.model';
 import {NotificationService} from './notification.service';
+import {Tag} from '../models/tag.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LinkService {
-  public links$ = combineLatest([this.fireLinkService.allLinks$, this.firestoreTagService.tags$])
+  public links$: Observable<Link[]> = this.fireLinkService.allLinks$
     .pipe(
-      map(([links, tags]) => {
-        return links.map(link => this.replaceTagIdsWithFullTag(link, tags))
-      }),
+      combineLatestWith(this.firestoreTagService.tags$),
+      map(([links, tags]) => links.map(link => convertDatabaseToLink(link, tags))),
       shareReplay(1),
     )
 
@@ -24,63 +23,33 @@ export class LinkService {
   ) {
   }
 
-  public getLink(id: string) {
-    return this.links$.pipe(map(links => links.find(link => link.id === id)));
+  public getLink(uuid: string): Observable<Link | undefined> {
+    return this.links$.pipe(map(links => links.find(link => link.uuid === uuid)));
   }
 
-  public async createLinkAndTags(link: Link) {
-    let created = await this.createMissingTags(link);
-
+  public async createLinkAndTags(link: Link): Promise<void> {
     await this.fireLinkService.create(link);
-    this.notificationService.link.created(created.tags);
-    return created;
+    this.notificationService.link.created();
   }
 
   async edit(link: Link) {
-    if (!link.id) {
-      throw new Error('Link has no id');
-    }
-    let created = await this.createMissingTags(link);
-
     await this.fireLinkService.edit(link);
     this.notificationService.link.edited(link.name);
-
-    return created;
   }
 
   async delete(link: Link) {
-    if (!link.id) {
-      throw new Error('No id on link');
-    }
-
     await this.fireLinkService.delete(link);
-    this.notificationService.link.deleted();
+    this.notificationService.link.deleted(link.name);
   }
+}
 
-  private async createMissingTags(link: Link) {
-    const created = {
-      tags: 0,
-    };
-    for (const tag of link.tags) {
-      if (tag && !tag.exists) {
-        console.debug('Creating new tag', tag);
-        let documentReference = await this.firestoreTagService.createNew(tag);
-        tag.id = documentReference.id;
-        created.tags++;
-      }
-    }
-    return created;
-  }
-
-  /**
-   * Replace all tag id's with the full version
-   * @param link the link to replace tags in
-   * @param tags the list of tags available
-   */
-  private replaceTagIdsWithFullTag(link: Link, tags: TagDatabaseAfter[]): Link<TagDatabaseAfter> {
-    return {
-      ...link,
-      tags: link.tags.map(id => tags.find(tag => tag.id === id)).filter(tag => !!tag) as TagDatabaseAfter[],
-    }
+function convertDatabaseToLink(link: LinkDatabaseAndId, tags: Tag[]): Link {
+  let mappedTags = link.link.tags
+    .map(uuid => tags.find(tag => tag.uuid === uuid))
+    .filter(tag => !!tag) as Tag[];
+  return {
+    ...link.link,
+    uuid: link.uuid,
+    tags: mappedTags
   }
 }

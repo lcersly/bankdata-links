@@ -10,15 +10,21 @@ import {
   Unsubscribe,
   updateDoc,
 } from '@angular/fire/firestore';
-import {DocumentData, FirestoreDataConverter} from 'firebase/firestore';
-import {Link} from '../../models/link.model';
+import {Link, LinkBase} from '../../models/link.model';
+import {DocumentData, FirestoreDataConverter, QueryDocumentSnapshot} from 'firebase/firestore';
+
+export interface LinkDatabase extends LinkBase {
+  tags: string[]
+}
+
+export type LinkDatabaseAndId = { uuid: string, link: LinkDatabase };
 
 @Injectable({
   providedIn: 'root',
 })
 export class FirestoreLinkService {
   private unsub: Unsubscribe | undefined;
-  private _data$ = new ReplaySubject<Link[]>(1);
+  private _data$ = new ReplaySubject<LinkDatabaseAndId[]>(1);
   public allLinks$ = this._data$.asObservable();
 
   constructor(private readonly firestore: Firestore) {
@@ -32,43 +38,26 @@ export class FirestoreLinkService {
   subscribeToLinks() {
     this.unsub = onSnapshot(this.colRef,
       (documents) => {
-        const docs: Link[] = [];
-        documents.docs.forEach(doc => docs.push(doc.data()));
+        const docs: LinkDatabaseAndId[] = [];
+        documents.docs.forEach(doc => docs.push(({
+          uuid: doc.id,
+          link: doc.data()
+        })));
         this._data$.next(docs);
       });
   }
 
 
   create(link: Link) {
-    return addDoc(this.colRef, {...link});
+    return addDoc(this.colRef, convertLinkToDatabase(link));
   }
 
   edit(link: Link) {
-    for (const key of Object.keys(link)) {
-      // @ts-ignore
-      let value = link[key];
-      if (!value) {
-        // @ts-ignore
-        link[key] = '';
-      }
-    }
-
-    const tags = [];
-    for (const tag of link.tags) {
-      if (tag && tag.id) {
-        tags.push(tag.id);
-      }
-    }
-    link.tags = tags;
-
-    const id = link.id;
-    delete link.id;
-    console.debug('Update link', link);
-    return updateDoc(doc(this.colRef, id), link);
+    return updateDoc(doc(this.colRef, link.uuid), convertLinkToDatabase(link));
   }
 
   delete(link: Link) {
-    return deleteDoc(doc(this.colRef, link.id));
+    return deleteDoc(doc(this.colRef, link.uuid));
   }
 
   disconnect() {
@@ -78,19 +67,18 @@ export class FirestoreLinkService {
   }
 }
 
-const converter: FirestoreDataConverter<Link> = {
-  toFirestore(modelObject: Link): DocumentData {
-    return modelObject;
-  },
-  fromFirestore(snapshot): Link {
-    const linkData = snapshot.data() as Link;
-
-    return {
-      ...linkData,
-      id: snapshot.id,
-      // expirationAt: room.expirationAt?.toDate(),
-      // updatedAt: room.updatedAt?.toDate(),
-      // createdAt: room.createdAt?.toDate(),
-    } as Link;
-  },
+function convertLinkToDatabase(link: Link): LinkDatabase {
+  const stringTags = link.tags.map(tag => tag.key);
+  const {uuid, ...everythingElse} = link;
+  return {...everythingElse, tags: stringTags};
 }
+
+const converter: FirestoreDataConverter<LinkDatabase> = {
+  toFirestore(modelObject: LinkDatabase): DocumentData {
+    return modelObject
+  },
+  fromFirestore(snapshot:QueryDocumentSnapshot<LinkDatabase>): LinkDatabase {
+    return snapshot.data();
+  },
+};
+

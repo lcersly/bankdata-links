@@ -13,7 +13,6 @@ import {AuthService} from './services/auth.service';
 import {first} from 'rxjs';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {NgForOf} from '@angular/common';
-import {IfLoggedInDirective} from './shared/directives/if-logged-in.directive';
 import {PATHS_URLS} from './urls';
 
 @Component({
@@ -33,7 +32,6 @@ import {PATHS_URLS} from './urls';
     RouterLink,
     NgForOf,
     RouterLinkActive,
-    IfLoggedInDirective,
   ],
 })
 export class AppComponent implements OnInit {

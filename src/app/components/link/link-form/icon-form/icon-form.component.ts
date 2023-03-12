@@ -12,7 +12,6 @@ import {
   Validator,
   Validators,
 } from '@angular/forms';
-import {TagSelection} from '../../../../models/tag.model';
 import {Icon} from '../../../../models/icon.model';
 import {FavIconService} from '../../../../services/fav-icon.service';
 import {MatIconModule} from '@angular/material/icon';
@@ -22,6 +21,7 @@ import {NgForOf, NgIf} from '@angular/common';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
+import {Tag} from '../../../../models/tag.model';
 
 @Component({
   selector: 'app-icon-selector',
@@ -67,7 +67,7 @@ export class IconFormComponent implements ControlValueAccessor, Validator {
     public fav: FavIconService) {
   }
 
-  onChange: (tags: TagSelection[]) => void = () => {
+  onChange: (tags: Tag[]) => void = () => {
   };
 
   onTouched = () => {

@@ -1,7 +1,6 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
-import {FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormControl, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {FirestoreTagService} from '../../../services/firestore/firestore-tag.service';
-import {TagBasic} from '../../../models/tag.model';
 import {fieldHasError} from '../../../shared/util';
 import {NotificationService} from '../../../services/notification.service';
 import {MatFormFieldModule} from '@angular/material/form-field';
@@ -31,24 +30,24 @@ import {PATHS_URLS} from '../../../urls';
 })
 export class CreateTagComponent {
 
-  public form = this.fb.group({
-    description: '',
-    key: ['', Validators.required]
+  public form = this.fb.nonNullable.group({
+    description: this.fb.nonNullable.control(''),
+    key: this.fb.nonNullable.control('', Validators.required),
   });
 
-  constructor(private fb: UntypedFormBuilder,
+  constructor(private fb: FormBuilder,
               private fireTagService: FirestoreTagService,
               private notification: NotificationService,
               private router: Router,
   ) {
   }
 
-  public get keyControl(): UntypedFormControl {
-    return this.form.get('key') as UntypedFormControl
+  public get keyControl(): FormControl {
+    return this.form.get('key') as FormControl
   }
 
-  public get descriptionControl(): UntypedFormControl {
-    return this.form.get('description') as UntypedFormControl
+  public get descriptionControl(): FormControl {
+    return this.form.get('description') as FormControl
   }
 
   async create() {
@@ -57,7 +56,8 @@ export class CreateTagComponent {
       return;
     }
 
-    await this.fireTagService.createNew(this.form.value as TagBasic)
+    let formValue = this.form.value;
+    await this.fireTagService.createNew(formValue.key!, formValue.description!)
 
     this.notification.tag.created(this.keyControl.value);
 

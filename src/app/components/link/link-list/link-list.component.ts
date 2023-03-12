@@ -100,17 +100,12 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
 
   edit($event: MouseEvent, element: Link) {
     $event.stopPropagation();
-    this.router.navigate([PATHS_URLS.links, element.id])
+    this.router.navigate([PATHS_URLS.links, element.uuid])
   }
 
   delete($event: MouseEvent, element: Link) {
     $event.stopPropagation();
     return this.linkService.delete(element);
-  }
-
-  getBestIcon(element: Link) {
-    if (!element.icons) return undefined;
-    return this.fav.getBestIcon(element.icons);
   }
 
   ngAfterViewInit(): void {

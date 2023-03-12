@@ -5,12 +5,12 @@ import {ActivatedRoute, RouterLink} from '@angular/router';
 import {FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormControl, Validators} from '@angular/forms';
 import {fieldHasError} from '../../../shared/util';
 import {NotificationService} from '../../../services/notification.service';
-import {TagBasic} from '../../../models/tag.model';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
 import {NgIf} from '@angular/common';
 import {MatIconModule} from '@angular/material/icon';
+import {Tag} from '../../../models/tag.model';
 
 @Component({
   selector: 'app-edit-tag',
@@ -64,7 +64,8 @@ export class EditTagComponent implements OnInit, OnDestroy {
       return;
     }
 
-    await this.tagService.update(this.form.value as TagBasic, this.id!);
+    const tag: Tag = this.form.value;
+    await this.tagService.update(this.id!, tag.key, tag.description);
     this.notifications.tag.edited();
   }
 

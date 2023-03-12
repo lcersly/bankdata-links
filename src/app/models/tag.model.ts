@@ -1,16 +1,17 @@
-export type TagBasic = {
+export interface Tag {
   key: string;
   description: string;
+  uuid: string;
 }
 
-export type TagWithID = {
-  id: string;
+export function tagEquals(t1: Tag, t2: Tag): boolean {
+  return keyMatchesTag(t1.key, t2);
 }
 
-export type TagExists = {
-  exists: boolean;
+export function keyMatchesTag(key: string | undefined, tag: Tag) {
+  return !!key && key.toLowerCase() === tag.key.toLowerCase();
 }
 
-export type TagDatabase = TagBasic;
-export type TagDatabaseAfter = TagBasic & TagExists & TagWithID;
-export type TagSelection = TagBasic & TagExists;
+export function findMatchingTagInList(tags: Tag[], key: string): Tag | undefined {
+  return tags.find(tag => keyMatchesTag(key, tag));
+}

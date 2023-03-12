@@ -1,12 +1,13 @@
-import {Icon} from './icon.model';
+import {Tag} from './tag.model';
 
-export interface Link<T = any> {
+export interface LinkBase{
   url: string;
   name: string;
   description?: string;
-  path: string;
-  section: string;
-  tags: T[];
-  icons: Icon[];
-  id?: string;
+  tags: Tag[] | string[];
+}
+
+export interface Link extends LinkBase{
+  tags: Tag[];
+  uuid: string;
 }

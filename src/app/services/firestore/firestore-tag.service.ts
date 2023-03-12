@@ -9,27 +9,33 @@ import {
   Unsubscribe,
   updateDoc,
 } from '@angular/fire/firestore';
-import {map, ReplaySubject} from 'rxjs';
-import {DocumentData, FirestoreDataConverter} from 'firebase/firestore';
-import {TagBasic, TagDatabase, TagDatabaseAfter, TagWithID} from '../../models/tag.model';
+import {first, map, Observable, ReplaySubject} from 'rxjs';
+import {FirestoreDataConverter, QueryDocumentSnapshot} from 'firebase/firestore';
+import {keyMatchesTag, Tag} from '../../models/tag.model';
+
+interface DatabaseTag {
+  key: string;
+  description: string;
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class FirestoreTagService {
   private unsub: Unsubscribe | undefined;
-  private _data$ = new ReplaySubject<TagDatabaseAfter[]>(1);
+  private _data$ = new ReplaySubject<Tag[]>(1);
   public tags$ = this._data$.asObservable();
-  public tags: TagDatabaseAfter[] = [];
 
   constructor(private readonly firestore: Firestore) {
     this.subscribeToTags();
-    this.tags$.subscribe(t => this.tags = t);
     this.tags$.subscribe(t => console.debug(`Service - Tags updated (${t.length})`, t));
   }
 
-  public hasMatchingTag(key: string): TagDatabaseAfter | undefined {
-    return this.tags.find(existingTag => existingTag.key.toLowerCase() === key.toLowerCase())
+  public hasMatchingTag(key: string): Observable<Tag | undefined> {
+    return this.tags$.pipe(
+      first(),
+      map(tags => tags.find(existingTag => keyMatchesTag(key, existingTag))),
+    );
   }
 
   private get collectionRef() {
@@ -37,16 +43,16 @@ export class FirestoreTagService {
       .withConverter(converter);
   }
 
-  public getTag(id: string) {
-    return this.tags$.pipe(map(tags => tags.find(tag => tag.id === id)));
+  public getTag(uuid: string) {
+    return this.tags$.pipe(map(tags => tags.find(tag => tag.uuid === uuid)));
   }
 
-  public createNew(tag: TagBasic) {
-    return addDoc(this.collectionRef, {key: tag.key, description: tag.description})
+  public createNew(key: string, description: string) {
+    return addDoc(this.collectionRef, {key, description} as any) //todo why is this needed??
   }
 
-  public update(tag: TagBasic, id: string) {
-    return updateDoc(doc(this.collectionRef, id), {description: tag.description, key: tag.key})
+  public update(id: string, key: string, description: string) {
+    return updateDoc(doc(this.collectionRef, id), {description, key})
   }
 
   private subscribeToTags() {
@@ -55,7 +61,8 @@ export class FirestoreTagService {
         if (doc.empty) {
           this._data$.next([]);
         } else {
-          this._data$.next(doc.docs.map(d => d.data() as TagDatabaseAfter));
+          const tags = doc.docs.map(doc => converter.fromFirestore(doc));
+          this._data$.next(tags);
         }
       },
     );
@@ -67,26 +74,25 @@ export class FirestoreTagService {
     }
   }
 
-  deleteTag(tag: TagWithID) {
-    console.debug('Deleting tag', tag);
-    return deleteDoc(doc(this.collectionRef, tag.id))
+  deleteTagFromId(tagId: string) {
+    //todo check if any links still use it before delete
+    return deleteDoc(doc(this.collectionRef, tagId))
   }
 }
 
-const converter: FirestoreDataConverter<TagBasic> = {
-  toFirestore(modelObject: TagBasic): DocumentData {
+const converter: FirestoreDataConverter<Tag> = {
+  toFirestore(tag: Tag): DatabaseTag {
     return {
-      key: modelObject.key,
-      description: modelObject.description,
-    } as TagBasic;
+      key: tag.key,
+      description: tag.description,
+    };
   },
-  fromFirestore(snapshot): TagDatabaseAfter {
-    let documentData = snapshot.data() as TagDatabase;
+  fromFirestore(snapshot:QueryDocumentSnapshot<DatabaseTag>): Tag {
+    let documentData = snapshot.data();
     return {
       key: documentData.key,
       description: documentData.description,
-      id: snapshot.id,
-      exists: true,
+      uuid: snapshot.id,
     }
   },
 }
