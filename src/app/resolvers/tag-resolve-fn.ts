@@ -13,7 +13,7 @@ export const TagResolveFn: ResolveFn<Tag> = (route: ActivatedRouteSnapshot): Obs
       if (tag) {
         return of(tag);
       } else { // id not found
-        console.warn('Tag not found - redirecting to /tag')
+        console.warn('Tag not found - redirecting')
         inject(Router).navigate(['/tag']);
         return EMPTY;
       }

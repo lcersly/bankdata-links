@@ -8,7 +8,7 @@ import {MatSort, MatSortModule} from '@angular/material/sort';
 import {MatTableDataSource, MatTableModule} from '@angular/material/table';
 import {Router} from '@angular/router';
 import {FavIconService} from '../../../services/fav-icon.service';
-import {CreateButtonComponent} from './create-button/create-button.component';
+import {CreateButtonComponent} from '../../../shared/components/create-button/create-button.component';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
 import {NgForOf, NgIf} from '@angular/common';
@@ -17,7 +17,7 @@ import {MatInputModule} from '@angular/material/input';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatChipsModule} from '@angular/material/chips';
 import {OpenLinkService} from '../../../services/open-link.service';
-import {PATHS_URLS} from '../../../urls';
+import {PATHS_URLS, ROOT_PATHS_URLS} from '../../../urls';
 
 @Component({
   selector: 'app-link-list',
@@ -55,6 +55,7 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
     searchString: this.fb.control(''),
     searchTags: this.fb.control(''),
   });
+  createLink = ROOT_PATHS_URLS.createLink;
 
   constructor(private linkService: LinkService,
               private fb: UntypedFormBuilder,

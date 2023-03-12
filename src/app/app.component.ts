@@ -1,4 +1,4 @@
-import {Component, HostBinding, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, HostBinding, OnInit} from '@angular/core';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
@@ -13,13 +13,15 @@ import {AuthService} from './services/auth.service';
 import {first} from 'rxjs';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {NgForOf} from '@angular/common';
-import {PATHS_URLS} from './urls';
+import {ROOT_PATHS_URLS} from './urls';
+import {IfLoggedInDirective} from './directives/if-logged-in.directive';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatSidenavModule,
     RouterOutlet,
@@ -32,6 +34,7 @@ import {PATHS_URLS} from './urls';
     RouterLink,
     NgForOf,
     RouterLinkActive,
+    IfLoggedInDirective,
   ],
 })
 export class AppComponent implements OnInit {
@@ -39,8 +42,8 @@ export class AppComponent implements OnInit {
 
   toggleControl = new FormControl(false);
   links = [
-    {route: '/' + PATHS_URLS.links, display: 'Links'},
-    {route: '/' + PATHS_URLS.tags, display: 'Tags'},
+    {route: ROOT_PATHS_URLS.links, display: 'Links'},
+    {route: ROOT_PATHS_URLS.tags, display: 'Tags'},
   ];
   // activeLink = this.links[0];
   title = 'BD Links';

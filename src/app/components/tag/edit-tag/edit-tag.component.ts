@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from '@angular/core';
 import {FirestoreTagService} from '../../../services/firestore/firestore-tag.service';
 import {Subject, takeUntil} from 'rxjs';
-import {ActivatedRoute, RouterLink} from '@angular/router';
+import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormControl, Validators} from '@angular/forms';
 import {fieldHasError} from '../../../shared/util';
 import {NotificationService} from '../../../services/notification.service';
@@ -39,6 +39,7 @@ export class EditTagComponent implements OnInit, OnDestroy {
 
   constructor(private tagService: FirestoreTagService,
               private route: ActivatedRoute,
+              private router: Router,
               private fb: UntypedFormBuilder,
               private notifications: NotificationService,
   ) {
@@ -58,7 +59,7 @@ export class EditTagComponent implements OnInit, OnDestroy {
     this.onDestroy.complete();
   }
 
-  async edit() {
+  async save() {
     this.form.markAllAsTouched();
     if (!this.form.valid) {
       return;
@@ -67,6 +68,11 @@ export class EditTagComponent implements OnInit, OnDestroy {
     const tag: Tag = this.form.value;
     await this.tagService.update(this.id!, tag.key, tag.description);
     this.notifications.tag.edited();
+    this.navigateBack()
+  }
+
+  private navigateBack() {
+    return this.router.navigate(['..'], {relativeTo: this.route})
   }
 
   public get keyControl(): UntypedFormControl {
