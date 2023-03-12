@@ -13,8 +13,8 @@ import {
 import {combineLatest, map, startWith, Subject} from 'rxjs';
 import {MatChipInputEvent, MatChipsModule} from '@angular/material/chips';
 import {MatAutocompleteModule, MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
-import {FirestoreTagService} from '../../../../shared/services/firestore/firestore-tag.service';
-import {TagBasic, TagDatabaseAfter, TagSelection} from '../../../../shared/models/tag.model';
+import {FirestoreTagService} from '../../../../services/firestore/firestore-tag.service';
+import {TagBasic, TagDatabaseAfter, TagSelection} from '../../../../models/tag.model';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {AsyncPipe, NgForOf, NgIf} from '@angular/common';
 import {MatTooltipModule} from '@angular/material/tooltip';

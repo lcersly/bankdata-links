@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot} from '@angular/router';
 import {EMPTY, first, mergeMap, Observable, of} from 'rxjs';
-import {Link} from '../../shared/models/link.model';
-import {LinkService} from '../../shared/services/link.service';
+import {Link} from '../../models/link.model';
+import {LinkService} from '../../services/link.service';
 
 @Injectable({
   providedIn: 'root',

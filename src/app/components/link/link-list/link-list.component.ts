@@ -1,13 +1,13 @@
 import {AfterViewInit, ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {Link} from '../../../shared/models/link.model';
+import {Link} from '../../../models/link.model';
 import {debounceTime, first, Subject, takeUntil} from 'rxjs';
 import {ReactiveFormsModule, UntypedFormBuilder, UntypedFormControl} from '@angular/forms';
-import {LinkService} from '../../../shared/services/link.service';
-import {FilterService, LinkFilters} from '../../../shared/services/filter.service';
+import {LinkService} from '../../../services/link.service';
+import {FilterService, LinkFilters} from '../../../services/filter.service';
 import {MatSort, MatSortModule} from '@angular/material/sort';
 import {MatTableDataSource, MatTableModule} from '@angular/material/table';
 import {Router} from '@angular/router';
-import {FavIconService} from '../../../shared/services/fav-icon.service';
+import {FavIconService} from '../../../services/fav-icon.service';
 import {CreateButtonComponent} from './create-button/create-button.component';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
@@ -16,7 +16,7 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatInputModule} from '@angular/material/input';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatChipsModule} from '@angular/material/chips';
-import {OpenLinkService} from '../../../shared/services/open-link.service';
+import {OpenLinkService} from '../../../services/open-link.service';
 import {PATHS_URLS} from '../../../urls';
 
 @Component({

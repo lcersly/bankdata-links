@@ -1,7 +1,7 @@
 import {AfterViewInit, ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
-import {FirestoreTagService} from '../../../shared/services/firestore/firestore-tag.service';
+import {FirestoreTagService} from '../../../services/firestore/firestore-tag.service';
 import {MatTableDataSource, MatTableModule} from '@angular/material/table';
-import {TagDatabaseAfter} from '../../../shared/models/tag.model';
+import {TagDatabaseAfter} from '../../../models/tag.model';
 import {SelectionModel} from '@angular/cdk/collections';
 import {Router} from '@angular/router';
 import {MatSort, MatSortModule} from '@angular/material/sort';

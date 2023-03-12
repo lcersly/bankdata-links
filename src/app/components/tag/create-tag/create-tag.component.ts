@@ -1,9 +1,9 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormControl, Validators} from '@angular/forms';
-import {FirestoreTagService} from '../../../shared/services/firestore/firestore-tag.service';
-import {TagBasic} from '../../../shared/models/tag.model';
+import {FirestoreTagService} from '../../../services/firestore/firestore-tag.service';
+import {TagBasic} from '../../../models/tag.model';
 import {fieldHasError} from '../../../shared/util';
-import {NotificationService} from '../../../shared/services/notification.service';
+import {NotificationService} from '../../../services/notification.service';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {NgIf} from '@angular/common';

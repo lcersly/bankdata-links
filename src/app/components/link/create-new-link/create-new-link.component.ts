@@ -1,9 +1,9 @@
 import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
 import {ReactiveFormsModule, UntypedFormControl} from '@angular/forms';
 import {environment} from '../../../../environments/environment';
-import {LinkService} from '../../../shared/services/link.service';
-import {Link} from '../../../shared/models/link.model';
-import {NotificationService} from '../../../shared/services/notification.service';
+import {LinkService} from '../../../services/link.service';
+import {Link} from '../../../models/link.model';
+import {NotificationService} from '../../../services/notification.service';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {MatButtonModule} from '@angular/material/button';
 import {BookmarkletComponent} from './bookmarklet/bookmarklet.component';

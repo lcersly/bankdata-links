@@ -12,9 +12,9 @@ import {
   Validator,
   Validators,
 } from '@angular/forms';
-import {TagSelection} from '../../../../shared/models/tag.model';
-import {Icon} from '../../../../shared/models/icon.model';
-import {FavIconService} from '../../../../shared/services/fav-icon.service';
+import {TagSelection} from '../../../../models/tag.model';
+import {Icon} from '../../../../models/icon.model';
+import {FavIconService} from '../../../../services/fav-icon.service';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import {MatTooltipModule} from '@angular/material/tooltip';

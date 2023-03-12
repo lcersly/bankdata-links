@@ -1,9 +1,9 @@
 import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from '@angular/core';
 import {ReactiveFormsModule, UntypedFormControl} from '@angular/forms';
-import {LinkService} from '../../../shared/services/link.service';
-import {NotificationService} from '../../../shared/services/notification.service';
-import {FavIconService} from '../../../shared/services/fav-icon.service';
-import {Link} from '../../../shared/models/link.model';
+import {LinkService} from '../../../services/link.service';
+import {NotificationService} from '../../../services/notification.service';
+import {FavIconService} from '../../../services/fav-icon.service';
+import {Link} from '../../../models/link.model';
 import {Subject, takeUntil} from 'rxjs';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';

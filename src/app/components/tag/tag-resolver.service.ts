@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot, Resolve, Router, RouterStateSnapshot} from '@angular/router';
 import {EMPTY, first, mergeMap, Observable, of} from 'rxjs';
-import {FirestoreTagService} from '../../shared/services/firestore/firestore-tag.service';
-import {TagDatabaseAfter} from '../../shared/models/tag.model';
+import {FirestoreTagService} from '../../services/firestore/firestore-tag.service';
+import {TagDatabaseAfter} from '../../models/tag.model';
 
 @Injectable({
   providedIn: 'root',

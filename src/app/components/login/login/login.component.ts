@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
-import {AuthService} from '../../../shared/services/auth.service';
+import {AuthService} from '../../../services/auth.service';
 import {Router} from '@angular/router';
-import {NotificationService} from '../../../shared/services/notification.service';
+import {NotificationService} from '../../../services/notification.service';
 import {MatButtonModule} from '@angular/material/button';
 
 @Component({
