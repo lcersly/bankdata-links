@@ -53,12 +53,19 @@ body {
 
 .centered-content {
   max-width: 1200px;
+  padding: 1em;
   margin: auto;
 }
 
 .simple-form {
   margin: auto;
   max-width: 500px;
+}
+
+.no-link-style{
+  color: inherit;
+  text-decoration: inherit;
+  font-style: inherit;
 }
 
 mat-row .hide-until-hover {
@@ -69,4 +76,10 @@ mat-row .hide-until-hover {
 mat-row:hover .hide-until-hover {
   opacity: 1;
   transition: opacity 300ms;
+}
+
+app-create-button{
+  position: absolute;
+  bottom: 2em;
+  right: 2em;
 }

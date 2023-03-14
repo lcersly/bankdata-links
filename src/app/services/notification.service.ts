@@ -7,20 +7,15 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 export class NotificationService {
   private options = {duration: 2000};
   link = {
-    created: (tagsCreated: number) => {
-      let message;
-      if (tagsCreated) {
-        message = `Created new link and ${tagsCreated} tag(s)`;
-      } else {
-        message = 'Created new link';
-      }
+    created: () => {
+      const message = 'Created new link';
       this.snackBar.open(message, undefined, this.options)
     },
     edited: (name: string) => {
       this.snackBar.open('Successfully edited link: ' + name, undefined, this.options);
     },
-    deleted: () => {
-      this.snackBar.open('Successfully deleted link', undefined, this.options);
+    deleted: (name: string) => {
+      this.snackBar.open('Successfully deleted link: ' + name, undefined, this.options);
     },
   };
   tag = {
@@ -30,8 +25,8 @@ export class NotificationService {
     edited: () => {
       this.snackBar.open('Successfully edited tag', undefined, this.options);
     },
-    deleted: () => {
-      this.snackBar.open('Successfully deleted tag', undefined, this.options);
+    deleted: (name:string) => {
+      this.snackBar.open('Successfully deleted tag: ' + name, undefined, this.options);
     },
     tagAlreadyAdded: (tagKey: string) => {
       this.snackBar.open(`Tag '${tagKey}' already exist on this URL`, undefined, this.options);

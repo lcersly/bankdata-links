@@ -6,8 +6,8 @@ import {CreateNewLinkComponent} from './components/link/create-new-link/create-n
 import {TagListComponent} from './components/tag/tag-list/tag-list.component';
 import {CreateTagComponent} from './components/tag/create-tag/create-tag.component';
 import {EditTagComponent} from './components/tag/edit-tag/edit-tag.component';
-import {TagResolverService} from './components/tag/tag-resolver.service';
-import {LinkResolverService} from './components/link/link-resolver.service';
+import {TagResolveFn} from './resolvers/tag-resolve-fn';
+import {LinkResolveFn} from './resolvers/link-resolve-fn';
 import {LoginComponent} from './components/login/login/login.component';
 import {canActivate, redirectLoggedInTo, redirectUnauthorizedTo} from '@angular/fire/auth-guard';
 import {PATHS_URLS} from './urls';
@@ -28,7 +28,7 @@ const routes: Routes = [
       {
         path: ':id',
         component: EditLinkComponent,
-        resolve: {link: LinkResolverService},
+        resolve: {link: LinkResolveFn},
         ...canActivate(redirectUnauthorizedToLogin),
       },
     ],
@@ -45,7 +45,7 @@ const routes: Routes = [
       {
         path: ':id',
         component: EditTagComponent,
-        resolve: {tag: TagResolverService}, ...canActivate(redirectUnauthorizedToLogin),
+        resolve: {tag: TagResolveFn}, ...canActivate(redirectUnauthorizedToLogin),
       },
     ],
     ...canActivate(redirectUnauthorizedToLogin),

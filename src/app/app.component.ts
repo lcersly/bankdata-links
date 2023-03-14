@@ -1,26 +1,27 @@
-import {Component, HostBinding, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, HostBinding, OnInit} from '@angular/core';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
 import {OverlayContainer} from '@angular/cdk/overlay';
-import {ThemeService} from './shared/services/theme.service';
+import {ThemeService} from './services/theme.service';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatIconModule} from '@angular/material/icon';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatTabsModule} from '@angular/material/tabs';
 import {FormControl, ReactiveFormsModule} from '@angular/forms';
-import {AuthService} from './shared/services/auth.service';
+import {AuthService} from './services/auth.service';
 import {first} from 'rxjs';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {NgForOf} from '@angular/common';
-import {IfLoggedInDirective} from './shared/directives/if-logged-in.directive';
-import {PATHS_URLS} from './urls';
+import {ROOT_PATHS_URLS} from './urls';
+import {IfLoggedInDirective} from './directives/if-logged-in.directive';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatSidenavModule,
     RouterOutlet,
@@ -41,8 +42,8 @@ export class AppComponent implements OnInit {
 
   toggleControl = new FormControl(false);
   links = [
-    {route: '/' + PATHS_URLS.links, display: 'Links'},
-    {route: '/' + PATHS_URLS.tags, display: 'Tags'},
+    {route: ROOT_PATHS_URLS.links, display: 'Links'},
+    {route: ROOT_PATHS_URLS.tags, display: 'Tags'},
   ];
   // activeLink = this.links[0];
   title = 'BD Links';

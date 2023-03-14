@@ -1,16 +1,16 @@
 import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from '@angular/core';
-import {FirestoreTagService} from '../../../shared/services/firestore/firestore-tag.service';
+import {FirestoreTagService} from '../../../services/firestore/firestore-tag.service';
 import {Subject, takeUntil} from 'rxjs';
-import {ActivatedRoute, RouterLink} from '@angular/router';
+import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormControl, Validators} from '@angular/forms';
 import {fieldHasError} from '../../../shared/util';
-import {NotificationService} from '../../../shared/services/notification.service';
-import {TagBasic} from '../../../shared/models/tag.model';
+import {NotificationService} from '../../../services/notification.service';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
 import {NgIf} from '@angular/common';
 import {MatIconModule} from '@angular/material/icon';
+import {Tag} from '../../../models/tag.model';
 
 @Component({
   selector: 'app-edit-tag',
@@ -39,6 +39,7 @@ export class EditTagComponent implements OnInit, OnDestroy {
 
   constructor(private tagService: FirestoreTagService,
               private route: ActivatedRoute,
+              private router: Router,
               private fb: UntypedFormBuilder,
               private notifications: NotificationService,
   ) {
@@ -58,14 +59,20 @@ export class EditTagComponent implements OnInit, OnDestroy {
     this.onDestroy.complete();
   }
 
-  async edit() {
+  async save() {
     this.form.markAllAsTouched();
     if (!this.form.valid) {
       return;
     }
 
-    await this.tagService.update(this.form.value as TagBasic, this.id!);
+    const tag: Tag = this.form.value;
+    await this.tagService.update(this.id!, tag.key, tag.description);
     this.notifications.tag.edited();
+    this.navigateBack()
+  }
+
+  private navigateBack() {
+    return this.router.navigate(['..'], {relativeTo: this.route})
   }
 
   public get keyControl(): UntypedFormControl {

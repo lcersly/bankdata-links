@@ -1,7 +1,6 @@
 import {AfterViewInit, ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
-import {FirestoreTagService} from '../../../shared/services/firestore/firestore-tag.service';
+import {FirestoreTagService} from '../../../services/firestore/firestore-tag.service';
 import {MatTableDataSource, MatTableModule} from '@angular/material/table';
-import {TagDatabaseAfter} from '../../../shared/models/tag.model';
 import {SelectionModel} from '@angular/cdk/collections';
 import {Router} from '@angular/router';
 import {MatSort, MatSortModule} from '@angular/material/sort';
@@ -10,8 +9,9 @@ import {MatInputModule} from '@angular/material/input';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
-import {CreateTagButtonComponent} from './create-tag-button/create-tag-button.component';
 import {PATHS_URLS} from '../../../urls';
+import {Tag} from '../../../models/tag.model';
+import {CreateButtonComponent} from '../../../shared/components/create-button/create-button.component';
 
 @Component({
   selector: 'app-tag-list',
@@ -27,13 +27,15 @@ import {PATHS_URLS} from '../../../urls';
     MatCheckboxModule,
     MatIconModule,
     MatButtonModule,
-    CreateTagButtonComponent,
+    CreateButtonComponent,
   ],
 })
 export class TagListComponent implements OnInit, AfterViewInit {
   displayedColumns: string[] = ['key', 'description', 'edit'];
-  dataSource = new MatTableDataSource<TagDatabaseAfter>([]);
-  selection = new SelectionModel<TagDatabaseAfter>(true, []);
+  dataSource = new MatTableDataSource<Tag>([]);
+  selection = new SelectionModel<Tag>(true, []);
+
+  public createUrl = PATHS_URLS.createTag;
 
   @ViewChild(MatSort) sort: MatSort | undefined;
 
@@ -84,7 +86,7 @@ export class TagListComponent implements OnInit, AfterViewInit {
   }
 
   /** The label for the checkbox on the passed row */
-  checkboxLabel(row?: TagDatabaseAfter): string {
+  checkboxLabel(row?: Tag): string {
     if (!row) {
       return `${this.isAllSelected() ? 'deselect' : 'select'} all`;
     }
@@ -94,13 +96,13 @@ export class TagListComponent implements OnInit, AfterViewInit {
   async deleteSelected() {
     const promises = [];
     for (const tag of this.selection.selected) {
-      promises.push(this.fireTagService.deleteTag(tag));
+      promises.push(this.fireTagService.deleteTagFromId(tag.uuid));
     }
     await Promise.all(promises)
   }
 
-  edit($event: MouseEvent, element: TagDatabaseAfter) {
+  edit($event: MouseEvent, element: Tag) {
     $event.stopPropagation();
-    this.router.navigate([PATHS_URLS.tags, element.id])
+    this.router.navigate([PATHS_URLS.tags, element.uuid])
   }
 }

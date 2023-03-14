@@ -1,23 +1,54 @@
-import {AfterViewInit, ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {Link} from '../../../shared/models/link.model';
-import {debounceTime, first, Subject, takeUntil} from 'rxjs';
-import {ReactiveFormsModule, UntypedFormBuilder, UntypedFormControl} from '@angular/forms';
-import {LinkService} from '../../../shared/services/link.service';
-import {FilterService, LinkFilters} from '../../../shared/services/filter.service';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
+import {Link} from '../../../models/link.model';
+import {
+  BehaviorSubject,
+  combineLatestWith,
+  debounceTime,
+  distinctUntilChanged,
+  first,
+  map,
+  Subject,
+  takeUntil,
+} from 'rxjs';
+import {
+  FormArray,
+  FormControl,
+  NonNullableFormBuilder,
+  ReactiveFormsModule,
+  UntypedFormControl,
+} from '@angular/forms';
+import {LinkService} from '../../../services/link.service';
+import {FilterService, LinkFilters} from '../../../services/filter.service';
 import {MatSort, MatSortModule} from '@angular/material/sort';
 import {MatTableDataSource, MatTableModule} from '@angular/material/table';
 import {Router} from '@angular/router';
-import {FavIconService} from '../../../shared/services/fav-icon.service';
-import {CreateButtonComponent} from './create-button/create-button.component';
+import {FavIconService} from '../../../services/fav-icon.service';
+import {CreateButtonComponent} from '../../../shared/components/create-button/create-button.component';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
 import {NgForOf, NgIf} from '@angular/common';
 import {MatButtonModule} from '@angular/material/button';
 import {MatInputModule} from '@angular/material/input';
 import {MatTooltipModule} from '@angular/material/tooltip';
-import {MatChipsModule} from '@angular/material/chips';
-import {OpenLinkService} from '../../../shared/services/open-link.service';
-import {PATHS_URLS} from '../../../urls';
+import {MatChipSelectionChange, MatChipsModule} from '@angular/material/chips';
+import {OpenLinkService} from '../../../services/open-link.service';
+import {PATHS_URLS, ROOT_PATHS_URLS} from '../../../urls';
+import {Tag, trackByTagFn} from '../../../models/tag.model';
+import {FirestoreTagService} from '../../../services/firestore/firestore-tag.service';
+
+type SearchForm = {
+  searchString: FormControl<string>,
+  searchTags: FormControl<string>,
+  selectedTagsUUID: FormArray<FormControl<string>>
+};
 
 @Component({
   selector: 'app-link-list',
@@ -51,17 +82,28 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild(MatSort) matSort: MatSort | undefined
   private onDestroy = new Subject<void>();
 
-  searchForm = this.fb.group({
+  searchForm = this.fb.group<SearchForm>({
     searchString: this.fb.control(''),
     searchTags: this.fb.control(''),
+    selectedTagsUUID: this.fb.array([] as FormControl<string>[]),
   });
+  public createLink = ROOT_PATHS_URLS.createLink;
+
+  public trackByTagFn = trackByTagFn;
+
+  public filterHint = '';
+  public linkHint = '';
+
+  private selectedUUIDs = new BehaviorSubject<string[]>([]);
 
   constructor(private linkService: LinkService,
-              private fb: UntypedFormBuilder,
+              private fb: NonNullableFormBuilder,
               private filterService: FilterService,
+              private tagService: FirestoreTagService,
               private router: Router,
               private fav: FavIconService,
               private openLinkService: OpenLinkService,
+              private cdRef: ChangeDetectorRef,
   ) {
   }
 
@@ -71,6 +113,10 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
 
   get searchTagControl() {
     return this.searchForm.get('searchTags') as UntypedFormControl
+  }
+
+  get tagUUIDControl() {
+    return this.searchForm.get('selectedTagsUUID') as FormArray<FormControl<string>>
   }
 
   ngOnInit(): void {
@@ -83,9 +129,15 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
     this.searchForm.valueChanges
       .pipe(
         takeUntil(this.onDestroy),
-        debounceTime(200),
+        debounceTime(100),
+        map(filters => ({
+          // lowercase all search strings
+          searchString: filters.searchString?.toLowerCase(),
+          selectedTagsUUID: filters.selectedTagsUUID,
+          searchTags: filters.searchTags?.toLowerCase(),
+        } as LinkFilters)),
       )
-      .subscribe((filters: LinkFilters) => {
+      .subscribe((filters) => {
         this.filterService.setLinkFilters(filters);
       });
 
@@ -96,21 +148,45 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
       this.dataSource.data = links;
       this.dataSource._updateChangeSubscription();
     })
+
+    // hint text for tags
+    this.tagService.tags$.pipe(
+      combineLatestWith(this.filterService.filteredTags$),
+      takeUntil(this.onDestroy),
+      map(([tags, filteredTags]) => `${tags.length - filteredTags.length} / ${tags.length}`),
+      distinctUntilChanged(),
+    ).subscribe(filterHint => {
+      this.filterHint = filterHint;
+      this.cdRef.markForCheck();
+    });
+
+    // hint text for links
+    this.linkService.links$.pipe(
+      combineLatestWith(this.filterService.filteredLinks$),
+      takeUntil(this.onDestroy),
+      map(([links, filteredLinks]) => `${filteredLinks.length} / ${links.length}`),
+      distinctUntilChanged(),
+    ).subscribe(linkHint => {
+      this.linkHint = linkHint;
+      this.cdRef.markForCheck();
+    });
+
+    this.filterService.searchTagUUIDs$.pipe(
+      takeUntil(this.onDestroy),
+    ).subscribe(selectedTagUUIDs => {
+      this.selectedUUIDs.next(selectedTagUUIDs);
+      this.cdRef.markForCheck();
+    })
   }
 
   edit($event: MouseEvent, element: Link) {
     $event.stopPropagation();
-    this.router.navigate([PATHS_URLS.links, element.id])
+    return this.router.navigate([PATHS_URLS.links, element.uuid])
   }
 
   delete($event: MouseEvent, element: Link) {
     $event.stopPropagation();
     return this.linkService.delete(element);
-  }
-
-  getBestIcon(element: Link) {
-    if (!element.icons) return undefined;
-    return this.fav.getBestIcon(element.icons);
   }
 
   ngAfterViewInit(): void {
@@ -124,11 +200,35 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
     this.onDestroy.complete();
   }
 
+  rowClicked(row: Link) {
+    this.openLinkService.openLink(row);
+  }
+
+  tagClicked(tag: Tag, change: MatChipSelectionChange) {
+    if(!change.isUserInput){
+      return;
+    }
+
+    if(change.selected){
+      const formControl = this.fb.control(tag.uuid);
+      this.tagUUIDControl.push(formControl);
+    }else{
+      for(let i = 0; i < this.tagUUIDControl.length; i++){
+        const control = this.tagUUIDControl.at(i);
+        console.info("CONTROL",control.value);
+        if(control.value === tag.uuid){
+          this.tagUUIDControl.removeAt(i);
+          break;
+        }
+      }
+    }
+  }
+
   cancelClick($event: MouseEvent) {
     $event.stopPropagation();
   }
 
-  rowClicked(row: Link) {
-    this.openLinkService.openLink(row);
+  isTagSelected(tag: Tag):boolean {
+    return this.selectedUUIDs.value.includes(tag.uuid);
   }
 }

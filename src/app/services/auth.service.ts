@@ -13,7 +13,7 @@ import {
 import {from, map, ReplaySubject, shareReplay} from 'rxjs';
 import {NotificationService} from './notification.service';
 import {Router} from '@angular/router';
-import {PATHS_URLS} from '../../urls';
+import {PATHS_URLS} from '../urls';
 
 @Injectable({
   providedIn: 'root',

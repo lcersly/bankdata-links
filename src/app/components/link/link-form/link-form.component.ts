@@ -79,20 +79,8 @@ export class LinkFormComponent implements ControlValueAccessor, Validator, OnDes
     return this.form.get('description') as UntypedFormControl
   }
 
-  public get sectionControl(): UntypedFormControl {
-    return this.form.get('section') as UntypedFormControl
-  }
-
-  public get pathControl(): UntypedFormControl {
-    return this.form.get('path') as UntypedFormControl
-  }
-
   public get tagsControl(): UntypedFormControl {
     return this.form.get('tags') as UntypedFormControl
-  }
-
-  public get iconControl(): UntypedFormControl {
-    return this.form.get('icons') as UntypedFormControl
   }
 
   onChange: ((data: any) => void) = () => {

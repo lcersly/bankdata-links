@@ -1,9 +1,9 @@
 import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from '@angular/core';
 import {ReactiveFormsModule, UntypedFormControl} from '@angular/forms';
-import {LinkService} from '../../../shared/services/link.service';
-import {NotificationService} from '../../../shared/services/notification.service';
-import {FavIconService} from '../../../shared/services/fav-icon.service';
-import {Link} from '../../../shared/models/link.model';
+import {LinkService} from '../../../services/link.service';
+import {NotificationService} from '../../../services/notification.service';
+import {FavIconService} from '../../../services/fav-icon.service';
+import {Link} from '../../../models/link.model';
 import {Subject, takeUntil} from 'rxjs';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {MatDialog} from '@angular/material/dialog';
@@ -30,7 +30,7 @@ export class EditLinkComponent implements OnInit, OnDestroy {
 
   private onDestroy = new Subject<void>();
 
-  private id: string | undefined;
+  private uuid: string | undefined;
   public link = new UntypedFormControl()
   public orgLink: Link | undefined;
 
@@ -47,7 +47,7 @@ export class EditLinkComponent implements OnInit, OnDestroy {
     this.route.data
       .pipe(takeUntil(this.onDestroy))
       .subscribe(({link}) => {
-        this.id = link.id;
+        this.uuid = link.uuid;
         this.orgLink = link;
         this.link.patchValue(link);
       })
@@ -66,7 +66,7 @@ export class EditLinkComponent implements OnInit, OnDestroy {
 
     let link: Link = {
       ...this.link.value,
-      id: this.id,
+      uuid: this.uuid,
     };
     await this.linkService.edit(link);
 
