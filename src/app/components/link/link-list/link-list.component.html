@@ -48,10 +48,11 @@
   <ng-container matColumnDef="tags">
     <mat-header-cell *matHeaderCellDef>Tags</mat-header-cell>
     <mat-cell *matCellDef="let element">
-      <mat-chip-listbox>
+      <mat-chip-listbox [multiple]="true">
         <mat-chip-option *ngFor="let tag of element.tags; trackBy: trackByTagFn"
                          [matTooltip]="tag.description"
                          [selectable]="true"
+                         [selected]="isTagSelected(tag)"
                          matTooltipPosition="above"
                          (selectionChange)="tagClicked(tag, $event)"
                          (click)="cancelClick($event)"

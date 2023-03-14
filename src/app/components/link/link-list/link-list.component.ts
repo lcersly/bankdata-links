@@ -8,8 +8,23 @@ import {
   ViewChild,
 } from '@angular/core';
 import {Link} from '../../../models/link.model';
-import {combineLatestWith, debounceTime, distinctUntilChanged, first, map, Subject, takeUntil} from 'rxjs';
-import {FormArray, FormControl, NonNullableFormBuilder, ReactiveFormsModule, UntypedFormControl} from '@angular/forms';
+import {
+  BehaviorSubject,
+  combineLatestWith,
+  debounceTime,
+  distinctUntilChanged,
+  first,
+  map,
+  Subject,
+  takeUntil,
+} from 'rxjs';
+import {
+  FormArray,
+  FormControl,
+  NonNullableFormBuilder,
+  ReactiveFormsModule,
+  UntypedFormControl,
+} from '@angular/forms';
 import {LinkService} from '../../../services/link.service';
 import {FilterService, LinkFilters} from '../../../services/filter.service';
 import {MatSort, MatSortModule} from '@angular/material/sort';
@@ -79,6 +94,8 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
   public filterHint = '';
   public linkHint = '';
 
+  private selectedUUIDs = new BehaviorSubject<string[]>([]);
+
   constructor(private linkService: LinkService,
               private fb: NonNullableFormBuilder,
               private filterService: FilterService,
@@ -96,6 +113,10 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
 
   get searchTagControl() {
     return this.searchForm.get('searchTags') as UntypedFormControl
+  }
+
+  get tagUUIDControl() {
+    return this.searchForm.get('selectedTagsUUID') as FormArray<FormControl<string>>
   }
 
   ngOnInit(): void {
@@ -149,6 +170,13 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
       this.linkHint = linkHint;
       this.cdRef.markForCheck();
     });
+
+    this.filterService.searchTagUUIDs$.pipe(
+      takeUntil(this.onDestroy),
+    ).subscribe(selectedTagUUIDs => {
+      this.selectedUUIDs.next(selectedTagUUIDs);
+      this.cdRef.markForCheck();
+    })
   }
 
   edit($event: MouseEvent, element: Link) {
@@ -177,10 +205,30 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   tagClicked(tag: Tag, change: MatChipSelectionChange) {
-    console.info(tag, change)
+    if(!change.isUserInput){
+      return;
+    }
+
+    if(change.selected){
+      const formControl = this.fb.control(tag.uuid);
+      this.tagUUIDControl.push(formControl);
+    }else{
+      for(let i = 0; i < this.tagUUIDControl.length; i++){
+        const control = this.tagUUIDControl.at(i);
+        console.info("CONTROL",control.value);
+        if(control.value === tag.uuid){
+          this.tagUUIDControl.removeAt(i);
+          break;
+        }
+      }
+    }
   }
 
   cancelClick($event: MouseEvent) {
     $event.stopPropagation();
+  }
+
+  isTagSelected(tag: Tag):boolean {
+    return this.selectedUUIDs.value.includes(tag.uuid);
   }
 }

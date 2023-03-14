@@ -1,5 +1,13 @@
 import {Injectable} from '@angular/core';
-import {BehaviorSubject, combineLatestWith, distinctUntilChanged, map, Observable, shareReplay, startWith} from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatestWith,
+  distinctUntilChanged,
+  map,
+  Observable,
+  shareReplay,
+  startWith,
+} from 'rxjs';
 import {LinkService} from './link.service';
 import {Link, linkMatches} from '../models/link.model';
 import {Tag, tagMatches} from '../models/tag.model';
@@ -43,6 +51,13 @@ export class FilterService {
     shareReplay(1),
   )
 
+  public readonly searchTagUUIDs$:Observable<string[]> = this.linkFilters$.pipe(
+    map(filters => filters.selectedTagsUUID || []),
+    startWith([]),
+    distinctUntilChanged(),
+    shareReplay(1),
+  )
+
   public readonly filteredLinks$:Observable<Link[]> = this.filteredTags$.pipe(
     combineLatestWith(this.linkService.links$, this.searchString$),
     map(([matchedTags, links, searchString]) => {
@@ -60,6 +75,7 @@ export class FilterService {
   }
 
   setLinkFilters(filters: Partial<LinkFilters>) {
+    console.info("Filters", filters);
     this.linkFilters$.next(filters);
   }
 }
