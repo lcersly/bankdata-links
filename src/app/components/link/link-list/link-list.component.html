@@ -6,6 +6,7 @@
             matSuffix>
       <mat-icon>close</mat-icon>
     </button>
+    <mat-hint align="end">{{linkHint}}</mat-hint>
   </mat-form-field>
 
   <mat-form-field appearance="outline">
@@ -15,6 +16,7 @@
             matSuffix>
       <mat-icon>close</mat-icon>
     </button>
+    <mat-hint align="end">{{filterHint}}</mat-hint>
   </mat-form-field>
 </div>
 
@@ -36,8 +38,10 @@
 
   <ng-container matColumnDef="name">
     <mat-header-cell *matHeaderCellDef mat-sort-header="name"> Name</mat-header-cell>
-    <mat-cell *matCellDef="let element">
-      <span [matTooltip]="element.description">{{element.name}}</span>
+    <mat-cell *matCellDef="let element" [matTooltip]="element.description">
+      <a [href]="element.url" class="no-link-style">
+        {{element.name}}
+      </a>
     </mat-cell>
   </ng-container>
 
@@ -45,10 +49,11 @@
     <mat-header-cell *matHeaderCellDef>Tags</mat-header-cell>
     <mat-cell *matCellDef="let element">
       <mat-chip-listbox>
-        <mat-chip-option *ngFor="let tag of element.tags"
+        <mat-chip-option *ngFor="let tag of element.tags; trackBy: trackByTagFn"
                          [matTooltip]="tag.description"
-                         [selectable]="false"
+                         [selectable]="true"
                          matTooltipPosition="above"
+                         (selectionChange)="tagClicked(tag, $event)"
                          (click)="cancelClick($event)"
         >
           {{tag.key}}

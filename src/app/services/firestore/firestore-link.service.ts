@@ -68,7 +68,7 @@ export class FirestoreLinkService {
 }
 
 function convertLinkToDatabase(link: Link): LinkDatabase {
-  const stringTags = link.tags.map(tag => tag.key);
+  const stringTags = link.tags.map(tag => tag.uuid);
   const {uuid, ...everythingElse} = link;
   return {...everythingElse, tags: stringTags};
 }

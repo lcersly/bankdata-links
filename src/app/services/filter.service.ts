@@ -1,66 +1,65 @@
 import {Injectable} from '@angular/core';
-import {BehaviorSubject, combineLatest, map, shareReplay, startWith} from 'rxjs';
+import {BehaviorSubject, combineLatestWith, distinctUntilChanged, map, Observable, shareReplay, startWith} from 'rxjs';
 import {LinkService} from './link.service';
-import {Link} from '../models/link.model';
-import {Tag} from '../models/tag.model';
+import {Link, linkMatches} from '../models/link.model';
+import {Tag, tagMatches} from '../models/tag.model';
+import {FirestoreTagService} from './firestore/firestore-tag.service';
 
 export type LinkFilters = {
   searchString: string,
-  searchTags: string
+  searchTags: string,
+  selectedTagsUUID: string[],
 };
 
 @Injectable({
   providedIn: 'root',
 })
 export class FilterService {
-  public readonly linkFilters$ = new BehaviorSubject<LinkFilters>({searchString: '', searchTags: ''});
+  public readonly linkFilters$ = new BehaviorSubject<Partial<LinkFilters>>({
+    searchString: '',
+    searchTags: '',
+    selectedTagsUUID: [],
+  });
 
-  public readonly filteredLinks$ = combineLatest([this.linkFilters$, this.linkService.links$]).pipe(
-    map(([filter, links]) => links.filter(link => this.matches(link, filter))),
+  public readonly filteredTags$ = this.linkFilters$.pipe(
+    combineLatestWith(this.tagService.tags$),
+    map(([filters, tags]) => {
+      let filteredTags:Tag[] = []
+
+      if (filters.searchString || filters.searchTags || (filters.selectedTagsUUID && filters.selectedTagsUUID.length > 0)) {
+        filteredTags = tags.filter(tag => tagMatches(tag, filters))
+      }
+      console.debug("Re-filtered the tags to", filteredTags)
+
+      return filteredTags;
+    }),
+    distinctUntilChanged(),
+    shareReplay(1)
+  );
+
+  public readonly searchString$ = this.linkFilters$.pipe(
+    map(filters => filters.searchString),
+    distinctUntilChanged(),
     shareReplay(1),
-    startWith([]),
   )
 
-  private matches(link: Link, filters: LinkFilters) {
-    // search through tags
-    const delimit = '◬';
-    if (filters.searchTags) {
-      const found = link.tags
-        .reduce((prevValue: string, t: Tag) => prevValue + delimit + t.key + delimit + t.description, '')
-        .indexOf(filters.searchTags) != -1;
-      if (!found) {
-        return false;
+  public readonly filteredLinks$:Observable<Link[]> = this.filteredTags$.pipe(
+    combineLatestWith(this.linkService.links$, this.searchString$),
+    map(([matchedTags, links, searchString]) => {
+      if(matchedTags.length == 0 && !searchString){
+        return links;
       }
-    }
+      return links.filter(link => linkMatches(link, matchedTags, searchString));
+    }),
+    distinctUntilChanged(),
+    startWith([]),
+    shareReplay(1),
+  )
 
-    if (!filters.searchString) {
-      return true; // match all if there is no search string
-    }
-
-    // ** Copied from MatTableDataSource **
-    // Transform the data into a lowercase string of all property values.
-    const dataStr = Object.keys(link as unknown as Record<string, any>)
-      .reduce((currentTerm: string, key: string) => {
-        // Use an obscure Unicode character to delimit the words in the concatenated string.
-        // This avoids matches where the values of two columns combined will match the user's query
-        // (e.g. `Flute` and `Stop` will match `Test`). The character is intended to be something
-        // that has a very low chance of being typed in by somebody in a text field. This one in
-        // particular is "White up-pointing triangle with dot" from
-        // https://en.wikipedia.org/wiki/List_of_Unicode_characters
-        return currentTerm + (link as unknown as Record<string, any>)[key] + delimit;
-      }, '')
-      .toLowerCase();
-
-    // Transform the filter by converting it to lowercase and removing whitespace.
-    const transformedFilter = filters.searchString.trim().toLowerCase();
-
-    return dataStr.indexOf(transformedFilter) != -1;
+  constructor(private linkService: LinkService, private tagService: FirestoreTagService) {
   }
 
-  constructor(private linkService: LinkService) {
-  }
-
-  setLinkFilters(filters: LinkFilters) {
+  setLinkFilters(filters: Partial<LinkFilters>) {
     this.linkFilters$.next(filters);
   }
 }

@@ -1,7 +1,15 @@
-import {AfterViewInit, ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import {Link} from '../../../models/link.model';
-import {debounceTime, first, Subject, takeUntil} from 'rxjs';
-import {ReactiveFormsModule, UntypedFormBuilder, UntypedFormControl} from '@angular/forms';
+import {combineLatestWith, debounceTime, distinctUntilChanged, first, map, Subject, takeUntil} from 'rxjs';
+import {FormArray, FormControl, NonNullableFormBuilder, ReactiveFormsModule, UntypedFormControl} from '@angular/forms';
 import {LinkService} from '../../../services/link.service';
 import {FilterService, LinkFilters} from '../../../services/filter.service';
 import {MatSort, MatSortModule} from '@angular/material/sort';
@@ -15,9 +23,17 @@ import {NgForOf, NgIf} from '@angular/common';
 import {MatButtonModule} from '@angular/material/button';
 import {MatInputModule} from '@angular/material/input';
 import {MatTooltipModule} from '@angular/material/tooltip';
-import {MatChipsModule} from '@angular/material/chips';
+import {MatChipSelectionChange, MatChipsModule} from '@angular/material/chips';
 import {OpenLinkService} from '../../../services/open-link.service';
 import {PATHS_URLS, ROOT_PATHS_URLS} from '../../../urls';
+import {Tag, trackByTagFn} from '../../../models/tag.model';
+import {FirestoreTagService} from '../../../services/firestore/firestore-tag.service';
+
+type SearchForm = {
+  searchString: FormControl<string>,
+  searchTags: FormControl<string>,
+  selectedTagsUUID: FormArray<FormControl<string>>
+};
 
 @Component({
   selector: 'app-link-list',
@@ -51,18 +67,26 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild(MatSort) matSort: MatSort | undefined
   private onDestroy = new Subject<void>();
 
-  searchForm = this.fb.group({
+  searchForm = this.fb.group<SearchForm>({
     searchString: this.fb.control(''),
     searchTags: this.fb.control(''),
+    selectedTagsUUID: this.fb.array([] as FormControl<string>[]),
   });
-  createLink = ROOT_PATHS_URLS.createLink;
+  public createLink = ROOT_PATHS_URLS.createLink;
+
+  public trackByTagFn = trackByTagFn;
+
+  public filterHint = '';
+  public linkHint = '';
 
   constructor(private linkService: LinkService,
-              private fb: UntypedFormBuilder,
+              private fb: NonNullableFormBuilder,
               private filterService: FilterService,
+              private tagService: FirestoreTagService,
               private router: Router,
               private fav: FavIconService,
               private openLinkService: OpenLinkService,
+              private cdRef: ChangeDetectorRef,
   ) {
   }
 
@@ -84,9 +108,15 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
     this.searchForm.valueChanges
       .pipe(
         takeUntil(this.onDestroy),
-        debounceTime(200),
+        debounceTime(100),
+        map(filters => ({
+          // lowercase all search strings
+          searchString: filters.searchString?.toLowerCase(),
+          selectedTagsUUID: filters.selectedTagsUUID,
+          searchTags: filters.searchTags?.toLowerCase(),
+        } as LinkFilters)),
       )
-      .subscribe((filters: LinkFilters) => {
+      .subscribe((filters) => {
         this.filterService.setLinkFilters(filters);
       });
 
@@ -97,11 +127,33 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
       this.dataSource.data = links;
       this.dataSource._updateChangeSubscription();
     })
+
+    // hint text for tags
+    this.tagService.tags$.pipe(
+      combineLatestWith(this.filterService.filteredTags$),
+      takeUntil(this.onDestroy),
+      map(([tags, filteredTags]) => `${tags.length - filteredTags.length} / ${tags.length}`),
+      distinctUntilChanged(),
+    ).subscribe(filterHint => {
+      this.filterHint = filterHint;
+      this.cdRef.markForCheck();
+    });
+
+    // hint text for links
+    this.linkService.links$.pipe(
+      combineLatestWith(this.filterService.filteredLinks$),
+      takeUntil(this.onDestroy),
+      map(([links, filteredLinks]) => `${filteredLinks.length} / ${links.length}`),
+      distinctUntilChanged(),
+    ).subscribe(linkHint => {
+      this.linkHint = linkHint;
+      this.cdRef.markForCheck();
+    });
   }
 
   edit($event: MouseEvent, element: Link) {
     $event.stopPropagation();
-    this.router.navigate([PATHS_URLS.links, element.uuid])
+    return this.router.navigate([PATHS_URLS.links, element.uuid])
   }
 
   delete($event: MouseEvent, element: Link) {
@@ -120,11 +172,15 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
     this.onDestroy.complete();
   }
 
-  cancelClick($event: MouseEvent) {
-    $event.stopPropagation();
-  }
-
   rowClicked(row: Link) {
     this.openLinkService.openLink(row);
+  }
+
+  tagClicked(tag: Tag, change: MatChipSelectionChange) {
+    console.info(tag, change)
+  }
+
+  cancelClick($event: MouseEvent) {
+    $event.stopPropagation();
   }
 }

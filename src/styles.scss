@@ -53,12 +53,19 @@ body {
 
 .centered-content {
   max-width: 1200px;
+  padding: 1em;
   margin: auto;
 }
 
 .simple-form {
   margin: auto;
   max-width: 500px;
+}
+
+.no-link-style{
+  color: inherit;
+  text-decoration: inherit;
+  font-style: inherit;
 }
 
 mat-row .hide-until-hover {

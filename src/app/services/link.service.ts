@@ -5,6 +5,7 @@ import {FirestoreTagService} from './firestore/firestore-tag.service';
 import {Link} from '../models/link.model';
 import {NotificationService} from './notification.service';
 import {Tag} from '../models/tag.model';
+import {reduceLinkToSearchableString} from '../shared/reducer';
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +14,7 @@ export class LinkService {
   public links$: Observable<Link[]> = this.fireLinkService.allLinks$
     .pipe(
       combineLatestWith(this.firestoreTagService.tags$),
-      map(([links, tags]) => links.map(link => convertDatabaseToLink(link, tags))),
+      map(([links, tags]) => links.map(link => convertDatabaseObjectToLink(link, tags))),
       shareReplay(1),
     )
 
@@ -43,13 +44,17 @@ export class LinkService {
   }
 }
 
-function convertDatabaseToLink(link: LinkDatabaseAndId, tags: Tag[]): Link {
-  let mappedTags = link.link.tags
+function convertDatabaseObjectToLink(object: LinkDatabaseAndId, tags: Tag[]): Link {
+  const link = object.link;
+  let mappedTags = link.tags
     .map(uuid => tags.find(tag => tag.uuid === uuid))
     .filter(tag => !!tag) as Tag[];
   return {
-    ...link.link,
-    uuid: link.uuid,
-    tags: mappedTags
+    url: link.url,
+    description: link.description,
+    name: link.name,
+    uuid: object.uuid,
+    tags: mappedTags,
+    searchString: reduceLinkToSearchableString(link.name, link.url, link.description)
   }
 }

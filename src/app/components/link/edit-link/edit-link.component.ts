@@ -30,7 +30,7 @@ export class EditLinkComponent implements OnInit, OnDestroy {
 
   private onDestroy = new Subject<void>();
 
-  private id: string | undefined;
+  private uuid: string | undefined;
   public link = new UntypedFormControl()
   public orgLink: Link | undefined;
 
@@ -47,7 +47,7 @@ export class EditLinkComponent implements OnInit, OnDestroy {
     this.route.data
       .pipe(takeUntil(this.onDestroy))
       .subscribe(({link}) => {
-        this.id = link.id;
+        this.uuid = link.uuid;
         this.orgLink = link;
         this.link.patchValue(link);
       })
@@ -66,7 +66,7 @@ export class EditLinkComponent implements OnInit, OnDestroy {
 
     let link: Link = {
       ...this.link.value,
-      id: this.id,
+      uuid: this.uuid,
     };
     await this.linkService.edit(link);
 

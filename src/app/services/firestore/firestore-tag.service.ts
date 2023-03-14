@@ -12,6 +12,7 @@ import {
 import {first, map, Observable, ReplaySubject} from 'rxjs';
 import {FirestoreDataConverter, QueryDocumentSnapshot} from 'firebase/firestore';
 import {keyMatchesTag, Tag} from '../../models/tag.model';
+import {reduceTagToSearchableString} from '../../shared/reducer';
 
 interface DatabaseTag {
   key: string;
@@ -93,6 +94,7 @@ const converter: FirestoreDataConverter<Tag> = {
       key: documentData.key,
       description: documentData.description,
       uuid: snapshot.id,
+      searchString: reduceTagToSearchableString(documentData.key, documentData.description)
     }
   },
 }
