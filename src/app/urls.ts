@@ -6,7 +6,7 @@ export const PATHS_URLS = {
   login: 'login'
 } as const;
 
-export const ROOT_PATHS_URLS = {
+export const FULL_PATHS_URLS = {
   links: '/' + PATHS_URLS.links,
   createLink: '/' + PATHS_URLS.createLink,
   tags: '/' + PATHS_URLS.tags,

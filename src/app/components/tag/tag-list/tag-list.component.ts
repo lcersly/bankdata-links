@@ -9,7 +9,7 @@ import {MatInputModule} from '@angular/material/input';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
-import {PATHS_URLS} from '../../../urls';
+import {PATHS_URLS, FULL_PATHS_URLS} from '../../../urls';
 import {Tag} from '../../../models/tag.model';
 import {CreateButtonComponent} from '../../../shared/components/create-button/create-button.component';
 
@@ -35,7 +35,7 @@ export class TagListComponent implements OnInit, AfterViewInit {
   dataSource = new MatTableDataSource<Tag>([]);
   selection = new SelectionModel<Tag>(true, []);
 
-  public createUrl = PATHS_URLS.createTag;
+  public createUrl = FULL_PATHS_URLS.createTag;
 
   @ViewChild(MatSort) sort: MatSort | undefined;
 

@@ -13,7 +13,7 @@ import {AuthService} from './services/auth.service';
 import {first} from 'rxjs';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {NgForOf} from '@angular/common';
-import {ROOT_PATHS_URLS} from './urls';
+import {FULL_PATHS_URLS} from './urls';
 import {IfLoggedInDirective} from './directives/if-logged-in.directive';
 
 @Component({
@@ -42,8 +42,8 @@ export class AppComponent implements OnInit {
 
   toggleControl = new FormControl(false);
   links = [
-    {route: ROOT_PATHS_URLS.links, display: 'Links'},
-    {route: ROOT_PATHS_URLS.tags, display: 'Tags'},
+    {route: FULL_PATHS_URLS.links, display: 'Links'},
+    {route: FULL_PATHS_URLS.tags, display: 'Tags'},
   ];
   // activeLink = this.links[0];
   title = 'BD Links';

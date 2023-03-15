@@ -40,7 +40,7 @@ import {MatInputModule} from '@angular/material/input';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatChipSelectionChange, MatChipsModule} from '@angular/material/chips';
 import {OpenLinkService} from '../../../services/open-link.service';
-import {PATHS_URLS, ROOT_PATHS_URLS} from '../../../urls';
+import {PATHS_URLS, FULL_PATHS_URLS} from '../../../urls';
 import {Tag, trackByTagFn} from '../../../models/tag.model';
 import {FirestoreTagService} from '../../../services/firestore/firestore-tag.service';
 
@@ -87,7 +87,7 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
     searchTags: this.fb.control(''),
     selectedTagsUUID: this.fb.array([] as FormControl<string>[]),
   });
-  public createLink = ROOT_PATHS_URLS.createLink;
+  public createLink = FULL_PATHS_URLS.createLink;
 
   public trackByTagFn = trackByTagFn;
 
