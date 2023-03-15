@@ -44,6 +44,7 @@ export class AppComponent implements OnInit {
   links = [
     {route: FULL_PATHS_URLS.links, display: 'Links'},
     {route: FULL_PATHS_URLS.tags, display: 'Tags'},
+    {route: FULL_PATHS_URLS.help, display: 'Help'},
   ];
   // activeLink = this.links[0];
   title = 'BD Links';

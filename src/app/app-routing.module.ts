@@ -11,9 +11,10 @@ import {LinkResolveFn} from './resolvers/link-resolve-fn';
 import {LoginComponent} from './components/login/login/login.component';
 import {canActivate, redirectLoggedInTo, redirectUnauthorizedTo} from '@angular/fire/auth-guard';
 import {PATHS_URLS} from './urls';
+import {HelpComponent} from './components/help/help.component';
 
-const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
-const redirectLoggedInToItems = () => redirectLoggedInTo(['link']);
+const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo([PATHS_URLS.login]);
+const redirectLoggedInToItems = () => redirectLoggedInTo([PATHS_URLS.links]);
 
 const routes: Routes = [
   {path: '', pathMatch: 'full', redirectTo: PATHS_URLS.links},
@@ -50,6 +51,7 @@ const routes: Routes = [
     ],
     ...canActivate(redirectUnauthorizedToLogin),
   },
+  {path: PATHS_URLS.help, component: HelpComponent, ...canActivate(redirectUnauthorizedToLogin)},
   {path: PATHS_URLS.login, component: LoginComponent, ...canActivate(redirectLoggedInToItems)},
 ];
 
