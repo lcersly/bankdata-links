@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, HostListener, OnDestroy, OnInit} from '@angular/core';
 import {ReactiveFormsModule, UntypedFormControl} from '@angular/forms';
 import {LinkService} from '../../../services/link.service';
 import {NotificationService} from '../../../services/notification.service';
@@ -46,7 +46,8 @@ export class EditLinkComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.route.data
       .pipe(takeUntil(this.onDestroy))
-      .subscribe(({link}) => {
+      .subscribe((data) => {
+        const link = data['link'] as Link;
         this.uuid = link.uuid;
         this.orgLink = link;
         this.link.patchValue(link);
@@ -58,6 +59,7 @@ export class EditLinkComponent implements OnInit, OnDestroy {
     this.onDestroy.complete();
   }
 
+  @HostListener('window:keydown.enter')
   async save() {
     this.link.markAllAsTouched();
     if (!this.link.valid) {
@@ -73,7 +75,8 @@ export class EditLinkComponent implements OnInit, OnDestroy {
     this.navigateBack();
   }
 
-  private navigateBack() {
+  @HostListener('window:keydown.esc')
+  public navigateBack() {
     this.router.navigate(['..'], {relativeTo: this.route})
   }
 

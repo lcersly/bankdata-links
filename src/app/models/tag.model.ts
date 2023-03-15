@@ -30,22 +30,18 @@ export const trackByTagFn: TrackByFunction<Tag> = (index, tag) => {
 export function tagMatches(tag: Tag, filters: Partial<LinkFilters>): boolean {
   // search for an uuid match
   if (filters.selectedTagsUUID?.length && filters.selectedTagsUUID.includes(tag.uuid)) {
-    console.debug('tag match found from selectedTagsUUID', tag);
     return true
   }
 
   if (filters.searchTags && tag.searchString.includes(filters.searchTags)) {
-    console.debug('tag match found from searchTag', tag);
     return true;
   }
 
   // search the compacted string version of the tag
+  // noinspection RedundantIfStatementJS
   if (filters.searchString && tag.searchString.includes(filters.searchString)) {
-    console.debug('tag match found from searchString', tag);
     return true;
   }
-
-  console.info("Found no tag match", tag, filters);
 
   return false;
 }

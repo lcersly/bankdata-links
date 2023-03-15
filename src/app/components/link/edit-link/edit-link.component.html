@@ -1,23 +1,22 @@
-<!--<app-top-bar title="Edit link">-->
+<div class="simple-form">
+  <h2>Edit link</h2>
 
-<!--</app-top-bar>-->
+  <form>
+    <app-link-form [formControl]="link"></app-link-form>
+  </form>
 
-<form>
-  <app-link-form [formControl]="link"></app-link-form>
-</form>
-
-<div class="actions">
-  <button mat-button routerLink="..">
-    Cancel
-    <mat-icon>backspace</mat-icon>
-  </button>
-  <button mat-button (click)="save()">
-    Save
-    <mat-icon>save</mat-icon>
-  </button>
-  <button color="warn" mat-button (click)="delete()">
-    Delete
-    <mat-icon>delete</mat-icon>
-  </button>
-
+  <div class="actions">
+    <button mat-button (click)="navigateBack()">
+      Cancel
+      <mat-icon>backspace</mat-icon>
+    </button>
+    <button mat-button (click)="save()">
+      Save
+      <mat-icon>save</mat-icon>
+    </button>
+    <button color="warn" mat-button (click)="delete()">
+      Delete
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
 </div>

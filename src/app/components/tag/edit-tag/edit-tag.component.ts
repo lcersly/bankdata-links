@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, HostListener, OnDestroy, OnInit} from '@angular/core';
 import {FirestoreTagService} from '../../../services/firestore/firestore-tag.service';
 import {Subject, takeUntil} from 'rxjs';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
@@ -35,7 +35,7 @@ export class EditTagComponent implements OnInit, OnDestroy {
     description: '',
     key: ['', Validators.required],
   });
-  private id: string | undefined;
+  private tagUuid: string | undefined;
 
   constructor(private tagService: FirestoreTagService,
               private route: ActivatedRoute,
@@ -48,9 +48,10 @@ export class EditTagComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.route.data
       .pipe(takeUntil(this.onDestroy))
-      .subscribe(({tag}) => {
+      .subscribe((data) => {
+        const tag = data['tag'] as Tag;
+        this.tagUuid = tag.uuid;
         this.form.patchValue(tag);
-        this.id = tag.id;
       })
   }
 
@@ -59,6 +60,7 @@ export class EditTagComponent implements OnInit, OnDestroy {
     this.onDestroy.complete();
   }
 
+  @HostListener('window:keydown.enter')
   async save() {
     this.form.markAllAsTouched();
     if (!this.form.valid) {
@@ -66,12 +68,13 @@ export class EditTagComponent implements OnInit, OnDestroy {
     }
 
     const tag: Tag = this.form.value;
-    await this.tagService.update(this.id!, tag.key, tag.description);
+    await this.tagService.update(this.tagUuid!, tag.key, tag.description);
     this.notifications.tag.edited();
-    this.navigateBack()
+    await this.navigateBack()
   }
 
-  private navigateBack() {
+  @HostListener('window:keydown.esc')
+  public navigateBack() {
     return this.router.navigate(['..'], {relativeTo: this.route})
   }
 

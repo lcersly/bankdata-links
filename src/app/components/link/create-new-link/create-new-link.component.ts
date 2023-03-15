@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, HostListener, OnInit} from '@angular/core';
 import {ReactiveFormsModule, UntypedFormControl} from '@angular/forms';
 import {environment} from '../../../../environments/environment';
 import {LinkService} from '../../../services/link.service';
@@ -10,7 +10,6 @@ import {BookmarkletComponent} from './bookmarklet/bookmarklet.component';
 import {NgIf} from '@angular/common';
 import {LinkFormComponent} from '../link-form/link-form.component';
 import {MatIconModule} from '@angular/material/icon';
-import {PATHS_URLS} from '../../../urls';
 
 @Component({
   selector: 'app-create-new-link',
@@ -60,6 +59,7 @@ export class CreateNewLinkComponent implements OnInit {
     }
   }
 
+  @HostListener('window:keydown.enter', ['$event'])
   async create() {
     this.link.markAllAsTouched();
     if (!this.link.valid) {
@@ -75,8 +75,13 @@ export class CreateNewLinkComponent implements OnInit {
     if (this.params?.useParams) {
       window.close();
     } else {
-      this.router.navigateByUrl(PATHS_URLS.links);
+      this.navigateBack()
     }
+  }
+
+  @HostListener('window:keydown.esc')
+  public navigateBack() {
+    this.router.navigate(['..'], {relativeTo: this.route})
   }
 
   parseRouteParams() {

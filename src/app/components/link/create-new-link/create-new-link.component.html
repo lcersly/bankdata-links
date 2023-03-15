@@ -1,13 +1,9 @@
-<!--<p *ngIf="!params || !params.useParams">-->
-<!--  <app-bookmarklet></app-bookmarklet>-->
-<!--</p>-->
-
 <div class="simple-form">
   <h2>Create new link</h2>
   <app-link-form [formControl]="link"></app-link-form>
 
   <div>
-    <button mat-button routerLink="..">
+    <button mat-button (click)="navigateBack()">
       Cancel
     </button>
     <button mat-button (click)="create()">

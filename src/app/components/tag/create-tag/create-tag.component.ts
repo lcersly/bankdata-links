@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component, HostListener} from '@angular/core';
 import {FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {FirestoreTagService} from '../../../services/firestore/firestore-tag.service';
 import {fieldHasError} from '../../../shared/util';
@@ -7,7 +7,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {NgIf} from '@angular/common';
 import {MatButtonModule} from '@angular/material/button';
-import {Router, RouterLink} from '@angular/router';
+import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {MatIconModule} from '@angular/material/icon';
 import {PATHS_URLS} from '../../../urls';
 
@@ -39,6 +39,7 @@ export class CreateTagComponent {
               private fireTagService: FirestoreTagService,
               private notification: NotificationService,
               private router: Router,
+              private route: ActivatedRoute,
   ) {
   }
 
@@ -50,6 +51,7 @@ export class CreateTagComponent {
     return this.form.get('description') as FormControl
   }
 
+  @HostListener('window:keydown.enter')
   async create() {
     this.form.markAllAsTouched();
     if (!this.form.valid) {
@@ -65,4 +67,9 @@ export class CreateTagComponent {
   }
 
   public hasError = fieldHasError;
+
+  @HostListener('window:keydown.esc')
+  public cancel() {
+    return this.router.navigate(['..'], {relativeTo: this.route})
+  }
 }

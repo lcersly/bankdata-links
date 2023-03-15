@@ -14,6 +14,8 @@
 }
 
 mat-table {
+  margin-top: $small-spacing;
+
   .mat-column-edit {
     flex: 0 0 $editButtonWidth;
   }

@@ -1,24 +1,25 @@
-<!--<app-top-bar title="Create new tag"></app-top-bar>-->
+<div class="simple-form">
+  <h2>Create new tag</h2>
+  <form>
+    <mat-form-field class="single-line-field">
+      <mat-label>Key</mat-label>
+      <input matInput placeholder="The key..." [formControl]="keyControl">
+      <mat-error *ngIf="hasError(keyControl, 'required')">Required</mat-error>
+    </mat-form-field>
 
-<form (ngSubmit)="create()">
-  <mat-form-field class="single-line-field">
-    <mat-label>Key</mat-label>
-    <input matInput placeholder="The key..." [formControl]="keyControl">
-    <mat-error *ngIf="hasError(keyControl, 'required')">Required</mat-error>
-  </mat-form-field>
+    <mat-form-field class="single-line-field">
+      <mat-label>Description</mat-label>
+      <input matInput placeholder="Extra description" [formControl]="descriptionControl">
+      <mat-error *ngIf="hasError(descriptionControl, 'required')">Required</mat-error>
+    </mat-form-field>
 
-  <mat-form-field class="single-line-field">
-    <mat-label>Description</mat-label>
-    <input matInput placeholder="Extra description" [formControl]="descriptionControl">
-    <mat-error *ngIf="hasError(descriptionControl, 'required')">Required</mat-error>
-  </mat-form-field>
-
-  <button mat-button routerLink="..">
-    Cancel
-    <mat-icon>backspace</mat-icon>
-  </button>
-  <button mat-button>
-    Create
-    <mat-icon>new_label</mat-icon>
-  </button>
-</form>
+    <button mat-button (click)="cancel()">
+      Cancel
+      <mat-icon>backspace</mat-icon>
+    </button>
+    <button mat-button (click)="create()">
+      Create
+      <mat-icon>new_label</mat-icon>
+    </button>
+  </form>
+</div>

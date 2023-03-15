@@ -29,7 +29,7 @@ export class FirestoreTagService {
 
   constructor(private readonly firestore: Firestore) {
     this.subscribeToTags();
-    this.tags$.subscribe(t => console.debug(`Service - Tags updated (${t.length})`, t));
+    // this.tags$.subscribe(t => console.debug(`Service - Tags updated (${t.length})`, t));
   }
 
   public hasMatchingTag(key: string): Observable<Tag | undefined> {
