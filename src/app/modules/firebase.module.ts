@@ -1,15 +1,20 @@
 import {NgModule} from '@angular/core';
-import {FirebaseAppModule, initializeApp, provideFirebaseApp} from '@angular/fire/app';
+import {FirebaseAppModule, getApp, initializeApp, provideFirebaseApp} from '@angular/fire/app';
 import {environment} from '../../environments/environment';
 import {AuthModule, connectAuthEmulator, getAuth, provideAuth} from '@angular/fire/auth';
-import {connectFirestoreEmulator, FirestoreModule, getFirestore, provideFirestore} from '@angular/fire/firestore';
+import {
+  connectFirestoreEmulator,
+  FirestoreModule,
+  initializeFirestore,
+  provideFirestore,
+} from '@angular/fire/firestore';
 import {connectFunctionsEmulator, getFunctions, provideFunctions} from '@angular/fire/functions';
 
 @NgModule({
   declarations: [],
   imports: [
     // firebase init
-    provideFirebaseApp(() => initializeApp(environment.firebase, {experimentalForceLongPolling: true} as any)),
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => {
       const auth = getAuth();
       if (environment.useEmulators) {
@@ -19,7 +24,7 @@ import {connectFunctionsEmulator, getFunctions, provideFunctions} from '@angular
       return auth;
     }),
     provideFirestore(() => {
-      const firestore = getFirestore();
+      const firestore = initializeFirestore(getApp(), {experimentalForceLongPolling: true});
       if (environment.useEmulators) {
         console.info('Using emulator for user firestore')
         connectFirestoreEmulator(firestore, 'localhost', 8080);
