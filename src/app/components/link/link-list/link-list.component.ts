@@ -18,13 +18,7 @@ import {
   Subject,
   takeUntil,
 } from 'rxjs';
-import {
-  FormArray,
-  FormControl,
-  NonNullableFormBuilder,
-  ReactiveFormsModule,
-  UntypedFormControl,
-} from '@angular/forms';
+import {FormArray, FormControl, NonNullableFormBuilder, ReactiveFormsModule, UntypedFormControl} from '@angular/forms';
 import {LinkService} from '../../../services/link.service';
 import {FilterService, LinkFilters} from '../../../services/filter.service';
 import {MatSort, MatSortModule} from '@angular/material/sort';
@@ -40,7 +34,7 @@ import {MatInputModule} from '@angular/material/input';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatChipSelectionChange, MatChipsModule} from '@angular/material/chips';
 import {OpenLinkService} from '../../../services/open-link.service';
-import {PATHS_URLS, FULL_PATHS_URLS} from '../../../urls';
+import {FULL_PATHS_URLS, PATHS_URLS} from '../../../urls';
 import {Tag, trackByTagFn} from '../../../models/tag.model';
 import {FirestoreTagService} from '../../../services/firestore/firestore-tag.service';
 
@@ -215,7 +209,6 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
     }else{
       for(let i = 0; i < this.tagUUIDControl.length; i++){
         const control = this.tagUUIDControl.at(i);
-        console.info("CONTROL",control.value);
         if(control.value === tag.uuid){
           this.tagUUIDControl.removeAt(i);
           break;

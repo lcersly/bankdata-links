@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {EMPTY, switchMap, tap} from 'rxjs';
+import {EMPTY, switchMap} from 'rxjs';
 import {environment} from '../../environments/environment';
 import {Icon} from '../models/icon.model';
 import {DomSanitizer} from '@angular/platform-browser';
@@ -31,7 +31,7 @@ export class FavIconService {
             apiResponse.icons,
           )
         })).pipe(
-        tap(data => console.info('Data received from backend', data)),
+        // tap(data => console.info('Data received from backend', data)),
       );
 
   }
