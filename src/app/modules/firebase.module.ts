@@ -9,11 +9,11 @@ import {connectFunctionsEmulator, getFunctions, provideFunctions} from '@angular
   declarations: [],
   imports: [
     // firebase init
-    provideFirebaseApp(() => initializeApp(environment.firebase)),
+    provideFirebaseApp(() => initializeApp(environment.firebase, {experimentalForceLongPolling: true} as any)),
     provideAuth(() => {
       const auth = getAuth();
       if (environment.useEmulators) {
-        console.info("Using emulator for authentication")
+        console.info('Using emulator for authentication')
         connectAuthEmulator(auth, 'http://localhost:9099', {disableWarnings: false});
       }
       return auth;
@@ -21,7 +21,7 @@ import {connectFunctionsEmulator, getFunctions, provideFunctions} from '@angular
     provideFirestore(() => {
       const firestore = getFirestore();
       if (environment.useEmulators) {
-        console.info("Using emulator for user firestore")
+        console.info('Using emulator for user firestore')
         connectFirestoreEmulator(firestore, 'localhost', 8080);
       }
       return firestore;
@@ -37,7 +37,7 @@ import {connectFunctionsEmulator, getFunctions, provideFunctions} from '@angular
   exports: [
     FirebaseAppModule,
     AuthModule,
-    FirestoreModule
+    FirestoreModule,
   ],
 })
 export class FirebaseModule {
