@@ -13,6 +13,7 @@
     "lint": "eslint --ext .ts src/",
     "functions:build": "cd functions && npm run build",
     "emulators:start": "npm run functions:build && firebase emulators:start --only firestore,functions,auth --export-on-exit=./saved-data --import=./saved-data --project=default",
+    "emulators:login": "npx firebase-tools login",
     "emulators:force-kill": "npx kill-port --port 8080,9099,5001"
   },
   "private": true,

@@ -1,0 +1,26 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="emulators:start (FAK)" type="js.build_tools.npm">
+    <package-json value="$PROJECT_DIR$/package.json"/>
+    <command value="run"/>
+    <scripts>
+      <script value="emulators:start"/>
+    </scripts>
+    <node-interpreter value="project"/>
+    <envs>
+      <env name="all_proxy" value="http://httpproxy.bdpnet.dk:8080"/>
+      <env name="cafile" value="C:\Users\bdulce\development\scripts\bdroot.crt"/>
+      <env name="dns_proxy" value="http://httpproxy.bdpnet.dk:8080"/>
+      <env name="ftp_proxy" value="http://httpproxy.bdpnet.dk:8080"/>
+      <env name="http-proxy" value="http://httpproxy.bdpnet.dk:8080"/>
+      <env name="http_proxy" value="http://httpproxy.bdpnet.dk:8080"/>
+      <env name="https-proxy" value="http://httpproxy.bdpnet.dk:8080"/>
+      <env name="https_proxy" value="http://httpproxy.bdpnet.dk:8080"/>
+      <env name="no_proxy" value=".bdpnet.dk,.bdbnet.dk,.bdunet.dk,localhost,127.0.0.1,.github.com"/>
+      <env name="proxy" value="http://httpproxy.bdpnet.dk:8080/"/>
+      <env name="rsync_proxy" value="http://httpproxy.bdpnet.dk:8080"/>
+      <env name="Path"
+           value="C:\Program Files\Eclipse Adoptium\jdk-11.0\bin;C:\ud-sys\tools;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files (x86)\IBM\Personal Communications\;C:\Program Files (x86)\IBM\Trace Facility\;C:\Udvikler\apache-maven-3.8.5\bin;C:\Udvikler\gradle\gradle-6.8.3\bin;C:\Users\bdulce\AppData\Roaming\nvm;C:\Program Files\nodejs;C:\Program Files\Git\cmd;C:\Users\bdulce\AppData\Local\pnpm;C:\Udvikler\GnuCOBOL\bin;C:\Users\bdulce\.zowe\bin;C:\Udvikler\Microsoft VS Code\bin;C:\Users\bdulce\AppData\Local\Programs\Python\Python310\Scripts\;C:\Users\bdulce\AppData\Local\Programs\Python\Python310\;C:\Users\bdulce\AppData\Local\Microsoft\WindowsApps;C:\Users\bdulce\AppData\Local\Programs\Fiddler;C:\Users\bdulce\AppData\Local\RedHat\OpenShift;C:\Users\bdulce\AppData\Roaming\npm;C:\Users\bdulce\AppData\Roaming\nvm;C:\Program Files\nodejs"/>
+    </envs>
+    <method v="2"/>
+  </configuration>
+</component>
