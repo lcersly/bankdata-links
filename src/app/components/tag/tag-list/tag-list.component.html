@@ -40,11 +40,21 @@
     <mat-cell *matCellDef="let element"> {{element.description}} </mat-cell>
   </ng-container>
 
+  <!-- Usages Column -->
+  <ng-container matColumnDef="usages">
+    <mat-header-cell *matHeaderCellDef> Usages</mat-header-cell>
+    <mat-cell *matCellDef="let element">
+      <button mat-button (click)="showLinksUsing(element)" *ngIf="getLinksUsing(element)">
+        {{getLinksUsing(element)}} usages
+      </button>
+    </mat-cell>
+  </ng-container>
+
   <!-- Edit Column -->
   <ng-container matColumnDef="edit">
     <mat-header-cell *matHeaderCellDef></mat-header-cell>
     <mat-cell *matCellDef="let element">
-      <button (click)="edit($event, element)" class="hide-until-hover" mat-icon-button>
+      <button (click)="edit($event, element)" mat-icon-button>
         <mat-icon>edit</mat-icon>
       </button>
     </mat-cell>
