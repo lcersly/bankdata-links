@@ -2,7 +2,6 @@ import {ChangeDetectionStrategy, Component, HostListener, OnDestroy, OnInit} fro
 import {ReactiveFormsModule, UntypedFormControl} from '@angular/forms';
 import {LinkService} from '../../../services/link.service';
 import {NotificationService} from '../../../services/notification.service';
-import {FavIconService} from '../../../services/fav-icon.service';
 import {Link} from '../../../models/link.model';
 import {Subject, takeUntil} from 'rxjs';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
@@ -36,7 +35,6 @@ export class EditLinkComponent implements OnInit, OnDestroy {
 
   constructor(private linkService: LinkService,
               private notifications: NotificationService,
-              private favIconService: FavIconService,
               private route: ActivatedRoute,
               private router: Router,
               private dialog: MatDialog,

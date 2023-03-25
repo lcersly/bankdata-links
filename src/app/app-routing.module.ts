@@ -1,5 +1,4 @@
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
+import {Routes} from '@angular/router';
 import {LinkListComponent} from './components/link/link-list/link-list.component';
 import {EditLinkComponent} from './components/link/edit-link/edit-link.component';
 import {CreateNewLinkComponent} from './components/link/create-new-link/create-new-link.component';
@@ -16,7 +15,7 @@ import {HelpComponent} from './components/help/help.component';
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo([PATHS_URLS.login]);
 const redirectLoggedInToItems = () => redirectLoggedInTo([PATHS_URLS.links]);
 
-const routes: Routes = [
+export const routes: Routes = [
   {path: '', pathMatch: 'full', redirectTo: PATHS_URLS.links},
   {
     path: PATHS_URLS.links, children: [
@@ -54,12 +53,3 @@ const routes: Routes = [
   {path: PATHS_URLS.help, component: HelpComponent, ...canActivate(redirectUnauthorizedToLogin)},
   {path: PATHS_URLS.login, component: LoginComponent, ...canActivate(redirectLoggedInToItems)},
 ];
-
-@NgModule({
-  imports: [RouterModule.forRoot(routes, {
-    // enableTracing: !environment.production
-  })],
-  exports: [RouterModule],
-})
-export class AppRoutingModule {
-}

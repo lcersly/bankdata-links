@@ -7,7 +7,6 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatTabsModule} from '@angular/material/tabs';
 import {FormControl, ReactiveFormsModule} from '@angular/forms';
 import {AuthService} from './services/auth.service';
-import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {NgForOf, NgIf} from '@angular/common';
 import {FULL_PATHS_URLS} from './urls';
 import {IfLoggedInDirective} from './directives/if-logged-in.directive';
@@ -29,7 +28,6 @@ import {UserAvatarComponent} from './shared/components/avatar/user-avatar.compon
     MatIconModule,
     MatTooltipModule,
     MatTabsModule,
-    MatSlideToggleModule,
     ReactiveFormsModule,
     RouterLink,
     NgForOf,

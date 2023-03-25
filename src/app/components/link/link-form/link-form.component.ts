@@ -19,7 +19,6 @@ import {TextFieldModule} from '@angular/cdk/text-field';
 import {MatInputModule} from '@angular/material/input';
 import {NgIf} from '@angular/common';
 import {TagSelectorComponent} from './tag-selector/tag-selector.component';
-import {IconFormComponent} from './icon-form/icon-form.component';
 
 @Component({
   selector: 'app-link-form',
@@ -46,7 +45,6 @@ import {IconFormComponent} from './icon-form/icon-form.component';
     NgIf,
     ReactiveFormsModule,
     TagSelectorComponent,
-    IconFormComponent,
   ],
 })
 export class LinkFormComponent implements ControlValueAccessor, Validator, OnDestroy, OnInit {
