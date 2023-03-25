@@ -28,7 +28,7 @@ import {FavIconService} from '../../../services/fav-icon.service';
 import {CreateButtonComponent} from '../../../shared/components/create-button/create-button.component';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
-import {NgForOf, NgIf} from '@angular/common';
+import {AsyncPipe, NgForOf, NgIf} from '@angular/common';
 import {MatButtonModule} from '@angular/material/button';
 import {MatInputModule} from '@angular/material/input';
 import {MatTooltipModule} from '@angular/material/tooltip';
@@ -37,6 +37,8 @@ import {OpenLinkService} from '../../../services/open-link.service';
 import {FULL_PATHS_URLS, PATHS_URLS} from '../../../urls';
 import {Tag, trackByTagFn} from '../../../models/tag.model';
 import {FirestoreTagService} from '../../../services/firestore/firestore-tag.service';
+import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
+import {LocalStorageService} from '../../../services/localstorage.service';
 
 type SearchForm = {
   searchString: FormControl<string>,
@@ -63,6 +65,8 @@ type SearchForm = {
     MatTooltipModule,
     MatChipsModule,
     NgForOf,
+    MatPaginatorModule,
+    AsyncPipe,
   ],
 })
 export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
@@ -73,7 +77,8 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
   ];
   dataSource = new MatTableDataSource<Link>([]);
 
-  @ViewChild(MatSort) matSort: MatSort | undefined
+  @ViewChild(MatSort) matSort: MatSort | undefined;
+  @ViewChild(MatPaginator) paginator: MatPaginator | undefined;
   private onDestroy = new Subject<void>();
 
   searchForm = this.fb.group<SearchForm>({
@@ -98,6 +103,7 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
               private fav: FavIconService,
               private openLinkService: OpenLinkService,
               private cdRef: ChangeDetectorRef,
+              public localStorageService: LocalStorageService,
   ) {
   }
 
@@ -187,6 +193,12 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.matSort) {
       this.dataSource.sort = this.matSort;
     }
+    if (this.paginator) {
+      this.dataSource.paginator = this.paginator;
+      this.paginator.page.subscribe(change =>
+        this.localStorageService.setPaginatorSize('links', change.pageSize)
+      )
+    }
   }
 
   ngOnDestroy(): void {
@@ -199,17 +211,17 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   tagClicked(tag: Tag, change: MatChipSelectionChange) {
-    if(!change.isUserInput){
+    if (!change.isUserInput) {
       return;
     }
 
-    if(change.selected){
+    if (change.selected) {
       const formControl = this.fb.control(tag.uuid);
       this.tagUUIDControl.push(formControl);
-    }else{
-      for(let i = 0; i < this.tagUUIDControl.length; i++){
+    } else {
+      for (let i = 0; i < this.tagUUIDControl.length; i++) {
         const control = this.tagUUIDControl.at(i);
-        if(control.value === tag.uuid){
+        if (control.value === tag.uuid) {
           this.tagUUIDControl.removeAt(i);
           break;
         }
@@ -221,7 +233,7 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
     $event.stopPropagation();
   }
 
-  isTagSelected(tag: Tag):boolean {
+  isTagSelected(tag: Tag): boolean {
     return this.selectedUUIDs.value.includes(tag.uuid);
   }
 }
