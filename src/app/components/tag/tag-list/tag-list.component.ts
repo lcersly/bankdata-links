@@ -22,8 +22,10 @@ import {Tag} from '../../../models/tag.model';
 import {CreateButtonComponent} from '../../../shared/components/create-button/create-button.component';
 import {Subject, takeUntil} from 'rxjs';
 import {FilterService} from '../../../services/filter.service';
-import {JsonPipe, NgIf} from '@angular/common';
+import {AsyncPipe, NgIf} from '@angular/common';
 import {LinkService} from '../../../services/link.service';
+import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
+import {LocalStorageService} from '../../../services/localstorage.service';
 
 @Component({
   selector: 'app-tag-list',
@@ -41,7 +43,8 @@ import {LinkService} from '../../../services/link.service';
     MatButtonModule,
     CreateButtonComponent,
     NgIf,
-    JsonPipe,
+    MatPaginatorModule,
+    AsyncPipe,
   ],
 })
 export class TagListComponent implements OnInit, AfterViewInit, OnDestroy {
@@ -55,6 +58,7 @@ export class TagListComponent implements OnInit, AfterViewInit, OnDestroy {
   public createUrl = FULL_PATHS_URLS.createTag;
 
   @ViewChild(MatSort) sort: MatSort | undefined;
+  @ViewChild(MatPaginator) paginator: MatPaginator | undefined;
 
   constructor(
     public fireTagService: FirestoreTagService,
@@ -62,6 +66,7 @@ export class TagListComponent implements OnInit, AfterViewInit, OnDestroy {
     private linkService: LinkService,
     private router: Router,
     private cdRef: ChangeDetectorRef,
+    public localStorageService: LocalStorageService
   ) {
   }
 
@@ -95,6 +100,12 @@ export class TagListComponent implements OnInit, AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     if (this.sort) {
       this.dataSource.sort = this.sort;
+    }
+    if(this.paginator){
+      this.dataSource.paginator = this.paginator;
+      this.paginator.page.subscribe(change =>
+        this.localStorageService.setPaginatorSize('tags', change.pageSize)
+      )
     }
   }
 
