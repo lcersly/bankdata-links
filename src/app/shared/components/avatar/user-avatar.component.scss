@@ -1,0 +1,33 @@
+.mat-menu-backdrop+* .user-details{
+  padding: 1em;
+}
+
+.user-details{
+  strong{
+    margin-top: 1em;
+    text-align: center;
+  }
+  em{
+    text-align: center;
+  }
+}
+
+.user-actions{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+
+.default-actions{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+
+  button{
+    margin: 1em;
+  }
+
+  button:first-of-type{
+    margin-right: 0;
+  }
+}

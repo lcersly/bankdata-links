@@ -8,9 +8,13 @@ import {MatTabsModule} from '@angular/material/tabs';
 import {FormControl, ReactiveFormsModule} from '@angular/forms';
 import {AuthService} from './services/auth.service';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
-import {NgForOf} from '@angular/common';
+import {NgForOf, NgIf} from '@angular/common';
 import {FULL_PATHS_URLS} from './urls';
 import {IfLoggedInDirective} from './directives/if-logged-in.directive';
+import {UserPhotoUrlPipe} from './pipes/user-photo-url.pipe';
+import {MatButtonModule} from '@angular/material/button';
+import {DisplayNameInitialsPipe} from './pipes/display-name-initials-pipe.pipe';
+import {UserAvatarComponent} from './shared/components/avatar/user-avatar.component';
 
 @Component({
   selector: 'app-root',
@@ -31,6 +35,11 @@ import {IfLoggedInDirective} from './directives/if-logged-in.directive';
     NgForOf,
     RouterLinkActive,
     IfLoggedInDirective,
+    UserPhotoUrlPipe,
+    MatButtonModule,
+    DisplayNameInitialsPipe,
+    NgIf,
+    UserAvatarComponent,
   ],
 })
 export class AppComponent {
