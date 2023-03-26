@@ -29,7 +29,7 @@ import {AuthService} from '../../../services/auth.service';
   ],
 })
 export class UserAvatarComponent implements OnDestroy {
-  user$: Observable<User | null> = this.authService.status$
+  user$: Observable<User | null> = this.authService.user$
 
   private onDestroy = new Subject<void>();
 

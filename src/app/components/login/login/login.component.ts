@@ -1,7 +1,6 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
 import {AuthService} from '../../../services/auth.service';
 import {Router} from '@angular/router';
-import {NotificationService} from '../../../services/notification.service';
 import {MatButtonModule} from '@angular/material/button';
 
 @Component({
@@ -17,8 +16,7 @@ import {MatButtonModule} from '@angular/material/button';
 export class LoginComponent {
 
   constructor(public authService: AuthService,
-              private router: Router,
-              private notificationService: NotificationService) {
+              private router: Router) {
   }
 
   login(method: 'google' | 'github') {
@@ -36,7 +34,7 @@ export class LoginComponent {
     }
 
     authObservable.subscribe(() => {
-      this.notificationService.authentication.loggedIn()
+      // this.notificationService.authentication.loggedIn()
       this.router.navigateByUrl('/');
     })
   }

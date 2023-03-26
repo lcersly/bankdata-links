@@ -30,7 +30,7 @@ $dark-theme: mat.define-dark-theme((
 @include mat.input-theme($dark-theme);
 @include mat.select-theme($dark-theme);
 @include mat.autocomplete-theme($dark-theme);
-//@include mat.dialog-theme($dark-theme);
+@include mat.dialog-theme($dark-theme);
 @include mat.chips-theme($dark-theme);
 //@include mat.slide-toggle-theme($dark-theme);
 //@include mat.radio-theme($dark-theme);

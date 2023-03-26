@@ -1,11 +1,15 @@
 import {Injectable} from '@angular/core';
-import {MatSnackBar} from '@angular/material/snack-bar';
+import {MatSnackBar, MatSnackBarConfig} from '@angular/material/snack-bar';
+import {User} from '@angular/fire/auth';
 
 @Injectable({
   providedIn: 'root',
 })
 export class NotificationService {
-  private options = {duration: 2000};
+  private options: MatSnackBarConfig = {
+    duration: 2000,
+    verticalPosition:'bottom'
+  };
   link = {
     created: () => {
       const message = 'Created new link';
@@ -25,7 +29,7 @@ export class NotificationService {
     edited: () => {
       this.snackBar.open('Successfully edited tag', undefined, this.options);
     },
-    deleted: (name:string) => {
+    deleted: (name: string) => {
       this.snackBar.open('Successfully deleted tag: ' + name, undefined, this.options);
     },
     tagAlreadyAdded: (tagKey: string) => {
@@ -34,11 +38,11 @@ export class NotificationService {
   }
 
   authentication = {
-    loggedIn: () => {
-      this.snackBar.open('Successfully logged in', undefined, this.options)
+    loggedIn: (user: User) => {
+      this.snackBar.open(`Welcome ${user.displayName}`, undefined, this.options)
     },
     loggedOut: () => {
-      this.snackBar.open('You have logged out', undefined, this.options)
+      this.snackBar.open('Bye bye', undefined, this.options)
     },
   }
 

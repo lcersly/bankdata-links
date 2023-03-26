@@ -7,6 +7,8 @@ import {provideAnimations} from '@angular/platform-browser/animations';
 import '@angular/common/locales/global/da';
 import {FirebaseModule} from './app/modules/firebase.module';
 import {provideRouter} from '@angular/router';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {MatDialogModule} from '@angular/material/dialog';
 
 if (environment.production) {
   enableProdMode();
@@ -18,6 +20,8 @@ bootstrapApplication(AppComponent, {
     provideRouter(routes),
     importProvidersFrom(
       FirebaseModule,
+      MatSnackBarModule,
+      MatDialogModule,
     ),
     {
       provide: APP_INITIALIZER,

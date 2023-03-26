@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 import {
   addDoc,
   collection,
@@ -13,6 +13,7 @@ import {first, map, Observable, ReplaySubject} from 'rxjs';
 import {FirestoreDataConverter, QueryDocumentSnapshot} from 'firebase/firestore';
 import {keyMatchesTag, Tag} from '../../models/tag.model';
 import {reduceTagToSearchableString} from '../../shared/reducer';
+import {AuthService} from '../auth.service';
 
 interface DatabaseTag {
   key: string;
@@ -23,12 +24,19 @@ interface DatabaseTag {
   providedIn: 'root',
 })
 export class FirestoreTagService {
+  private firestore: Firestore = inject(Firestore);
   private unsub: Unsubscribe | undefined;
   private _data$ = new ReplaySubject<Tag[]>(1);
   public tags$ = this._data$.asObservable();
 
-  constructor(private readonly firestore: Firestore) {
-    this.subscribeToTags();
+  constructor(private authService: AuthService) {
+    this.authService.isSignedIn$.subscribe(signedIn => {
+      if (signedIn) {
+        this.subscribeToTags();
+      } else {
+        this.disconnect();
+      }
+    })
     // this.tags$.subscribe(t => console.debug(`Service - Tags updated (${t.length})`, t));
   }
 
@@ -57,6 +65,7 @@ export class FirestoreTagService {
   }
 
   private subscribeToTags() {
+    console.debug("Subscribing to tags");
     this.unsub = onSnapshot(this.collectionRef,
       (doc) => {
         if (doc.empty) {
@@ -88,13 +97,13 @@ const converter: FirestoreDataConverter<Tag> = {
       description: tag.description,
     };
   },
-  fromFirestore(snapshot:QueryDocumentSnapshot<DatabaseTag>): Tag {
+  fromFirestore(snapshot: QueryDocumentSnapshot<DatabaseTag>): Tag {
     let documentData = snapshot.data();
     return {
       key: documentData.key,
       description: documentData.description,
       uuid: snapshot.id,
-      searchString: reduceTagToSearchableString(documentData.key, documentData.description)
+      searchString: reduceTagToSearchableString(documentData.key, documentData.description),
     }
   },
 }
