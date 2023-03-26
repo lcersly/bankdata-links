@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 import {ReplaySubject} from 'rxjs';
 import {
   addDoc,
@@ -12,6 +12,7 @@ import {
 } from '@angular/fire/firestore';
 import {Link, LinkBase} from '../../models/link.model';
 import {DocumentData, FirestoreDataConverter, QueryDocumentSnapshot} from 'firebase/firestore';
+import {AuthService} from '../auth.service';
 
 export interface LinkDatabase extends LinkBase {
   tags: string[]
@@ -23,12 +24,19 @@ export type LinkDatabaseAndId = { uuid: string, link: LinkDatabase };
   providedIn: 'root',
 })
 export class FirestoreLinkService {
+  private firestore: Firestore = inject(Firestore);
   private unsub: Unsubscribe | undefined;
   private _data$ = new ReplaySubject<LinkDatabaseAndId[]>(1);
   public allLinks$ = this._data$.asObservable();
 
-  constructor(private readonly firestore: Firestore) {
-    this.subscribeToLinks();
+  constructor(private authService: AuthService) {
+    this.authService.isSignedIn$.subscribe(signedIn => {
+      if(signedIn){
+        this.subscribeToLinks();
+      }else{
+        this.disconnect();
+      }
+    })
   }
 
   get colRef() {
@@ -36,6 +44,7 @@ export class FirestoreLinkService {
   }
 
   subscribeToLinks() {
+    console.debug("Subscribing to links");
     this.unsub = onSnapshot(this.colRef,
       (documents) => {
         const docs: LinkDatabaseAndId[] = [];

@@ -167,11 +167,20 @@ export class TagListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   showLinksUsing(element: Tag) {
-    this.filterService.setLinkFilters({selectedTagsUUID: [element.uuid]})
+    this.filterService.setLinkFilters({selectedTagsUUID: [element.uuid], searchTags: '', searchString: ''})
     this.router.navigateByUrl(FULL_PATHS_URLS.links);
   }
 
-  getLinksUsing(tag: Tag): number {
-    return this.tagCounts.get(tag.uuid) || 0;
+  getLinksUsing(tag: Tag): string | undefined {
+    let number = this.tagCounts.get(tag.uuid);
+    if(!number){
+      return undefined;
+    }
+    let description = "usages";
+    if(number == 1){
+      description = "usage"
+    }
+
+    return `${number} ${description}`;
   }
 }

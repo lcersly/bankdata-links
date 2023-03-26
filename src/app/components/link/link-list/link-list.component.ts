@@ -24,7 +24,6 @@ import {FilterService, LinkFilters} from '../../../services/filter.service';
 import {MatSort, MatSortModule} from '@angular/material/sort';
 import {MatTableDataSource, MatTableModule} from '@angular/material/table';
 import {Router} from '@angular/router';
-import {FavIconService} from '../../../services/fav-icon.service';
 import {CreateButtonComponent} from '../../../shared/components/create-button/create-button.component';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
@@ -100,7 +99,6 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
               private filterService: FilterService,
               private tagService: FirestoreTagService,
               private router: Router,
-              private fav: FavIconService,
               private openLinkService: OpenLinkService,
               private cdRef: ChangeDetectorRef,
               public localStorageService: LocalStorageService,

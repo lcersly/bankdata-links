@@ -46,7 +46,7 @@
       <mat-header-cell *matHeaderCellDef> Usages</mat-header-cell>
       <mat-cell *matCellDef="let element">
         <button mat-button (click)="showLinksUsing(element)" *ngIf="getLinksUsing(element)">
-          {{getLinksUsing(element)}} usages
+          {{ getLinksUsing(element) }}
         </button>
       </mat-cell>
     </ng-container>

@@ -9,7 +9,7 @@
   <textarea [formControl]="urlControl"
             cdkTextareaAutosize
             matInput
-            placeholder="http://... or https://..."
+            placeholder="http(s)://..."
   >
     </textarea>
   <mat-error *ngIf="hasError(urlControl, 'required')">Required</mat-error>
