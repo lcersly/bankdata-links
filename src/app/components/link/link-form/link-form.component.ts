@@ -11,7 +11,6 @@ import {
   Validator,
   Validators,
 } from '@angular/forms';
-import {urlPattern} from '../constants';
 import {fieldHasError} from '../../../shared/util';
 import {Subject, takeUntil} from 'rxjs';
 import {MatFormFieldModule} from '@angular/material/form-field';
@@ -49,7 +48,7 @@ import {TagSelectorComponent} from './tag-selector/tag-selector.component';
 })
 export class LinkFormComponent implements ControlValueAccessor, Validator, OnDestroy, OnInit {
   public form = this.fb.group({
-    url: ['', [Validators.required, Validators.pattern(urlPattern)]],
+    url: ['', [Validators.required, Validators.minLength(3)]],
     name: ['', [Validators.required, Validators.minLength(3)]],
     description: '',
     // section: [''],
