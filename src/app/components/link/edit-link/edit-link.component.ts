@@ -10,6 +10,7 @@ import {DialogDeleteLinkComponent, DialogDeleteLinkData} from './dialog-delete-l
 import {MatButtonModule} from '@angular/material/button';
 import {LinkFormComponent} from '../link-form/link-form.component';
 import {MatIconModule} from '@angular/material/icon';
+import {SAVE_SHORTCUT} from '../../../models/shortcuts';
 
 @Component({
   selector: 'app-create-link',
@@ -57,7 +58,7 @@ export class EditLinkComponent implements OnInit, OnDestroy {
     this.onDestroy.complete();
   }
 
-  @HostListener('window:keydown.control.s')
+  @HostListener(SAVE_SHORTCUT)
   async save() {
     this.link.markAllAsTouched();
     if (!this.link.valid) {

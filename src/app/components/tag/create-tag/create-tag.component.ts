@@ -10,6 +10,7 @@ import {MatButtonModule} from '@angular/material/button';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {MatIconModule} from '@angular/material/icon';
 import {PATHS_URLS} from '../../../urls';
+import {SAVE_SHORTCUT} from '../../../models/shortcuts';
 
 @Component({
   selector: 'app-create-tag',
@@ -51,7 +52,7 @@ export class CreateTagComponent {
     return this.form.get('description') as FormControl
   }
 
-  @HostListener('window:keydown.control.s')
+  @HostListener(SAVE_SHORTCUT)
   async create() {
     this.form.markAllAsTouched();
     if (!this.form.valid) {

@@ -10,6 +10,7 @@ import {BookmarkletComponent} from './bookmarklet/bookmarklet.component';
 import {NgIf} from '@angular/common';
 import {LinkFormComponent} from '../link-form/link-form.component';
 import {MatIconModule} from '@angular/material/icon';
+import {SAVE_SHORTCUT} from '../../../models/shortcuts';
 
 @Component({
   selector: 'app-create-new-link',
@@ -59,7 +60,7 @@ export class CreateNewLinkComponent implements OnInit {
     }
   }
 
-  @HostListener('window:keydown.control.s')
+  @HostListener(SAVE_SHORTCUT)
   async create() {
     this.link.markAllAsTouched();
     if (!this.link.valid) {

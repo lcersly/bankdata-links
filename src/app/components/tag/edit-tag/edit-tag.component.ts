@@ -11,6 +11,7 @@ import {MatButtonModule} from '@angular/material/button';
 import {NgIf} from '@angular/common';
 import {MatIconModule} from '@angular/material/icon';
 import {Tag} from '../../../models/tag.model';
+import {SAVE_SHORTCUT} from '../../../models/shortcuts';
 
 @Component({
   selector: 'app-edit-tag',
@@ -30,11 +31,12 @@ import {Tag} from '../../../models/tag.model';
   ],
 })
 export class EditTagComponent implements OnInit, OnDestroy {
-  private onDestroy = new Subject<void>();
   public form = this.fb.group({
     description: '',
     key: ['', Validators.required],
   });
+  public hasError = fieldHasError;
+  private onDestroy = new Subject<void>();
   private tagUuid: string | undefined;
 
   constructor(private tagService: FirestoreTagService,
@@ -43,6 +45,14 @@ export class EditTagComponent implements OnInit, OnDestroy {
               private fb: UntypedFormBuilder,
               private notifications: NotificationService,
   ) {
+  }
+
+  public get keyControl(): UntypedFormControl {
+    return this.form.get('key') as UntypedFormControl
+  }
+
+  public get descriptionControl(): UntypedFormControl {
+    return this.form.get('description') as UntypedFormControl
   }
 
   ngOnInit(): void {
@@ -60,7 +70,7 @@ export class EditTagComponent implements OnInit, OnDestroy {
     this.onDestroy.complete();
   }
 
-  @HostListener('window:keydown.control.s')
+  @HostListener(SAVE_SHORTCUT)
   async save() {
     this.form.markAllAsTouched();
     if (!this.form.valid) {
@@ -77,14 +87,4 @@ export class EditTagComponent implements OnInit, OnDestroy {
   public navigateBack() {
     return this.router.navigate(['..'], {relativeTo: this.route})
   }
-
-  public get keyControl(): UntypedFormControl {
-    return this.form.get('key') as UntypedFormControl
-  }
-
-  public get descriptionControl(): UntypedFormControl {
-    return this.form.get('description') as UntypedFormControl
-  }
-
-  public hasError = fieldHasError;
 }
