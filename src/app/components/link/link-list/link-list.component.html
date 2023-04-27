@@ -40,7 +40,7 @@
     <ng-container matColumnDef="name">
       <mat-header-cell *matHeaderCellDef mat-sort-header="name"> Name</mat-header-cell>
       <mat-cell *matCellDef="let element" [matTooltip]="element.description">
-        <a [href]="element.url" class="no-link-style" (click)="rowClicked(element, $event)">
+        <a [href]="element.url" class="no-link-style" (click)="$event.preventDefault()">
           {{element.name}}
         </a>
       </mat-cell>
