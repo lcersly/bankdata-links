@@ -40,7 +40,7 @@
     <ng-container matColumnDef="name">
       <mat-header-cell *matHeaderCellDef mat-sort-header="name"> Name</mat-header-cell>
       <mat-cell *matCellDef="let element" [matTooltip]="element.description">
-        <a [href]="element.url" class="no-link-style">
+        <a [href]="element.url" class="no-link-style" (click)="rowClicked(element, $event)">
           {{element.name}}
         </a>
       </mat-cell>
@@ -69,15 +69,12 @@
         <button (click)="edit($event, element)" mat-icon-button class="hide-until-hover">
           <mat-icon>edit</mat-icon>
         </button>
-        <!--      <button (click)="delete($event, element)" mat-icon-button>-->
-        <!--        <mat-icon>delete_outline</mat-icon>-->
-        <!--      </button>-->
       </mat-cell>
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
     <mat-row *matRowDef="let row; columns: displayedColumns; let i = index" class="clickable"
-             (click)="rowClicked(row)"
+             (click)="rowClicked(row, $event)"
     >
 
     </mat-row>

@@ -1,4 +1,12 @@
-import {ChangeDetectionStrategy, Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  EventEmitter,
+  OnDestroy,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import {
   AbstractControl,
@@ -71,6 +79,9 @@ export class TagSelectorComponent implements ControlValueAccessor, Validator, On
   };
   disabled = false;
 
+  @Output()
+  dropdownOpen = new EventEmitter<boolean>()
+
   @ViewChild('tagInput') tagInput: ElementRef<HTMLInputElement> | undefined;
 
   constructor(private tagService: FirestoreTagService,
@@ -88,7 +99,7 @@ export class TagSelectorComponent implements ControlValueAccessor, Validator, On
     this.tagService.hasMatchingTag(value).subscribe(hasMatch =>{
       if(hasMatch){
         // Clear the input value
-        event.chipInput!.clear();
+        event.chipInput.clear();
 
         this.tagCtrl.setValue(null);
       }
@@ -177,4 +188,6 @@ export class TagSelectorComponent implements ControlValueAccessor, Validator, On
       return searchFilterMatches && !alreadySelected;
     });
   }
+
+  protected readonly open = open;
 }

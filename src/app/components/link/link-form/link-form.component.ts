@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -59,6 +59,9 @@ export class LinkFormComponent implements ControlValueAccessor, Validator, OnDes
   hasError = fieldHasError;
   private touched = false;
   private onDestroy = new Subject<void>();
+
+  @Output()
+  dropdownOpen = new EventEmitter<boolean>()
 
   constructor(private fb: UntypedFormBuilder,
   ) {

@@ -31,6 +31,7 @@ export class CreateNewLinkComponent implements OnInit {
 
   public link = new UntypedFormControl();
   public params: { url: string, title: string, useParams: boolean } | undefined;
+  private isDropDownOpen = false;
 
   constructor(private linkService: LinkService,
               private notifications: NotificationService,
@@ -61,6 +62,10 @@ export class CreateNewLinkComponent implements OnInit {
 
   @HostListener('window:keydown.enter', ['$event'])
   async create() {
+    if (this.isDropDownOpen) {
+      return;
+    }
+
     this.link.markAllAsTouched();
     if (!this.link.valid) {
       return;
@@ -89,5 +94,9 @@ export class CreateNewLinkComponent implements OnInit {
     const url = params['url'] as string;
     const title = params['title'] as string;
     this.params = {url, title, useParams: !!url || !!title}
+  }
+
+  dropDownOpen(isOpen: boolean) {
+    this.isDropDownOpen = isOpen;
   }
 }

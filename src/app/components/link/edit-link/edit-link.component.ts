@@ -32,6 +32,7 @@ export class EditLinkComponent implements OnInit, OnDestroy {
   private uuid: string | undefined;
   public link = new UntypedFormControl()
   public orgLink: Link | undefined;
+  private isDropDownOpen = false;
 
   constructor(private linkService: LinkService,
               private notifications: NotificationService,
@@ -59,6 +60,10 @@ export class EditLinkComponent implements OnInit, OnDestroy {
 
   @HostListener('window:keydown.enter')
   async save() {
+    if (this.isDropDownOpen) {
+      return;
+    }
+
     this.link.markAllAsTouched();
     if (!this.link.valid) {
       return;
@@ -91,5 +96,9 @@ export class EditLinkComponent implements OnInit, OnDestroy {
         this.linkService.delete(this.orgLink).then(() => this.navigateBack());
       }
     });
+  }
+
+  dropDownOpen(isOpen: boolean) {
+    this.isDropDownOpen = isOpen;
   }
 }

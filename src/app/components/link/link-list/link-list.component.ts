@@ -204,8 +204,9 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
     this.onDestroy.complete();
   }
 
-  rowClicked(row: Link) {
+  rowClicked(row: Link, event: Event) {
     this.openLinkService.openLink(row);
+    event.preventDefault();
   }
 
   tagClicked(tag: Tag, change: MatChipSelectionChange) {

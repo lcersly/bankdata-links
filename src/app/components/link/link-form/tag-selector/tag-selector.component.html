@@ -21,7 +21,10 @@
       [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
       (matChipInputTokenEnd)="add($event)">
   </mat-chip-grid>
-  <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+  <mat-autocomplete #auto="matAutocomplete"
+                    (optionSelected)="selected($event)"
+                    (opened)="dropdownOpen.emit(true)"
+                    (closed)="dropdownOpen.emit(false)">
     <mat-option *ngFor="let tag of filteredTags | async" [value]="tag.key">
       {{tag.key}} {{tag.description ? '-' : ''}} {{tag.description}}
     </mat-option>

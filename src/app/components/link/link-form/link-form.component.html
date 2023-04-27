@@ -26,6 +26,6 @@
 
 <app-tag-selector
   [formControl]="tagsControl"
+  (dropdownOpen)="dropdownOpen.emit($event)"
   class="single-line-field"
 ></app-tag-selector>
-
