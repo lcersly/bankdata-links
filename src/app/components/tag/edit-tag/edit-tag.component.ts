@@ -60,7 +60,7 @@ export class EditTagComponent implements OnInit, OnDestroy {
     this.onDestroy.complete();
   }
 
-  @HostListener('window:keydown.enter')
+  @HostListener('window:keydown.control.s')
   async save() {
     this.form.markAllAsTouched();
     if (!this.form.valid) {

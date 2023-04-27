@@ -51,7 +51,7 @@ export class CreateTagComponent {
     return this.form.get('description') as FormControl
   }
 
-  @HostListener('window:keydown.enter')
+  @HostListener('window:keydown.control.s')
   async create() {
     this.form.markAllAsTouched();
     if (!this.form.valid) {

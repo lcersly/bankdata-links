@@ -1,12 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  ElementRef,
-  EventEmitter,
-  OnDestroy,
-  Output,
-  ViewChild,
-} from '@angular/core';
+import {ChangeDetectionStrategy, Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import {
   AbstractControl,
@@ -71,22 +63,20 @@ export class TagSelectorComponent implements ControlValueAccessor, Validator, On
     map(([filter, tags]) => this._filter(filter, tags)),
   );
   selectedTags: Tag[] = [];
-  private onDestroy = new Subject<void>();
-
-  onChange: (tags: Tag[]) => void = () => {
-  };
-  onTouched = () => {
-  };
   disabled = false;
-
-  @Output()
-  dropdownOpen = new EventEmitter<boolean>()
-
   @ViewChild('tagInput') tagInput: ElementRef<HTMLInputElement> | undefined;
+  protected readonly open = open;
+  private onDestroy = new Subject<void>();
 
   constructor(private tagService: FirestoreTagService,
   ) {
   }
+
+  onChange: (tags: Tag[]) => void = () => {
+  };
+
+  onTouched = () => {
+  };
 
   add(event: MatChipInputEvent): void {
     if (this.disabled) {
@@ -96,8 +86,8 @@ export class TagSelectorComponent implements ControlValueAccessor, Validator, On
 
     const value = (event.value || '').trim();
 
-    this.tagService.hasMatchingTag(value).subscribe(hasMatch =>{
-      if(hasMatch){
+    this.tagService.hasMatchingTag(value).subscribe(hasMatch => {
+      if (hasMatch) {
         // Clear the input value
         event.chipInput.clear();
 
@@ -110,21 +100,24 @@ export class TagSelectorComponent implements ControlValueAccessor, Validator, On
     this.markAsTouched();
     const index = this.selectedTags.findIndex(t => t.key === tag.key);
 
-    if (index >= 0) {
-      this.selectedTags.splice(index, 1);
+    if (index < 0) {
+      throw new Error('Could not find tag: ' + tag);
     }
+
+    this.selectedTags.splice(index, 1);
+    this.onChange(this.selectedTags);
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
     this.markAsTouched();
     let key = event.option.value;
-    this.tagService.hasMatchingTag(key).subscribe(existingTag=>{
+    this.tagService.hasMatchingTag(key).subscribe(existingTag => {
       if (existingTag) {
         console.debug('Found matching tag for key: ' + key, existingTag);
         this.selectedTags.push(existingTag);
         this.onChange(this.selectedTags);
       } else {
-        console.error('Could not find matching tag from key: ' + key);
+        throw new Error('Could not find matching tag from key: ' + key);
       }
       if (this.tagInput?.nativeElement) {
         this.tagInput.nativeElement.value = '';
@@ -188,6 +181,4 @@ export class TagSelectorComponent implements ControlValueAccessor, Validator, On
       return searchFilterMatches && !alreadySelected;
     });
   }
-
-  protected readonly open = open;
 }

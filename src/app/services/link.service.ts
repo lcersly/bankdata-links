@@ -34,6 +34,7 @@ export class LinkService {
   }
 
   async edit(link: Link) {
+    console.info('link service edit', link);
     await this.fireLinkService.edit(link);
     this.notificationService.link.edited(link.name);
   }

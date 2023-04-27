@@ -23,8 +23,8 @@
   </mat-chip-grid>
   <mat-autocomplete #auto="matAutocomplete"
                     (optionSelected)="selected($event)"
-                    (opened)="dropdownOpen.emit(true)"
-                    (closed)="dropdownOpen.emit(false)">
+                    (change)="$event.preventDefault()"
+  >
     <mat-option *ngFor="let tag of filteredTags | async" [value]="tag.key">
       {{tag.key}} {{tag.description ? '-' : ''}} {{tag.description}}
     </mat-option>
