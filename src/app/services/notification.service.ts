@@ -39,10 +39,10 @@ export class NotificationService {
 
   authentication = {
     loggedIn: (user: User) => {
-      this.snackBar.open(`Welcome ${user.displayName}`, undefined, this.options)
+      // this.snackBar.open(`Welcome ${user.displayName}`, undefined, this.options)
     },
     loggedOut: () => {
-      this.snackBar.open('Bye bye', undefined, this.options)
+      // this.snackBar.open('Bye bye', undefined, this.options)
     },
   }
 
