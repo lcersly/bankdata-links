@@ -48,8 +48,9 @@ export class LinkService {
 function convertDatabaseObjectToLink(object: LinkDatabaseAndId, tags: Tag[]): Link {
   const link = object.link;
   let mappedTags = link.tags
-    .map(uuid => tags.find(tag => tag.uuid === uuid))
-    .filter(tag => !!tag) as Tag[];
+    .map(uuid => tags.find(tag => tag.uuid === uuid)!)
+    .filter(tag => !!tag)
+    .sort((a, b) => a.key.localeCompare(b.key));
   return {
     url: link.url,
     description: link.description,
