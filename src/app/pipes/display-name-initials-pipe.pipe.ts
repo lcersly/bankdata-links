@@ -16,7 +16,7 @@ export class DisplayNameInitialsPipe implements PipeTransform {
     if (!displayName) {
       return '';
     }
-    const initialsRegExp: RegExpMatchArray = displayName.match(/\b\w/g) || [];
+    const initialsRegExp: any[] = displayName.match(/\b\w/g) || [];
     return (
       (initialsRegExp.shift() || "") + (initialsRegExp.pop() || "")
     ).toUpperCase();
