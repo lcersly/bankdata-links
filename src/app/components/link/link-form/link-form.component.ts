@@ -16,7 +16,7 @@ import {Subject, takeUntil} from 'rxjs';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {TextFieldModule} from '@angular/cdk/text-field';
 import {MatInputModule} from '@angular/material/input';
-import {NgIf} from '@angular/common';
+
 import {TagSelectorComponent} from './tag-selector/tag-selector.component';
 
 @Component({
@@ -41,10 +41,9 @@ import {TagSelectorComponent} from './tag-selector/tag-selector.component';
     MatFormFieldModule,
     TextFieldModule,
     MatInputModule,
-    NgIf,
     ReactiveFormsModule,
-    TagSelectorComponent,
-  ],
+    TagSelectorComponent
+],
 })
 export class LinkFormComponent implements ControlValueAccessor, Validator, OnDestroy, OnInit {
   public form = this.fb.group({

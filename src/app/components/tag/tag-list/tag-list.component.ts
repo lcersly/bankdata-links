@@ -22,7 +22,7 @@ import {Tag} from '../../../models/tag.model';
 import {CreateButtonComponent} from '../../../shared/components/create-button/create-button.component';
 import {Subject, takeUntil} from 'rxjs';
 import {FilterService} from '../../../services/filter.service';
-import {AsyncPipe, NgIf} from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import {LinkService} from '../../../services/link.service';
 import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
 import {LocalStorageService} from '../../../services/localstorage.service';
@@ -42,10 +42,9 @@ import {LocalStorageService} from '../../../services/localstorage.service';
     MatIconModule,
     MatButtonModule,
     CreateButtonComponent,
-    NgIf,
     MatPaginatorModule,
-    AsyncPipe,
-  ],
+    AsyncPipe
+],
 })
 export class TagListComponent implements OnInit, AfterViewInit, OnDestroy {
   displayedColumns: string[] = ['key', 'description', 'usages', 'edit'];

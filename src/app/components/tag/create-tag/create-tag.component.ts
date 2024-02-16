@@ -5,7 +5,7 @@ import {fieldHasError} from '../../../shared/util';
 import {NotificationService} from '../../../services/notification.service';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
-import {NgIf} from '@angular/common';
+
 import {MatButtonModule} from '@angular/material/button';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {MatIconModule} from '@angular/material/icon';
@@ -22,12 +22,11 @@ import {SAVE_SHORTCUT} from '../../../models/shortcuts';
     MatFormFieldModule,
     MatInputModule,
     ReactiveFormsModule,
-    NgIf,
     MatButtonModule,
     RouterLink,
     FormsModule,
-    MatIconModule,
-  ],
+    MatIconModule
+],
 })
 export class CreateTagComponent {
 

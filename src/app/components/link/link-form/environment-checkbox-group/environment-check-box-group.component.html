@@ -11,10 +11,12 @@
   </mat-checkbox>
 
   <!--Individual-->
-  <mat-checkbox *ngFor="let subtask of task.subtasks" [(ngModel)]="subtask.completed"
-                [color]="subtask.color"
-                [disabled]="subtask.isDisabled"
-                (ngModelChange)="updateAllComplete()">
-    {{subtask.name}}
-  </mat-checkbox>
+  @for (subtask of task.subtasks; track subtask) {
+    <mat-checkbox [(ngModel)]="subtask.completed"
+      [color]="subtask.color"
+      [disabled]="subtask.isDisabled"
+      (ngModelChange)="updateAllComplete()">
+      {{subtask.name}}
+    </mat-checkbox>
+  }
 </section>

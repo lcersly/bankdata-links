@@ -15,7 +15,7 @@ import {MatChipInputEvent, MatChipsModule} from '@angular/material/chips';
 import {MatAutocompleteModule, MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
 import {FirestoreTagService} from '../../../../services/firestore/firestore-tag.service';
 import {MatFormFieldModule} from '@angular/material/form-field';
-import {AsyncPipe, NgForOf, NgIf} from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatIconModule} from '@angular/material/icon';
 import {Tag} from '../../../../models/tag.model';
@@ -41,14 +41,12 @@ import {Tag} from '../../../../models/tag.model';
   imports: [
     MatFormFieldModule,
     MatChipsModule,
-    NgForOf,
     MatTooltipModule,
     MatIconModule,
     ReactiveFormsModule,
     MatAutocompleteModule,
-    AsyncPipe,
-    NgIf,
-  ],
+    AsyncPipe
+],
 })
 export class TagSelectorComponent implements ControlValueAccessor, Validator, OnDestroy {
   separatorKeysCodes: number[] = [ENTER, COMMA];

@@ -6,25 +6,25 @@
 
 <div class="mat-elevation-z8">
   <mat-table [dataSource]="dataSource"
-             matSort
-             matSortActive="key"
-             matSortDirection="asc"
-  >
+    matSort
+    matSortActive="key"
+    matSortDirection="asc"
+    >
 
     <!-- Checkbox Column -->
     <ng-container matColumnDef="select">
       <mat-header-cell *matHeaderCellDef>
         <mat-checkbox (change)="$event ? toggleAllRows() : null"
-                      [checked]="selection.hasValue() && isAllSelected()"
-                      [indeterminate]="selection.hasValue() && !isAllSelected()"
-                      [aria-label]="checkboxLabel()">
+          [checked]="selection.hasValue() && isAllSelected()"
+          [indeterminate]="selection.hasValue() && !isAllSelected()"
+          [aria-label]="checkboxLabel()">
         </mat-checkbox>
       </mat-header-cell>
       <mat-cell *matCellDef="let row">
         <mat-checkbox (click)="$event.stopPropagation()"
-                      (change)="$event ? selection.toggle(row) : null"
-                      [checked]="selection.isSelected(row)"
-                      [aria-label]="checkboxLabel(row)">
+          (change)="$event ? selection.toggle(row) : null"
+          [checked]="selection.isSelected(row)"
+          [aria-label]="checkboxLabel(row)">
         </mat-checkbox>
       </mat-cell>
     </ng-container>
@@ -45,9 +45,11 @@
     <ng-container matColumnDef="usages">
       <mat-header-cell *matHeaderCellDef> Usages</mat-header-cell>
       <mat-cell *matCellDef="let element">
-        <button mat-button (click)="showLinksUsing(element)" *ngIf="getLinksUsing(element)">
-          {{ getLinksUsing(element) }}
-        </button>
+        @if (getLinksUsing(element)) {
+          <button mat-button (click)="showLinksUsing(element)">
+            {{ getLinksUsing(element) }}
+          </button>
+        }
       </mat-cell>
     </ng-container>
 
@@ -63,11 +65,11 @@
 
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
     <mat-row (click)="selection.toggle(row)"
-             *matRowDef="let row; columns: displayedColumns;">
+      *matRowDef="let row; columns: displayedColumns;">
     </mat-row>
   </mat-table>
   <mat-paginator [pageSizeOptions]="[10,25,50,100]"
-                 [pageSize]="localStorageService.getPaginatorSize('tags') | async">
+    [pageSize]="localStorageService.getPaginatorSize('tags') | async">
 
   </mat-paginator>
 </div>

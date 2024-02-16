@@ -7,7 +7,7 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatTabsModule} from '@angular/material/tabs';
 import {FormControl, ReactiveFormsModule} from '@angular/forms';
 import {AuthService} from './services/auth.service';
-import {NgForOf, NgIf} from '@angular/common';
+
 import {FULL_PATHS_URLS} from './urls';
 import {IfLoggedInDirective} from './directives/if-logged-in.directive';
 import {UserPhotoUrlPipe} from './pipes/user-photo-url.pipe';
@@ -30,15 +30,13 @@ import {UserAvatarComponent} from './shared/components/avatar/user-avatar.compon
     MatTabsModule,
     ReactiveFormsModule,
     RouterLink,
-    NgForOf,
     RouterLinkActive,
     IfLoggedInDirective,
     UserPhotoUrlPipe,
     MatButtonModule,
     DisplayNameInitialsPipe,
-    NgIf,
-    UserAvatarComponent,
-  ],
+    UserAvatarComponent
+],
 })
 export class AppComponent {
   @HostBinding('class') className = '';

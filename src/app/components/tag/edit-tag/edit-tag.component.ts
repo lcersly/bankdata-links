@@ -8,7 +8,7 @@ import {NotificationService} from '../../../services/notification.service';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
-import {NgIf} from '@angular/common';
+
 import {MatIconModule} from '@angular/material/icon';
 import {Tag} from '../../../models/tag.model';
 import {SAVE_SHORTCUT} from '../../../models/shortcuts';
@@ -25,10 +25,9 @@ import {SAVE_SHORTCUT} from '../../../models/shortcuts';
     ReactiveFormsModule,
     RouterLink,
     MatButtonModule,
-    NgIf,
     FormsModule,
-    MatIconModule,
-  ],
+    MatIconModule
+],
 })
 export class EditTagComponent implements OnInit, OnDestroy {
   public form = this.fb.group({

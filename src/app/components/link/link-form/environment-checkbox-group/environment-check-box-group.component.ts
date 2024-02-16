@@ -11,7 +11,7 @@ import {
 import {ThemePalette} from '@angular/material/core';
 import {MatInputModule} from '@angular/material/input';
 import {MatCheckboxModule} from '@angular/material/checkbox';
-import {NgForOf} from '@angular/common';
+
 
 @Component({
   selector: 'app-environment-checkbox-group',
@@ -34,9 +34,8 @@ import {NgForOf} from '@angular/common';
   imports: [
     MatInputModule,
     MatCheckboxModule,
-    NgForOf,
-    FormsModule,
-  ],
+    FormsModule
+],
 })
 export class EnvironmentCheckBoxGroupComponent implements ControlValueAccessor, Validator {
   onChange: ((selection: string[]) => void) = () => {

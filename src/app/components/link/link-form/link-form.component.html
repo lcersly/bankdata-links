@@ -1,19 +1,25 @@
 <mat-form-field class="single-line-field">
   <mat-label>Name</mat-label>
   <input [formControl]="nameControl" matInput placeholder="Short descriptive name">
-  <mat-error *ngIf="hasError(nameControl, 'required')">Required</mat-error>
+  @if (hasError(nameControl, 'required')) {
+    <mat-error>Required</mat-error>
+  }
 </mat-form-field>
 
 <mat-form-field class="single-line-field">
   <mat-label>URL</mat-label>
   <textarea [formControl]="urlControl"
-            cdkTextareaAutosize
-            matInput
-            placeholder="http(s)://..."
-  >
-    </textarea>
-  <mat-error *ngIf="hasError(urlControl, 'required')">Required</mat-error>
-  <mat-error *ngIf="hasError(urlControl, 'pattern')">Doesn't look like a valid URL</mat-error>
+    cdkTextareaAutosize
+    matInput
+    placeholder="http(s)://..."
+    >
+  </textarea>
+  @if (hasError(urlControl, 'required')) {
+    <mat-error>Required</mat-error>
+  }
+  @if (hasError(urlControl, 'pattern')) {
+    <mat-error>Doesn't look like a valid URL</mat-error>
+  }
 </mat-form-field>
 
 <mat-form-field class="single-line-field">
@@ -21,7 +27,9 @@
   <textarea [formControl]="descriptionControl" matInput placeholder="description" cdkTextareaAutosize>
   </textarea>
   <mat-hint>This is searchable, and displayed in a tooltip</mat-hint>
-  <mat-error *ngIf="hasError(descriptionControl, 'required')">Required</mat-error>
+  @if (hasError(descriptionControl, 'required')) {
+    <mat-error>Required</mat-error>
+  }
 </mat-form-field>
 
 <app-tag-selector

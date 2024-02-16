@@ -7,7 +7,7 @@ import {NotificationService} from '../../../services/notification.service';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {MatButtonModule} from '@angular/material/button';
 import {BookmarkletComponent} from './bookmarklet/bookmarklet.component';
-import {NgIf} from '@angular/common';
+
 import {LinkFormComponent} from '../link-form/link-form.component';
 import {MatIconModule} from '@angular/material/icon';
 import {SAVE_SHORTCUT} from '../../../models/shortcuts';
@@ -19,14 +19,13 @@ import {SAVE_SHORTCUT} from '../../../models/shortcuts';
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./create-new-link.component.scss'],
     imports: [
-        MatButtonModule,
-        BookmarkletComponent,
-        NgIf,
-        LinkFormComponent,
-        ReactiveFormsModule,
-        MatIconModule,
-        RouterLink
-    ],
+    MatButtonModule,
+    BookmarkletComponent,
+    LinkFormComponent,
+    ReactiveFormsModule,
+    MatIconModule,
+    RouterLink
+],
 })
 export class CreateNewLinkComponent implements OnInit {
 

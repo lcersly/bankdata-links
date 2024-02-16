@@ -27,7 +27,7 @@ import {Router} from '@angular/router';
 import {CreateButtonComponent} from '../../../shared/components/create-button/create-button.component';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
-import {AsyncPipe, NgForOf, NgIf} from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import {MatButtonModule} from '@angular/material/button';
 import {MatInputModule} from '@angular/material/input';
 import {MatTooltipModule} from '@angular/material/tooltip';
@@ -56,17 +56,15 @@ type SearchForm = {
     MatFormFieldModule,
     ReactiveFormsModule,
     MatIconModule,
-    NgIf,
     MatButtonModule,
     MatInputModule,
     MatTableModule,
     MatSortModule,
     MatTooltipModule,
     MatChipsModule,
-    NgForOf,
     MatPaginatorModule,
-    AsyncPipe,
-  ],
+    AsyncPipe
+],
 })
 export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
   displayedColumns: string[] = [
