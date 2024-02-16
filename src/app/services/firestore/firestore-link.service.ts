@@ -7,6 +7,7 @@ import {
   doc,
   Firestore,
   onSnapshot,
+  serverTimestamp,
   Unsubscribe,
   updateDoc,
 } from '@angular/fire/firestore';
@@ -31,9 +32,9 @@ export class FirestoreLinkService {
 
   constructor(private authService: AuthService) {
     this.authService.isSignedIn$.subscribe(signedIn => {
-      if(signedIn){
+      if (signedIn) {
         this.subscribeToLinks();
-      }else{
+      } else {
         this.disconnect();
       }
     })
@@ -44,29 +45,46 @@ export class FirestoreLinkService {
   }
 
   subscribeToLinks() {
-    console.debug("Subscribing to links");
+    console.debug('Subscribing to links');
     this.unsub = onSnapshot(this.colRef,
       (documents) => {
-        const docs: LinkDatabaseAndId[] = [];
-        documents.docs.forEach(doc => docs.push(({
-          uuid: doc.id,
-          link: doc.data()
-        })));
-        this._data$.next(docs);
+        const convertedDocs = documents.docs.map(doc => {
+          const link = doc.data();
+          return {
+            uuid: doc.id,
+            link,
+          } as LinkDatabaseAndId;
+        });
+        console.debug('Received document update', documents);
+        this._data$.next(convertedDocs);
       });
   }
 
 
   create(link: Link) {
-    return addDoc(this.colRef, convertLinkToDatabase(link));
+    return addDoc(this.colRef, {
+      ...convertLinkToDatabase(link),
+      updatedAt: serverTimestamp(),
+      createdAt: serverTimestamp()
+    });
   }
 
   edit(link: Link) {
-    return updateDoc(doc(this.colRef, link.uuid), convertLinkToDatabase(link));
+    const data = {
+      ...convertLinkToDatabase(link),
+      updatedAt: serverTimestamp(),
+      createdAt: link.createdAt ? link.createdAt : serverTimestamp()
+    };
+
+    return updateDoc(this.docReference(link), data);
   }
 
   delete(link: Link) {
-    return deleteDoc(doc(this.colRef, link.uuid));
+    return deleteDoc(this.docReference(link));
+  }
+
+  private docReference(link: Link) {
+    return doc(this.colRef, link.uuid);
   }
 
   disconnect() {
@@ -86,7 +104,7 @@ const converter: FirestoreDataConverter<LinkDatabase> = {
   toFirestore(modelObject: LinkDatabase): DocumentData {
     return modelObject
   },
-  fromFirestore(snapshot:QueryDocumentSnapshot<LinkDatabase>): LinkDatabase {
+  fromFirestore(snapshot: QueryDocumentSnapshot<LinkDatabase>): LinkDatabase {
     return snapshot.data();
   },
 };

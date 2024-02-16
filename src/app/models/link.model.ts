@@ -5,6 +5,8 @@ export interface LinkBase {
   name: string;
   description?: string;
   tags: Tag[] | string[];
+  createdAt: Date
+  updatedAt: Date
 }
 
 export interface Link extends LinkBase {

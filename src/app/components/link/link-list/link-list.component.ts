@@ -27,7 +27,7 @@ import {Router} from '@angular/router';
 import {CreateButtonComponent} from '../../../shared/components/create-button/create-button.component';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
-import { AsyncPipe } from '@angular/common';
+import {AsyncPipe} from '@angular/common';
 import {MatButtonModule} from '@angular/material/button';
 import {MatInputModule} from '@angular/material/input';
 import {MatTooltipModule} from '@angular/material/tooltip';
@@ -38,6 +38,7 @@ import {Tag, trackByTagFn} from '../../../models/tag.model';
 import {FirestoreTagService} from '../../../services/firestore/firestore-tag.service';
 import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
 import {LocalStorageService} from '../../../services/localstorage.service';
+import {Clipboard} from '@angular/cdk/clipboard';
 
 type SearchForm = {
   searchString: FormControl<string>,
@@ -63,13 +64,14 @@ type SearchForm = {
     MatTooltipModule,
     MatChipsModule,
     MatPaginatorModule,
-    AsyncPipe
+    AsyncPipe,
 ],
 })
 export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
   displayedColumns: string[] = [
     'name',
     'tags',
+    'copy',
     'edit',
   ];
   dataSource = new MatTableDataSource<Link>([]);
@@ -100,6 +102,7 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
               private openLinkService: OpenLinkService,
               private cdRef: ChangeDetectorRef,
               public localStorageService: LocalStorageService,
+              private clipboard: Clipboard
   ) {
   }
 
@@ -232,5 +235,10 @@ export class LinkListComponent implements OnInit, OnDestroy, AfterViewInit {
 
   isTagSelected(tag: Tag): boolean {
     return this.selectedUUIDs.value.includes(tag.uuid);
+  }
+
+  copy(event: MouseEvent, element:Link) {
+    event.stopPropagation();
+    this.clipboard.copy(element.url)
   }
 }

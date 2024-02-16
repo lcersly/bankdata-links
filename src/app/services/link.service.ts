@@ -51,10 +51,15 @@ function convertDatabaseObjectToLink(object: LinkDatabaseAndId, tags: Tag[]): Li
     .map(uuid => tags.find(tag => tag.uuid === uuid)!)
     .filter(tag => !!tag)
     .sort((a, b) => a.key.localeCompare(b.key));
+
+  const {url, description, name, createdAt, updatedAt} = link;
+
   return {
-    url: link.url,
-    description: link.description,
-    name: link.name,
+    url,
+    description,
+    name,
+    createdAt,
+    updatedAt,
     uuid: object.uuid,
     tags: mappedTags,
     searchString: reduceLinkToSearchableString(link.name, link.url, link.description)

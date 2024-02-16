@@ -20,6 +20,10 @@ mat-table {
     flex: 0 0 $editButtonWidth;
   }
 
+  .mat-column-copy {
+    flex: 0 0 $copyButtonWidth;
+  }
+
   .mat-column-icons {
     flex: 0 0 50px;
   }
