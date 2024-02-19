@@ -1,4 +1,4 @@
-import {inject, Injectable} from '@angular/core';
+import {inject, Injectable, signal} from '@angular/core';
 import {
   addDoc,
   collection,
@@ -9,11 +9,12 @@ import {
   Unsubscribe,
   updateDoc,
 } from '@angular/fire/firestore';
-import {first, map, Observable, ReplaySubject} from 'rxjs';
 import {FirestoreDataConverter, QueryDocumentSnapshot} from 'firebase/firestore';
 import {keyMatchesTag, Tag} from '../../models/tag.model';
 import {reduceTagToSearchableString} from '../../shared/reducer';
 import {AuthService} from '../auth.service';
+import {toObservable} from '@angular/core/rxjs-interop';
+import {map} from 'rxjs';
 
 interface DatabaseTag {
   key: string;
@@ -26,8 +27,8 @@ interface DatabaseTag {
 export class FirestoreTagService {
   private firestore: Firestore = inject(Firestore);
   private unsub: Unsubscribe | undefined;
-  private _data$ = new ReplaySubject<Tag[]>(1);
-  public tags$ = this._data$.asObservable();
+
+  public tags = signal<Tag[]>([])
 
   constructor(private authService: AuthService) {
     this.authService.isSignedIn$.subscribe(signedIn => {
@@ -40,11 +41,8 @@ export class FirestoreTagService {
     // this.tags$.subscribe(t => console.debug(`Service - Tags updated (${t.length})`, t));
   }
 
-  public hasMatchingTag(key: string): Observable<Tag | undefined> {
-    return this.tags$.pipe(
-      first(),
-      map(tags => tags.find(existingTag => keyMatchesTag(key, existingTag))),
-    );
+  public hasMatchingTag(key: string): Tag | undefined {
+    return this.tags().find(existingTag => keyMatchesTag(key, existingTag));
   }
 
   private get collectionRef() {
@@ -53,7 +51,7 @@ export class FirestoreTagService {
   }
 
   public getTag(uuid: string) {
-    return this.tags$.pipe(map(tags => tags.find(tag => tag.uuid === uuid)));
+    return toObservable(this.tags).pipe(map(tags => tags.find(tag => tag.uuid === uuid)));
   }
 
   public createNew(key: string, description: string) {
@@ -69,10 +67,10 @@ export class FirestoreTagService {
     this.unsub = onSnapshot(this.collectionRef,
       (doc) => {
         if (doc.empty) {
-          this._data$.next([]);
+          this.tags.set([])
         } else {
           const tags = doc.docs.map(doc => converter.fromFirestore(doc));
-          this._data$.next(tags);
+          this.tags.set(tags);
         }
       },
     );

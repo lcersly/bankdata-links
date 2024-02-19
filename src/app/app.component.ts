@@ -5,8 +5,7 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatIconModule} from '@angular/material/icon';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatTabsModule} from '@angular/material/tabs';
-import {FormControl, ReactiveFormsModule} from '@angular/forms';
-import {AuthService} from './services/auth.service';
+import {ReactiveFormsModule} from '@angular/forms';
 
 import {FULL_PATHS_URLS} from './urls';
 import {IfLoggedInDirective} from './directives/if-logged-in.directive';
@@ -41,15 +40,14 @@ import {UserAvatarComponent} from './shared/components/avatar/user-avatar.compon
 export class AppComponent {
   @HostBinding('class') className = '';
 
-  toggleControl = new FormControl(false);
   links = [
     {route: FULL_PATHS_URLS.links, display: 'Links'},
     {route: FULL_PATHS_URLS.tags, display: 'Tags'},
     {route: FULL_PATHS_URLS.help, display: 'Help'},
   ];
-  title = 'BD Links';
+  title = 'OBB Links';
 
-  constructor(public authService: AuthService) {
+  constructor() {
   }
 
 }

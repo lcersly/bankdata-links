@@ -1,47 +1,43 @@
-import {Injectable} from '@angular/core';
-import {combineLatestWith, map, Observable, shareReplay} from 'rxjs';
+import {computed, inject, Injectable} from '@angular/core';
 import {FirestoreLinkService, LinkDatabaseAndId} from './firestore/firestore-link.service';
 import {FirestoreTagService} from './firestore/firestore-tag.service';
 import {Link} from '../models/link.model';
 import {NotificationService} from './notification.service';
 import {Tag} from '../models/tag.model';
 import {reduceLinkToSearchableString} from '../shared/reducer';
+import {map} from 'rxjs';
+import {toObservable} from '@angular/core/rxjs-interop';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LinkService {
-  public links$: Observable<Link[]> = this.fireLinkService.allLinks$
-    .pipe(
-      combineLatestWith(this.firestoreTagService.tags$),
-      map(([links, tags]) => links.map(link => convertDatabaseObjectToLink(link, tags))),
-      shareReplay(1),
-    )
+  #fireLinkService= inject(FirestoreLinkService);
+  #firestoreTagService= inject(FirestoreTagService);
+  #notificationService= inject(NotificationService);
 
-  constructor(private fireLinkService: FirestoreLinkService,
-              private firestoreTagService: FirestoreTagService,
-              private notificationService: NotificationService,
-  ) {
-  }
+  links = computed(()=>{
+    return this.#fireLinkService.links().map(link => convertDatabaseObjectToLink(link, this.#firestoreTagService.tags()))
+  })
 
-  public getLink(uuid: string): Observable<Link | undefined> {
-    return this.links$.pipe(map(links => links.find(link => link.uuid === uuid)));
+  public getLink(uuid: string) {
+    return toObservable(this.links).pipe(map(links => links.find(link => link.uuid === uuid)));
   }
 
   public async createLinkAndTags(link: Link): Promise<void> {
-    await this.fireLinkService.create(link);
-    this.notificationService.link.created();
+    await this.#fireLinkService.create(link);
+    this.#notificationService.link.created();
   }
 
   async edit(link: Link) {
     console.info('link service edit', link);
-    await this.fireLinkService.edit(link);
-    this.notificationService.link.edited(link.name);
+    await this.#fireLinkService.edit(link);
+    this.#notificationService.link.edited(link.name);
   }
 
   async delete(link: Link) {
-    await this.fireLinkService.delete(link);
-    this.notificationService.link.deleted(link.name);
+    await this.#fireLinkService.delete(link);
+    this.#notificationService.link.deleted(link.name);
   }
 }
 

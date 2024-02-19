@@ -1,9 +1,6 @@
-import {Injectable} from '@angular/core';
-import {first, map, Observable, ReplaySubject} from 'rxjs';
+import {Injectable, signal} from '@angular/core';
 
-export type LocalStorageState = {
-  paginatorSizeSettings: Record<PaginatorType, number>
-};
+export type LocalStorageState = Record<PaginatorType, number>
 
 export type PaginatorType = 'links' | 'tags';
 type LocalStorageKeys = 'linksPageSize' | 'tagsPageSize';
@@ -12,19 +9,15 @@ type LocalStorageKeys = 'linksPageSize' | 'tagsPageSize';
   providedIn: 'root',
 })
 export class LocalStorageService {
-  private paginatorSizes = new ReplaySubject<LocalStorageState>();
+  private paginatorSizes = signal<LocalStorageState>({
+    links: 100,
+    tags: 100,
+  });
 
   constructor() {
-    this.paginatorSizes.subscribe(sizes => {
-      this.setKeyInLocalStorage('linksPageSize', sizes.paginatorSizeSettings.links.toString());
-      this.setKeyInLocalStorage('tagsPageSize', sizes.paginatorSizeSettings.tags.toString());
-    })
-
-    this.paginatorSizes.next({
-      paginatorSizeSettings: {
-        tags: this.getNumberFromLocalStorage('tagsPageSize', 25),
-        links: this.getNumberFromLocalStorage('linksPageSize', 25),
-      },
+    this.paginatorSizes.set({
+      tags: this.getNumberFromLocalStorage('tagsPageSize', 100),
+      links: this.getNumberFromLocalStorage('linksPageSize', 100),
     })
   }
 
@@ -41,22 +34,11 @@ export class LocalStorageService {
   }
 
   setPaginatorSize(key: PaginatorType, size: number): void {
-    this.paginatorSizes.pipe(first()).subscribe(sizes => {
-      const newSizes: LocalStorageState = {
-        ...sizes,
-        paginatorSizeSettings: {
-          ...sizes.paginatorSizeSettings,
-        },
-      }
-      newSizes.paginatorSizeSettings[key] = size;
-      this.paginatorSizes.next(newSizes);
-    })
+    this.paginatorSizes.update(value => ({...value, [key]: size}));
+    this.setKeyInLocalStorage(key == 'tags' ? "tagsPageSize" : "linksPageSize", size.toString());
   }
 
-  getPaginatorSize(key: PaginatorType): Observable<number> {
-    return this.paginatorSizes.pipe(
-      first(),
-      map(sizes => sizes.paginatorSizeSettings[key]),
-    )
+  getPaginatorSize(key: PaginatorType): number {
+    return this.paginatorSizes()[key];
   }
 }

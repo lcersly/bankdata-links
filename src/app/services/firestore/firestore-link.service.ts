@@ -1,5 +1,4 @@
-import {inject, Injectable} from '@angular/core';
-import {ReplaySubject} from 'rxjs';
+import {inject, Injectable, signal} from '@angular/core';
 import {
   addDoc,
   collection,
@@ -27,8 +26,7 @@ export type LinkDatabaseAndId = { uuid: string, link: LinkDatabase };
 export class FirestoreLinkService {
   private firestore: Firestore = inject(Firestore);
   private unsub: Unsubscribe | undefined;
-  private _data$ = new ReplaySubject<LinkDatabaseAndId[]>(1);
-  public allLinks$ = this._data$.asObservable();
+  public links = signal<LinkDatabaseAndId[]>([]);
 
   constructor(private authService: AuthService) {
     this.authService.isSignedIn$.subscribe(signedIn => {
@@ -56,7 +54,7 @@ export class FirestoreLinkService {
           } as LinkDatabaseAndId;
         });
         console.debug('Received document update', documents);
-        this._data$.next(convertedDocs);
+        this.links.set(convertedDocs);
       });
   }
 
@@ -108,4 +106,3 @@ const converter: FirestoreDataConverter<LinkDatabase> = {
     return snapshot.data();
   },
 };
-
