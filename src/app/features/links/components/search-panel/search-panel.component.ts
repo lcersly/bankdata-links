@@ -1,7 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  computed,
+  computed, DestroyRef,
   effect,
   EventEmitter,
   inject,
@@ -17,7 +17,7 @@ import {MatInput} from '@angular/material/input';
 import {FormControl, NonNullableFormBuilder, ReactiveFormsModule} from '@angular/forms';
 import {LinkFilters} from '../../../../services/filter.service';
 import {debounceTime} from 'rxjs';
-import {takeUntilDestroyed, toSignal} from '@angular/core/rxjs-interop';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-search-panel',
@@ -38,6 +38,7 @@ import {takeUntilDestroyed, toSignal} from '@angular/core/rxjs-interop';
 })
 export class SearchPanelComponent implements OnInit{
   #fb = inject(NonNullableFormBuilder)
+  #destroyRef = inject(DestroyRef)
 
   @Input({required: true}) initialSearchParams!: LinkFilters;
 
@@ -57,29 +58,23 @@ export class SearchPanelComponent implements OnInit{
     selectedTagsUUID: this.#fb.array([] as FormControl<string>[]),
   });
 
-  #formValue = toSignal(this.searchForm.valueChanges
-    .pipe(
-      takeUntilDestroyed(),
-      debounceTime(100)));
-
-  constructor() {
-    effect(() => {
-      const filters = this.#formValue() ?? {};
-
-      const linkFilters = {
-        // lowercase all search strings
-        searchString: filters.searchString?.toLowerCase(),
-        selectedTagsUUID: filters.selectedTagsUUID,
-        searchTags: filters.searchTags?.toLowerCase(),
-      } as LinkFilters;
-
-      this.filtersChanged.emit(linkFilters)
-    })
-  }
-
   ngOnInit(): void {
     //set initial values, but only once
     this.searchForm.setValue(this.initialSearchParams);
+
+    this.searchForm.valueChanges
+      .pipe(
+        takeUntilDestroyed(this.#destroyRef),
+        debounceTime(100)).subscribe(filters => {
+      const linkFilters: LinkFilters = {
+        // lowercase all search strings
+        searchString: filters.searchString?.toLowerCase() ?? '',
+        selectedTagsUUID: filters.selectedTagsUUID ?? [],
+        searchTags: filters.searchTags?.toLowerCase() ?? '',
+      };
+
+      this.filtersChanged.emit(linkFilters)
+    })
   }
 
   get searchControl() {

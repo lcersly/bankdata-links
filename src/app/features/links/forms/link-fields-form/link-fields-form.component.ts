@@ -17,7 +17,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {TextFieldModule} from '@angular/cdk/text-field';
 import {MatInputModule} from '@angular/material/input';
 
-import {TagSelectorComponent} from '../../components/tag-selector/tag-selector.component';
+import {TagSelectorComponent} from '../tag-selector/tag-selector.component';
 
 @Component({
   selector: 'app-link-form',

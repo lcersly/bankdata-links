@@ -1,0 +1,14 @@
+@import "src/app/features/constants";
+
+:host {
+  display: flex;
+  justify-content: space-between;
+
+  mat-form-field {
+    flex: 1;
+
+    &:last-of-type {
+      margin-left: $small-spacing;
+    }
+  }
+}
