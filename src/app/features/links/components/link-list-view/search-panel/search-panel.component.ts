@@ -1,8 +1,8 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  computed, DestroyRef,
-  effect,
+  computed,
+  DestroyRef,
   EventEmitter,
   inject,
   Input,
@@ -15,9 +15,10 @@ import {MatIcon} from '@angular/material/icon';
 import {MatIconButton} from '@angular/material/button';
 import {MatInput} from '@angular/material/input';
 import {FormControl, NonNullableFormBuilder, ReactiveFormsModule} from '@angular/forms';
-import {LinkFilters} from '../../../../services/filter.service';
+import {LinkFilters} from '../../../../../services/filter.service';
 import {debounceTime} from 'rxjs';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {MatTooltip} from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-search-panel',
@@ -31,6 +32,7 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
     MatLabel,
     MatSuffix,
     ReactiveFormsModule,
+    MatTooltip,
   ],
   templateUrl: './search-panel.component.html',
   styleUrl: './search-panel.component.scss',
@@ -47,34 +49,30 @@ export class SearchPanelComponent implements OnInit{
   linkCount = input.required<number>();
   filteredLinksCount = input.required<number>();
 
-  @Output() filtersChanged = new EventEmitter<LinkFilters>()
+  @Output() searchChanged = new EventEmitter<string>()
+  @Output() tagSearchChanged = new EventEmitter<string>()
 
-  public tagsHint = computed(() => `${this.tagCount() - this.tagSelectedCount()} / ${this.tagCount()}`);
-  public linkHint = computed(() => `${this.filteredLinksCount()} / ${this.linkCount()}`);
+  public filteredTags = computed(() => this.tagCount() - this.tagSelectedCount());
 
   public searchForm = this.#fb.group({
     searchString: this.#fb.control(''),
     searchTags: this.#fb.control(''),
-    selectedTagsUUID: this.#fb.array([] as FormControl<string>[]),
   });
 
   ngOnInit(): void {
     //set initial values, but only once
-    this.searchForm.setValue(this.initialSearchParams);
+    this.searchForm.patchValue(this.initialSearchParams);
 
-    this.searchForm.valueChanges
-      .pipe(
-        takeUntilDestroyed(this.#destroyRef),
-        debounceTime(100)).subscribe(filters => {
-      const linkFilters: LinkFilters = {
-        // lowercase all search strings
-        searchString: filters.searchString?.toLowerCase() ?? '',
-        selectedTagsUUID: filters.selectedTagsUUID ?? [],
-        searchTags: filters.searchTags?.toLowerCase() ?? '',
-      };
+    this.searchControl.valueChanges.pipe(
+      takeUntilDestroyed(this.#destroyRef),
+      debounceTime(100)
+    ).subscribe(search => this.searchChanged.emit(search));
 
-      this.filtersChanged.emit(linkFilters)
-    })
+    this.searchTagControl.valueChanges.pipe(
+      takeUntilDestroyed(this.#destroyRef),
+      debounceTime(100)
+    ).subscribe(search => this.tagSearchChanged.emit(search));
+
   }
 
   get searchControl() {

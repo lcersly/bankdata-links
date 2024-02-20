@@ -19,8 +19,8 @@ import {FirestoreTagService} from '../../../../services/firestore/firestore-tag.
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {LocalStorageService} from '../../../../services/localstorage.service';
 import {Clipboard} from '@angular/cdk/clipboard';
-import {SearchPanelComponent} from '../search-panel/search-panel.component';
-import {LinkListComponent} from '../link-list/link-list.component';
+import {SearchPanelComponent} from './search-panel/search-panel.component';
+import {LinkListComponent} from './link-list/link-list.component';
 
 @Component({
   selector: 'app-link-list-view',

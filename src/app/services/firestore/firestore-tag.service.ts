@@ -38,7 +38,6 @@ export class FirestoreTagService {
         this.disconnect();
       }
     })
-    // this.tags$.subscribe(t => console.debug(`Service - Tags updated (${t.length})`, t));
   }
 
   public hasMatchingTag(key: string): Tag | undefined {
@@ -66,6 +65,7 @@ export class FirestoreTagService {
     console.debug("Subscribing to tags");
     this.unsub = onSnapshot(this.collectionRef,
       (doc) => {
+        console.debug(`Received update for ${doc.size} tag(s)`);
         if (doc.empty) {
           this.tags.set([])
         } else {

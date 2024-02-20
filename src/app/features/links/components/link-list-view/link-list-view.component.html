@@ -6,11 +6,14 @@
   [tagSelectedCount]="filterService.filteredTags().length"
 
   [initialSearchParams]="filterService.linkFilters()"
-  (filtersChanged)="filterService.setLinkFilters($event)"
+
+  (searchChanged)="filterService.setSearchFilter($event)"
+  (tagSearchChanged)="filterService.setTagFilter($event)"
 />
 
-<app-link-list [links]="linkService.links()"
+<app-link-list [links]="filterService.filteredLinks()"
                [selectedTags]="filterService.filteredTags()"
+
                [pageSize]="localStorageService.getPaginatorSize('links')"
                (pageSizeChange)="localStorageService.setPaginatorSize('links', $event.pageSize)"
 
@@ -19,6 +22,8 @@
                (editLink)="edit($event)"
                (openLink)="openLink($event)"
 
+               (tagSelected)="filterService.addSelectedTag($event)"
+               (tagDeSelected)="filterService.removeSelectedTag($event)"
 />
 
 <app-create-button icon="bookmark_add" [navigateTo]="createLink"></app-create-button>

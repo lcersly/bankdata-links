@@ -17,7 +17,7 @@
   <ng-container matColumnDef="name">
     <mat-header-cell *matHeaderCellDef mat-sort-header="name"> Name</mat-header-cell>
     <mat-cell *matCellDef="let element" [matTooltip]="element.description">
-      <a [href]="element.url" class="no-link-style" (click)="$event.preventDefault()">
+      <a [href]="element.url" class="no-link-style single-line" (click)="$event.preventDefault()">
         {{element.name}}
       </a>
     </mat-cell>
@@ -54,7 +54,7 @@
   <ng-container matColumnDef="copy">
     <mat-header-cell *matHeaderCellDef></mat-header-cell>
     <mat-cell *matCellDef="let element">
-      <button (click)="copy($event, element)" mat-icon-button class="hide-until-hover" [matTooltip]="element.url">
+      <button (click)="copy($event, element)" mat-icon-button class="hide-until-hover" matTooltip="Copy URL" matTooltipPosition="before">
         <mat-icon>content_copy</mat-icon>
       </button>
     </mat-cell>

@@ -1,7 +1,7 @@
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
-  effect,
   EventEmitter,
   Input,
   input,
@@ -9,7 +9,7 @@ import {
   viewChild,
 } from '@angular/core';
 import {MatTableDataSource, MatTableModule} from '@angular/material/table';
-import {Link} from '../../../../models/link.model';
+import {Link} from '../../../../../models/link.model';
 import {MatSort, MatSortModule} from '@angular/material/sort';
 import {MatPaginator, PageEvent} from '@angular/material/paginator';
 import {MatTooltip} from '@angular/material/tooltip';
@@ -17,6 +17,10 @@ import {MatChipListbox, MatChipOption, MatChipSelectionChange} from '@angular/ma
 import {MatIcon} from '@angular/material/icon';
 import {Tag} from 'src/app/models/tag.model';
 import {MatIconButton} from '@angular/material/button';
+import {
+  initSortableFilterTableAfterViewInit,
+  initSortableFilterTableConstructorEffects,
+} from '../../../../../shared/util';
 
 @Component({
   selector: 'app-link-list',
@@ -35,7 +39,7 @@ import {MatIconButton} from '@angular/material/button';
   styleUrl: './link-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LinkListComponent {
+export class LinkListComponent implements AfterViewInit{
   links = input.required<Link[]>();
   selectedTags = input.required<Tag[]>();
   @Input({required: true}) pageSize!: number;
@@ -58,26 +62,16 @@ export class LinkListComponent {
   ];
   dataSource = new MatTableDataSource<Link>([]);
 
-  #matSort = viewChild(MatSort);
-  #paginator = viewChild(MatPaginator);
+  matSort = viewChild(MatSort);
+  paginator = viewChild(MatPaginator);
 
 
   constructor() {
-    effect(() => this.dataSource.sort = this.#matSort() ?? null)
+    initSortableFilterTableConstructorEffects(this.dataSource, this.links)
+  }
 
-    effect(() => {
-      const paginator = this.#paginator();
-      if (paginator) {
-        this.dataSource.paginator = paginator;
-        paginator.pageSize = this.pageSize;
-        paginator.page.subscribe(change => this.pageSizeChange.emit(change))
-      }
-    })
-
-    effect(() => {
-      this.dataSource.data = this.links();
-      this.dataSource._updateChangeSubscription();
-    })
+  ngAfterViewInit(): void {
+    initSortableFilterTableAfterViewInit(this.dataSource, this.matSort(), this.paginator(), this.pageSizeChange, this.pageSize)
   }
 
   edit($event: MouseEvent, element: Link) {

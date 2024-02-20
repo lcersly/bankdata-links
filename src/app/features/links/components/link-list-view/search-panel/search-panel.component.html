@@ -9,7 +9,10 @@
       <mat-icon>close</mat-icon>
     </button>
   }
-  <mat-hint align="end">{{linkHint()}}</mat-hint>
+  <mat-hint align="end">
+    <span matTooltip="Links found with current filters">{{ filteredLinksCount() }} </span> /
+    <span matTooltip="Total amount of links">{{ linkCount() }}</span>
+  </mat-hint>
 </mat-form-field>
 
 <mat-form-field appearance="outline">
@@ -23,5 +26,8 @@
       <mat-icon>close</mat-icon>
     </button>
   }
-  <mat-hint align="end">{{tagsHint()}}</mat-hint>
+  <mat-hint align="end">
+    <span matTooltip="Tags found with current filters">{{ filteredTags() }} </span> /
+    <span matTooltip="Total amount of tags">{{ tagCount() }}</span>
+  </mat-hint>
 </mat-form-field>

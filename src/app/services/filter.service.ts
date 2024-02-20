@@ -1,7 +1,7 @@
-import {computed, effect, inject, Injectable, signal} from '@angular/core';
+import {computed, inject, Injectable, signal} from '@angular/core';
 import {LinkService} from './link.service';
 import {linkMatches} from '../models/link.model';
-import {tagMatches} from '../models/tag.model';
+import {Tag, tagMatches} from '../models/tag.model';
 import {FirestoreTagService} from './firestore/firestore-tag.service';
 
 export type LinkFilters = {
@@ -29,7 +29,7 @@ export class FilterService {
     const filters = this.linkFilters();
     const tags = this.#tagService.tags();
 
-    if (filters.searchString|| filters.searchTags || (filters.selectedTagsUUID && filters.selectedTagsUUID.length > 0)) {
+    if (filters.searchString || filters.searchTags || filters.selectedTagsUUID.length > 0) {
       return tags.filter(tag => tagMatches(tag, filters))
     }
 
@@ -51,13 +51,22 @@ export class FilterService {
     this.linkFilters.set(filters);
   }
 
+  addSelectedTag(tag: Tag) {
+    this.linkFilters.update(filters => ({...filters, selectedTagsUUID: [...filters.selectedTagsUUID, tag.uuid]}))
+  }
 
-  constructor() {
-    effect(() => {
-      console.info("FilteredTags", this.filteredTags());
-    });
-    effect(() => {
-      console.info("FilteredLinks", this.filteredLinks());
-    });
+  removeSelectedTag(tag: Tag) {
+    this.linkFilters.update(filters => ({
+      ...filters,
+      selectedTagsUUID: filters.selectedTagsUUID.filter(selectedTag => selectedTag !== tag.uuid),
+    }));
+  }
+
+  setSearchFilter(filter: string) {
+    this.linkFilters.update(filters => ({...filters, searchString: filter}))
+  }
+
+  setTagFilter(filter: string) {
+    this.linkFilters.update(filters => ({...filters, searchTags: filter}))
   }
 }

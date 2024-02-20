@@ -46,6 +46,7 @@ export class FirestoreLinkService {
     console.debug('Subscribing to links');
     this.unsub = onSnapshot(this.colRef,
       (documents) => {
+        console.debug(`Received update for ${documents.size} link(s)`);
         const convertedDocs = documents.docs.map(doc => {
           const link = doc.data();
           return {
@@ -53,7 +54,7 @@ export class FirestoreLinkService {
             link,
           } as LinkDatabaseAndId;
         });
-        console.debug('Received document update', documents);
+
         this.links.set(convertedDocs);
       });
   }

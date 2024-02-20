@@ -2,7 +2,7 @@ import {Routes} from '@angular/router';
 import {LinkListViewComponent} from './features/links/components/link-list-view/link-list-view.component';
 import {EditLinkComponent} from './features/links/forms/edit-link/edit-link.component';
 import {CreateNewLinkComponent} from './features/links/forms/create-new-link/create-new-link.component';
-import {TagListComponent} from './features/tags/components/tag-list/tag-list.component';
+import {TagListViewComponent} from './features/tags/components/tag-list-view/tag-list-view.component';
 import {CreateTagComponent} from './features/tags/components/create-tag/create-tag.component';
 import {EditTagComponent} from './features/tags/components/edit-tag/edit-tag.component';
 import {TagResolveFn} from './resolvers/tag-resolve-fn';
@@ -36,7 +36,7 @@ export const routes: Routes = [
   },
   {
     path: PATHS_URLS.tags, children: [
-      {path: '', pathMatch: 'full', component: TagListComponent},
+      {path: '', pathMatch: 'full', component: TagListViewComponent},
       {
         path: 'create',
         component: CreateTagComponent,

@@ -20,6 +20,18 @@ export class LinkService {
     return this.#fireLinkService.links().map(link => convertDatabaseObjectToLink(link, this.#firestoreTagService.tags()))
   })
 
+  tagUsageCounts = computed(() => {
+    const links = this.links();
+    const tagCounts = new Map<string, number>();
+    for (const link of links) {
+      for (const tag of link.tags) {
+        let tagCount = tagCounts.get(tag.uuid) || 0;
+        tagCounts.set(tag.uuid, tagCount + 1);
+      }
+    }
+    return tagCounts;
+  })
+
   public getLink(uuid: string) {
     return toObservable(this.links).pipe(map(links => links.find(link => link.uuid === uuid)));
   }
@@ -30,7 +42,6 @@ export class LinkService {
   }
 
   async edit(link: Link) {
-    console.info('link service edit', link);
     await this.#fireLinkService.edit(link);
     this.#notificationService.link.edited(link.name);
   }

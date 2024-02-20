@@ -1,4 +1,4 @@
-@import "src/app/features/constants";
+@import "../../../../constants";
 
 mat-table {
   .mat-column-edit {
@@ -18,6 +18,12 @@ mat-table {
   }
 
   .mat-column-tags {
-    flex-grow: 2;
+    flex-grow: 1;
   }
+}
+
+.single-line{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

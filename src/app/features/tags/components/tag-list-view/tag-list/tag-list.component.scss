@@ -1,4 +1,4 @@
-@import "../../../constants";
+@import "../../../../constants";
 
 mat-table {
   width: 100%;
@@ -19,12 +19,8 @@ mat-table {
   .mat-column-key{
     flex-grow: 1;
   }
-}
 
-.mat-column-select{
-  max-width: 50px;
-}
-
-mat-form-field{
-  width: 100%;
+  .mat-column-select{
+    max-width: 50px;
+  }
 }
