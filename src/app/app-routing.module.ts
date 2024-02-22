@@ -11,6 +11,7 @@ import {LoginComponent} from './features/login/components/login/login.component'
 import {canActivate, redirectLoggedInTo, redirectUnauthorizedTo} from '@angular/fire/auth-guard';
 import {PATHS_URLS} from './urls';
 import {HelpComponent} from './features/help/help.component';
+import {ExportToFileComponent} from './features/export/components/export-to-file.component';
 
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo([PATHS_URLS.login]);
 const redirectLoggedInToItems = () => redirectLoggedInTo([PATHS_URLS.links]);
@@ -50,6 +51,7 @@ export const routes: Routes = [
     ],
     ...canActivate(redirectUnauthorizedToLogin),
   },
+  {path: PATHS_URLS.export, component: ExportToFileComponent, ...canActivate(redirectUnauthorizedToLogin)},
   {path: PATHS_URLS.help, component: HelpComponent, ...canActivate(redirectUnauthorizedToLogin)},
   {path: PATHS_URLS.login, component: LoginComponent, ...canActivate(redirectLoggedInToItems)},
 ];

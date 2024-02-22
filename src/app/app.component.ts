@@ -43,11 +43,8 @@ export class AppComponent {
   links = [
     {route: FULL_PATHS_URLS.links, display: 'Links'},
     {route: FULL_PATHS_URLS.tags, display: 'Tags'},
+    {route: FULL_PATHS_URLS.export, display: 'Export'},
     {route: FULL_PATHS_URLS.help, display: 'Help'},
   ];
   title = 'OBB Links';
-
-  constructor() {
-  }
-
 }
