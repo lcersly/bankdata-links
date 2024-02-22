@@ -16,14 +16,14 @@ import {MatCheckbox} from '@angular/material/checkbox';
 import {MatIcon} from '@angular/material/icon';
 import {MatPaginator, PageEvent} from '@angular/material/paginator';
 import {MatSort, MatSortModule} from '@angular/material/sort';
-import {Tag} from '../../../../../models/tag.model';
+import {Tag} from '../../../../models/tag.model';
 import {SelectionModel} from '@angular/cdk/collections';
 import {
   initSortableFilterTableAfterViewInit,
   initSortableFilterTableConstructorEffects,
-} from '../../../../../shared/util';
+} from '../../../../shared/util';
 import {Router} from '@angular/router';
-import {TagUsageButtonComponent} from '../../../../../shared/components/tag-usage-button/tag-usage-button.component';
+import {TagUsageButtonComponent} from '../../../../shared/components/tag-usage-button/tag-usage-button.component';
 
 @Component({
   selector: 'app-tag-list',

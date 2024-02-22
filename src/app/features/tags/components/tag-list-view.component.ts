@@ -1,11 +1,11 @@
 import {ChangeDetectionStrategy, Component, inject, signal} from '@angular/core';
-import {FirestoreTagService} from '../../../../services/firestore/firestore-tag.service';
+import {FirestoreTagService} from '../../../services/firestore/firestore-tag.service';
 import {Router} from '@angular/router';
-import {FULL_PATHS_URLS, PATHS_URLS} from '../../../../urls';
-import {Tag} from '../../../../models/tag.model';
-import {CreateButtonComponent} from '../../../../shared/components/create-button/create-button.component';
-import {FilterService} from '../../../../services/filter.service';
-import {LocalStorageService} from '../../../../services/localstorage.service';
+import {FULL_PATHS_URLS, PATHS_URLS} from '../../../urls';
+import {Tag} from '../../../models/tag.model';
+import {CreateButtonComponent} from '../../../shared/components/create-button/create-button.component';
+import {FilterService} from '../../../services/filter.service';
+import {LocalStorageService} from '../../../services/localstorage.service';
 import {TagSearchbarComponent} from './tag-searchbar/tag-searchbar.component';
 import {TagListComponent} from './tag-list/tag-list.component';
 

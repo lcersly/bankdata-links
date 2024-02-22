@@ -15,7 +15,7 @@ import {MatIcon} from '@angular/material/icon';
 import {MatIconButton} from '@angular/material/button';
 import {MatInput} from '@angular/material/input';
 import {FormControl, NonNullableFormBuilder, ReactiveFormsModule} from '@angular/forms';
-import {LinkFilters} from '../../../../../services/filter.service';
+import {LinkFilters} from '../../../../services/filter.service';
 import {debounceTime} from 'rxjs';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {MatTooltip} from '@angular/material/tooltip';

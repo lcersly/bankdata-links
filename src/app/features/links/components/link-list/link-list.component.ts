@@ -9,7 +9,7 @@ import {
   viewChild,
 } from '@angular/core';
 import {MatTableDataSource, MatTableModule} from '@angular/material/table';
-import {Link} from '../../../../../models/link.model';
+import {Link} from '../../../../models/link.model';
 import {MatSort, MatSortModule} from '@angular/material/sort';
 import {MatPaginator, PageEvent} from '@angular/material/paginator';
 import {MatTooltip} from '@angular/material/tooltip';
@@ -20,7 +20,7 @@ import {MatIconButton} from '@angular/material/button';
 import {
   initSortableFilterTableAfterViewInit,
   initSortableFilterTableConstructorEffects,
-} from '../../../../../shared/util';
+} from '../../../../shared/util';
 
 @Component({
   selector: 'app-link-list',

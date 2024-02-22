@@ -72,7 +72,7 @@ export class FirestoreLinkService {
     const data = {
       ...convertLinkToDatabase(link),
       updatedAt: serverTimestamp(),
-      createdAt: link.createdAt ? link.createdAt : serverTimestamp()
+      createdAt: link.createdAt ?? serverTimestamp()
     };
 
     return updateDoc(this.docReference(link), data);
