@@ -71,7 +71,6 @@ export class FirestoreLinkService {
     const data = {
       ...convertLinkToDatabase(this.addChange('Updated', link)),
     };
-    console.info('LINK UPDATE', data)
     return updateDoc(this.docReference(link), data);
   }
 
