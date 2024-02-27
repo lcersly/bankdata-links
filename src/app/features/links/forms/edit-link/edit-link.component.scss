@@ -5,8 +5,12 @@
 }
 
 .change-table{
-  margin-top: 20px;
   width: 100%;
+
+}
+
+.mat-expansion-panel-header-description{
+  justify-content: space-between;
 }
 
 tr > th:first-of-type{

@@ -33,11 +33,11 @@
               {{ item.date | date:'short' }}
             </mat-panel-title>
             <mat-panel-description>
-              {{ (item.changeDetails | changes).length }} Change(s)
+              <div>{{ item.name }} </div>
+              <div>{{ (item.changeDetails | changes).length }} Change(s)</div>
             </mat-panel-description>
           </mat-expansion-panel-header>
           <div>
-            <div>Changed by: {{ item.name }} / {{item.email}}</div>
             <table class="change-table">
               <tr>
                 <th></th>
