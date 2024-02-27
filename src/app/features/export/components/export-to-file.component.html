@@ -1,4 +1,18 @@
-<p>
-  Export every link with tags to:
-  <button mat-flat-button (click)="exportToJSON()">JSON</button>
-</p>
+<div id="actions">
+  <button mat-flat-button (click)="exportToJSON()">Export all links to JSON</button>
+</div>
+
+<table>
+  <tr>
+    @for (header of headers(); track header) {
+      <th>{{ header }}</th>
+    }
+  </tr>
+  @for (link of links(); track link.uuid) {
+    <tr>
+      @for (header of headers(); track header) {
+        <td>{{ link[header] }}</td>
+      }
+    </tr>
+  }
+</table>
