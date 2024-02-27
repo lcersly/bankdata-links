@@ -5,7 +5,7 @@ import {Link} from '../models/link.model';
 import {NotificationService} from './notification.service';
 import {Tag} from '../models/tag.model';
 import {reduceLinkToSearchableString} from '../shared/reducer';
-import {map} from 'rxjs';
+import {map, skipWhile, switchMap} from 'rxjs';
 import {toObservable} from '@angular/core/rxjs-interop';
 
 @Injectable({
@@ -20,6 +20,8 @@ export class LinkService {
     return this.#fireLinkService.links().map(link => convertDatabaseObjectToLink(link, this.#firestoreTagService.tags()))
   })
 
+  links$ = toObservable(this.links);
+
   tagUsageCounts = computed(() => {
     const links = this.links();
     const tagCounts = new Map<string, number>();
@@ -33,7 +35,11 @@ export class LinkService {
   })
 
   public getLink(uuid: string) {
-    return toObservable(this.links).pipe(map(links => links.find(link => link.uuid === uuid)));
+    return toObservable(this.#fireLinkService.state).pipe(
+      skipWhile(state => state.status !== 'loaded'),
+      switchMap(() => this.links$),
+      map(state => state.find(link => link.uuid === uuid)),
+    );
   }
 
   public async createLinkAndTags(link: Link): Promise<void> {
@@ -59,14 +65,13 @@ function convertDatabaseObjectToLink(object: LinkDatabaseAndId, tags: Tag[]): Li
     .filter(tag => !!tag)
     .sort((a, b) => a.key.localeCompare(b.key));
 
-  const {url, description, name, createdAt, updatedAt} = link;
+  const {url, description, name, history} = link;
 
   return {
     url,
     description,
     name,
-    createdAt,
-    updatedAt,
+    history: history ?? [],
     uuid: object.uuid,
     tags: mappedTags,
     searchString: reduceLinkToSearchableString(link.name, link.url, link.description)

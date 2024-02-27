@@ -1,21 +1,14 @@
-import {inject, Injectable, signal} from '@angular/core';
-import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  Firestore,
-  onSnapshot,
-  serverTimestamp,
-  Unsubscribe,
-  updateDoc,
-} from '@angular/fire/firestore';
+import {computed, inject, Injectable, signal} from '@angular/core';
+import {addDoc, collection, doc, Firestore, onSnapshot, Unsubscribe, updateDoc} from '@angular/fire/firestore';
 import {Link, LinkBase} from '../../models/link.model';
 import {DocumentData, FirestoreDataConverter, QueryDocumentSnapshot} from 'firebase/firestore';
 import {AuthService} from '../auth.service';
+import {Change} from '../../models/history.model';
+import {Auth} from '@angular/fire/auth';
 
 export interface LinkDatabase extends LinkBase {
-  tags: string[]
+  tags: string[];
+  history?: Change<LinkBase>[];
 }
 
 export type LinkDatabaseAndId = { uuid: string, link: LinkDatabase };
@@ -24,11 +17,20 @@ export type LinkDatabaseAndId = { uuid: string, link: LinkDatabase };
   providedIn: 'root',
 })
 export class FirestoreLinkService {
-  private firestore: Firestore = inject(Firestore);
-  private unsub: Unsubscribe | undefined;
-  public links = signal<LinkDatabaseAndId[]>([]);
+  private firestore = inject(Firestore);
+  private authService = inject(AuthService);
+  private auth = inject(Auth);
 
-  constructor(private authService: AuthService) {
+  private unsub: Unsubscribe | undefined;
+
+  #state = signal<{ links: LinkDatabaseAndId[], status: 'init' | 'loading' | 'loaded' }>({
+    links: [],
+    status: 'init',
+  })
+  public links = computed(() => this.#state().links);
+  public state = this.#state.asReadonly();
+
+  constructor() {
     this.authService.isSignedIn$.subscribe(signedIn => {
       if (signedIn) {
         this.subscribeToLinks();
@@ -44,51 +46,69 @@ export class FirestoreLinkService {
 
   subscribeToLinks() {
     console.debug('Subscribing to links');
+
+    if (this.unsub) {
+      throw new Error('Already subscribed to links');
+    }
+
+    this.#state.update(state => ({...state, status: 'loading'}));
+
     this.unsub = onSnapshot(this.colRef,
       (documents) => {
-        console.debug(`Received update for ${documents.size} link(s)`);
-        const convertedDocs = documents.docs.map(doc => {
-          const link = doc.data();
-          return {
-            uuid: doc.id,
-            link,
-          } as LinkDatabaseAndId;
-        });
+        if (documents.metadata.hasPendingWrites) {
+          return;
+        }
 
-        this.links.set(convertedDocs);
+        const convertedDocs = documents.docs.map(doc => ({
+          uuid: doc.id,
+          link: doc.data(),
+        } as LinkDatabaseAndId));
+        console.debug(`Received update for ${documents.size} link(s)`, documents.docChanges());
+        this.#state.update(state => ({...state, status: 'loaded', links: convertedDocs}));
       });
   }
 
 
   create(link: Link) {
-    return addDoc(this.colRef, {
-      ...convertLinkToDatabase(link),
-      updatedAt: serverTimestamp(),
-      createdAt: serverTimestamp()
-    });
+    return addDoc(this.colRef, convertLinkToDatabase(this.addChange(link, 'Created')));
   }
 
   edit(link: Link) {
     const data = {
-      ...convertLinkToDatabase(link),
-      updatedAt: serverTimestamp(),
-      createdAt: link.createdAt ?? serverTimestamp()
+      ...convertLinkToDatabase(this.addChange(link, 'Updated')),
     };
-
     return updateDoc(this.docReference(link), data);
   }
 
   delete(link: Link) {
-    return deleteDoc(this.docReference(link));
+    const data = {
+      ...convertLinkToDatabase(this.addChange(link, 'Deleted')),
+      deleted: true,
+    };
+    return updateDoc(this.docReference(link), data);
   }
 
   private docReference(link: Link) {
     return doc(this.colRef, link.uuid);
   }
 
+  private addChange(link: Link, details = ''): Link {
+    return {
+      ...link,
+      history: [...link.history, {
+        value: link,
+        date: new Date(),
+        details: details,
+        name: this.auth.currentUser?.displayName ?? '',
+        email: this.auth.currentUser?.email ?? '',
+      }],
+    }
+  }
+
   disconnect() {
     if (this.unsub) {
       this.unsub();
+      this.unsub = undefined;
     }
   }
 }

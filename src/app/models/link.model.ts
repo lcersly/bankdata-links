@@ -1,18 +1,20 @@
 import {Tag} from './tag.model';
+import {Change} from './history.model';
 
 export interface LinkBase {
   url: string;
   name: string;
+  deleted?: boolean;
   description?: string;
-  tags: Tag[] | string[];
-  createdAt: Date
-  updatedAt: Date
 }
+
+export type LinkHistoryType = Change<LinkBase>;
 
 export interface Link extends LinkBase {
   tags: Tag[];
   uuid: string;
   searchString: string;
+  history: LinkHistoryType[];
 }
 
 export function linkMatches(link: Link, matchedTags: Tag[], searchString?: string): boolean {

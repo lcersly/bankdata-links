@@ -1,24 +1,17 @@
-import {inject, Injectable, signal} from '@angular/core';
-import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  Firestore,
-  onSnapshot,
-  Unsubscribe,
-  updateDoc,
-} from '@angular/fire/firestore';
+import {computed, inject, Injectable, signal} from '@angular/core';
+import {addDoc, collection, doc, Firestore, onSnapshot, Unsubscribe, updateDoc} from '@angular/fire/firestore';
 import {FirestoreDataConverter, QueryDocumentSnapshot} from 'firebase/firestore';
 import {keyMatchesTag, Tag} from '../../models/tag.model';
 import {reduceTagToSearchableString} from '../../shared/reducer';
 import {AuthService} from '../auth.service';
 import {toObservable} from '@angular/core/rxjs-interop';
-import {map} from 'rxjs';
+import {map, skipWhile} from 'rxjs';
+import {Change} from '../../models/history.model';
 
 interface DatabaseTag {
   key: string;
   description: string;
+  history?: Change<DatabaseTag>[]
 }
 
 @Injectable({
@@ -28,7 +21,13 @@ export class FirestoreTagService {
   private firestore: Firestore = inject(Firestore);
   private unsub: Unsubscribe | undefined;
 
-  public tags = signal<Tag[]>([])
+  #state = signal<{ tags: Tag[], status: 'init' | 'loading' | 'loaded' }>({
+    tags: [],
+    status: 'init',
+  })
+
+  public tags = computed(() => this.#state().tags);
+  public status = computed(() => this.#state().status);
 
   constructor(private authService: AuthService) {
     this.authService.isSignedIn$.subscribe(signedIn => {
@@ -50,7 +49,10 @@ export class FirestoreTagService {
   }
 
   public getTag(uuid: string) {
-    return toObservable(this.tags).pipe(map(tags => tags.find(tag => tag.uuid === uuid)));
+    return toObservable(this.#state).pipe(
+      skipWhile(state => state.status !== 'loaded'),
+      map(state => state.tags.find(tag => tag.uuid === uuid))
+    );
   }
 
   public createNew(key: string, description: string) {
@@ -62,15 +64,22 @@ export class FirestoreTagService {
   }
 
   private subscribeToTags() {
-    console.debug("Subscribing to tags");
+    console.debug('Subscribing to tags');
+
+    if (this.unsub) {
+      throw new Error('Already subscribed to tags');
+    }
+
+    this.#state.update(state => ({...state, status: 'loading'}))
+
     this.unsub = onSnapshot(this.collectionRef,
       (doc) => {
         console.debug(`Received update for ${doc.size} tag(s)`);
         if (doc.empty) {
-          this.tags.set([])
+          this.#state.update(state => ({...state, status: 'loaded', tags: []}))
         } else {
           const tags = doc.docs.map(doc => converter.fromFirestore(doc));
-          this.tags.set(tags);
+          this.#state.update(state => ({...state, status: 'loaded', tags: tags}))
         }
       },
     );
@@ -79,12 +88,8 @@ export class FirestoreTagService {
   disconnect() {
     if (this.unsub) {
       this.unsub();
+      this.unsub = undefined;
     }
-  }
-
-  deleteTagFromId(tagId: string) {
-    //todo check if any links still use it before delete
-    return deleteDoc(doc(this.collectionRef, tagId))
   }
 }
 
@@ -93,6 +98,7 @@ const converter: FirestoreDataConverter<Tag> = {
     return {
       key: tag.key,
       description: tag.description,
+      history: tag.history,
     };
   },
   fromFirestore(snapshot: QueryDocumentSnapshot<DatabaseTag>): Tag {
@@ -102,6 +108,7 @@ const converter: FirestoreDataConverter<Tag> = {
       description: documentData.description,
       uuid: snapshot.id,
       searchString: reduceTagToSearchableString(documentData.key, documentData.description),
+      history: documentData.history ?? [],
     }
   },
 }

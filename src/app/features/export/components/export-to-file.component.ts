@@ -5,7 +5,7 @@ import {saveAs} from 'file-saver';
 import {DatePipe} from '@angular/common';
 import {Link} from '../../../models/link.model';
 
-type LinkWithStringTags = Link & {
+type LinkWithStringTags = Exclude<Link, 'searchTags' | 'tags'> & {
   stringTags: string[]
 }
 
@@ -28,7 +28,11 @@ export class ExportToFileComponent {
   #datePipe = inject(DatePipe);
 
   links = computed<LinkWithStringTags[]>(() => {
-    return this.linkService.links().map(link => ({...link, stringTags: link.tags.map(tag => tag.key)}))
+    return this.linkService.links().map(link => {
+      const {searchString, tags, ...rest} = link;
+      const stringTags = link.tags.map(tag => tag.key);
+      return {...rest, stringTags} as LinkWithStringTags;
+    })
   })
 
   headers = computed(() => {
@@ -38,8 +42,7 @@ export class ExportToFileComponent {
       return [];
     }
 
-    let keys = Object.keys(links[0]) as (keyof LinkWithStringTags)[];
-    return keys.filter(value => value !== 'searchString' && value !== 'tags');
+    return Object.keys(links[0]) as (keyof LinkWithStringTags)[];
   })
 
   exportToJSON() {
