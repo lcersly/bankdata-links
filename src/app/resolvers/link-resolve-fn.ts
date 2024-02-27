@@ -10,7 +10,7 @@ export const LinkResolveFn: ResolveFn<Link> = (route: ActivatedRouteSnapshot): O
   const linkService = inject(LinkService)
   const router = inject(Router);
 
-  return linkService.getLink(id).pipe(
+  return linkService.getLink$(id).pipe(
     first(),
     mergeMap(link => {
       if (link) {

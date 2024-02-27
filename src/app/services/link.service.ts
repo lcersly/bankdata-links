@@ -17,7 +17,10 @@ export class LinkService {
   #notificationService= inject(NotificationService);
 
   links = computed(()=>{
-    return this.#fireLinkService.links().map(link => convertDatabaseObjectToLink(link, this.#firestoreTagService.tags()))
+    return this.#fireLinkService.links()
+      .map(link => convertDatabaseObjectToLink(link, this.#firestoreTagService.tags()))
+      .filter(link => !link.deleted)
+
   })
 
   links$ = toObservable(this.links);
@@ -34,12 +37,16 @@ export class LinkService {
     return tagCounts;
   })
 
-  public getLink(uuid: string) {
+  public getLink$(uuid: string) {
     return toObservable(this.#fireLinkService.state).pipe(
       skipWhile(state => state.status !== 'loaded'),
       switchMap(() => this.links$),
       map(state => state.find(link => link.uuid === uuid)),
     );
+  }
+
+  public getLink(uuid: string) {
+    return this.links().find(link => link.uuid === uuid)
   }
 
   public async createLinkAndTags(link: Link): Promise<void> {
@@ -65,12 +72,13 @@ function convertDatabaseObjectToLink(object: LinkDatabaseAndId, tags: Tag[]): Li
     .filter(tag => !!tag)
     .sort((a, b) => a.key.localeCompare(b.key));
 
-  const {url, description, name, history} = link;
+  const {url, deleted, description, name, history} = link;
 
   return {
     url,
     description,
     name,
+    deleted,
     history: history ?? [],
     uuid: object.uuid,
     tags: mappedTags,

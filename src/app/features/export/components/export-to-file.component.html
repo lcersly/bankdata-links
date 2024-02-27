@@ -1,5 +1,5 @@
 <div id="actions">
-  <button mat-flat-button (click)="exportToJSON()">Export all links to JSON</button>
+  <button mat-flat-button (click)="exportToJSON()" [disabled]="links().length === 0">Export all links to JSON</button>
 </div>
 
 <table>

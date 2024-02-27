@@ -1,10 +1,9 @@
 import {computed, inject, Injectable, signal} from '@angular/core';
 import {addDoc, collection, doc, Firestore, onSnapshot, Unsubscribe, updateDoc} from '@angular/fire/firestore';
-import {Link, LinkBase} from '../../models/link.model';
+import {Link, LinkBase, LinkHistoryType} from '../../models/link.model';
 import {DocumentData, FirestoreDataConverter, QueryDocumentSnapshot} from 'firebase/firestore';
 import {AuthService} from '../auth.service';
-import {Change} from '../../models/history.model';
-import {Auth} from '@angular/fire/auth';
+import {Change, ChangeDetails} from '../../models/history.model';
 
 export interface LinkDatabase extends LinkBase {
   tags: string[];
@@ -19,7 +18,6 @@ export type LinkDatabaseAndId = { uuid: string, link: LinkDatabase };
 export class FirestoreLinkService {
   private firestore = inject(Firestore);
   private authService = inject(AuthService);
-  private auth = inject(Auth);
 
   private unsub: Unsubscribe | undefined;
 
@@ -55,35 +53,33 @@ export class FirestoreLinkService {
 
     this.unsub = onSnapshot(this.colRef,
       (documents) => {
-        if (documents.metadata.hasPendingWrites) {
-          return;
-        }
-
         const convertedDocs = documents.docs.map(doc => ({
           uuid: doc.id,
           link: doc.data(),
         } as LinkDatabaseAndId));
-        console.debug(`Received update for ${documents.size} link(s)`, documents.docChanges());
+        console.debug(`Received update for ${documents.size} link(s)`, convertedDocs);
         this.#state.update(state => ({...state, status: 'loaded', links: convertedDocs}));
       });
   }
 
 
   create(link: Link) {
-    return addDoc(this.colRef, convertLinkToDatabase(this.addChange(link, 'Created')));
+    return addDoc(this.colRef, convertLinkToDatabase(this.addChange('Created', link)));
   }
 
   edit(link: Link) {
     const data = {
-      ...convertLinkToDatabase(this.addChange(link, 'Updated')),
+      ...convertLinkToDatabase(this.addChange('Updated', link)),
     };
+    console.info('LINK UPDATE', data)
     return updateDoc(this.docReference(link), data);
   }
 
   delete(link: Link) {
+    const deletedLink = {...link, deleted: true};
+
     const data = {
-      ...convertLinkToDatabase(this.addChange(link, 'Deleted')),
-      deleted: true,
+      ...convertLinkToDatabase(this.addChange('Deleted', deletedLink)),
     };
     return updateDoc(this.docReference(link), data);
   }
@@ -92,16 +88,39 @@ export class FirestoreLinkService {
     return doc(this.colRef, link.uuid);
   }
 
-  private addChange(link: Link, details = ''): Link {
+  private addChange(details: ChangeDetails, link: Link): Link {
+    let diff = {};
+    const orgLink = this.state().links.find(l => l.uuid === link.uuid)?.link;
+    if (orgLink) {
+      const orgSimpleLink: LinkBase = {
+        url: orgLink.url,
+        name: orgLink.name,
+        deleted: orgLink.deleted,
+        description: orgLink.description,
+      }
+
+      const updatedDbLink: LinkBase = {
+        url: link.url,
+        name: link.name,
+        deleted: link.deleted,
+        description: link.description,
+      };
+
+      diff = diffBetweenLinkBases(orgSimpleLink, updatedDbLink)
+    }
+
+    const user = this.authService.user();
+
+    const change: LinkHistoryType = {
+      changeDetails: diff,
+      date: new Date(),
+      details: details,
+      name: user?.displayName ?? '',
+      email: user?.email ?? '',
+    };
     return {
       ...link,
-      history: [...link.history, {
-        value: link,
-        date: new Date(),
-        details: details,
-        name: this.auth.currentUser?.displayName ?? '',
-        email: this.auth.currentUser?.email ?? '',
-      }],
+      history: [change, ...link.history].slice(0, 10),
     }
   }
 
@@ -114,16 +133,62 @@ export class FirestoreLinkService {
 }
 
 function convertLinkToDatabase(link: Link): LinkDatabase {
-  const stringTags = link.tags.map(tag => tag.uuid);
-  const {uuid, ...everythingElse} = link;
-  return {...everythingElse, tags: stringTags};
+  const {uuid, searchString, tags, ...everythingElse} = link;
+  const tagUuids = tags.map(tag => tag.uuid);
+  return {...everythingElse, tags: tagUuids};
 }
 
 const converter: FirestoreDataConverter<LinkDatabase> = {
   toFirestore(modelObject: LinkDatabase): DocumentData {
-    return modelObject
+    return {
+      ...modelObject,
+      deleted: modelObject.deleted ?? false
+    }
   },
   fromFirestore(snapshot: QueryDocumentSnapshot<LinkDatabase>): LinkDatabase {
-    return snapshot.data();
+    let history = [];
+
+    const snapshotHistory = snapshot.get('history');
+    if (snapshotHistory) {
+      history = snapshotHistory.map((data: Change<LinkDatabase, { seconds: number, nanoseconds: number }>) => {
+          return {
+            ...data,
+            date: new Date(data.date.seconds * 1000),
+          }
+        });
+    }
+
+    return {
+      ...snapshot.data(),
+      history: history,
+      deleted: snapshot.get('deleted') ?? false
+    };
   },
 };
+
+function diffBetweenLinkBases(from: LinkBase, to: LinkBase)  {
+  let difference: { [key: string]: [unknown, unknown] } = {};
+
+  const allKeys = new Set([...Object.keys(from), ...Object.keys(to)]);
+  const sortedKeys = [...allKeys.keys()].sort()
+
+  for (const key of sortedKeys) {
+    let orgValue = from[key as keyof LinkBase];
+    let newValue = to[key as keyof LinkBase];
+
+    if(orgValue === undefined){
+      orgValue = "";
+    }
+    if(newValue === undefined){
+      newValue = "";
+    }
+
+    // mark as difference if either values are not the same or
+    // key is not present in either objects
+    if (JSON.stringify(orgValue) !== JSON.stringify(newValue)) {
+      difference[key] = [orgValue, newValue];
+    }
+  }
+
+  return difference;
+}

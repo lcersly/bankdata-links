@@ -6,7 +6,7 @@ import {DatePipe} from '@angular/common';
 import {Link} from '../../../models/link.model';
 
 type LinkWithStringTags = Exclude<Link, 'searchTags' | 'tags'> & {
-  stringTags: string[]
+  tags: string[]
 }
 
 @Component({
@@ -15,12 +15,12 @@ type LinkWithStringTags = Exclude<Link, 'searchTags' | 'tags'> & {
   imports: [
     MatButton,
   ],
-  providers:[
+  providers: [
     DatePipe,
   ],
   templateUrl: './export-to-file.component.html',
   styleUrl: './export-to-file.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ExportToFileComponent {
 
@@ -29,9 +29,9 @@ export class ExportToFileComponent {
 
   links = computed<LinkWithStringTags[]>(() => {
     return this.linkService.links().map(link => {
-      const {searchString, tags, ...rest} = link;
+      const {searchString, history, tags, ...rest} = link;
       const stringTags = link.tags.map(tag => tag.key);
-      return {...rest, stringTags} as LinkWithStringTags;
+      return {...rest, tags: stringTags} as LinkWithStringTags;
     })
   })
 
@@ -46,13 +46,7 @@ export class ExportToFileComponent {
   })
 
   exportToJSON() {
-    const data = this.linkService.links().map(link => {
-      const {tags, searchString, ...rest} = link;
-
-      return ({...rest, tags: tags.map(tag=>tag.key)});
-    });
-
-    const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json' })
+    const blob = new Blob([JSON.stringify(this.links(), null, 2)], {type: 'application/json'})
     saveAs(blob, `OBB links export ${this.#datePipe.transform(new Date(), 'short')}.json`);
   }
 }

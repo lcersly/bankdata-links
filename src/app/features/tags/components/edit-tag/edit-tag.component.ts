@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component, HostListener, OnDestroy, OnInit} from '@angular/core';
 import {FirestoreTagService} from '../../../../services/firestore/firestore-tag.service';
-import {Subject, takeUntil} from 'rxjs';
+import {Subject, switchMap, takeUntil} from 'rxjs';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormControl, Validators} from '@angular/forms';
 import {fieldHasError} from '../../../../shared/util';
@@ -70,16 +70,29 @@ export class EditTagComponent implements OnInit, OnDestroy {
   }
 
   @HostListener(SAVE_SHORTCUT)
-  async save() {
+  save() {
     this.form.markAllAsTouched();
     if (!this.form.valid) {
       return;
     }
 
-    const tag: Tag = this.form.value;
-    await this.tagService.update(this.tagUuid!, tag.key, tag.description);
-    this.notifications.tag.edited();
-    await this.navigateBack()
+    this.tagService.getTag(this.tagUuid!).pipe(
+      switchMap(tag => {
+        if(!tag){
+          throw new Error("Could not find tag with uuid: " + this.tagUuid);
+        }
+
+        const updatedTag = {
+          ...tag,
+          ...this.form.value
+        }
+
+        return this.tagService.update(updatedTag);
+      })
+    ).subscribe(async () => {
+      this.notifications.tag.edited();
+      await this.navigateBack()
+    })
   }
 
   @HostListener('window:keydown.esc')

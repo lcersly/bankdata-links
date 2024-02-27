@@ -1,1 +1,14 @@
 @import "../../../form-style";
+
+#history{
+  margin-top: 30px;
+}
+
+.change-table{
+  margin-top: 20px;
+  width: 100%;
+}
+
+tr > th:first-of-type{
+  text-align: left;
+}

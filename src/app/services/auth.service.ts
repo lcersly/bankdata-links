@@ -4,6 +4,7 @@ import {from, map, shareReplay} from 'rxjs';
 import {NotificationService} from './notification.service';
 import {Router} from '@angular/router';
 import {PATHS_URLS} from '../urls';
+import {toSignal} from '@angular/core/rxjs-interop';
 
 @Injectable({
   providedIn: 'root',
@@ -13,6 +14,7 @@ export class AuthService {
   user$ = user(this.auth);
   public isSignedIn$ = this.user$.pipe(map((status => !!status)), shareReplay(1))
   public isSignedIn: boolean | undefined;
+  user = toSignal(this.user$, {initialValue: null});
 
   constructor(private notificationService: NotificationService, private router: Router) {
     // this.status$.subscribe(value => console.info("AUTH", value));

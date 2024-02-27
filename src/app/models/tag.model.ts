@@ -1,12 +1,10 @@
 import {TrackByFunction} from '@angular/core';
 import {LinkFilters} from '../services/filter.service';
-import {Change} from './history.model';
 
 export interface TagBase {
   key: string;
   description: string;
   uuid: string;
-  history?: Change<Omit<TagBase, 'uuid'|'history'>>[];
 }
 
 export interface Tag extends TagBase {

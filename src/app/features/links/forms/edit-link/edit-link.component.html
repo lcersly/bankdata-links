@@ -19,4 +19,42 @@
       <mat-icon>delete</mat-icon>
     </button>
   </div>
+
 </div>
+
+@if (orgLink?.history?.length) {
+  <div id="history">
+    <h2>History</h2>
+    <mat-accordion>
+      @for (item of orgLink?.history; track item.date) {
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              {{ item.date | date:'short' }}
+            </mat-panel-title>
+            <mat-panel-description>
+              {{ (item.changeDetails | changes).length }} Change(s)
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <div>
+            <div>Changed by: {{ item.name }} / {{item.email}}</div>
+            <table class="change-table">
+              <tr>
+                <th></th>
+                <th>From</th>
+                <th>To</th>
+              </tr>
+              @for (change of item.changeDetails | changes; track change.key) {
+                <tr class="change-row">
+                  <th>{{ change.key }}</th>
+                  <td>{{ change.from }}</td>
+                  <td>{{ change.to }}</td>
+                </tr>
+              }
+            </table>
+          </div>
+        </mat-expansion-panel>
+      }
+    </mat-accordion>
+  </div>
+}

@@ -5,13 +5,11 @@ import {keyMatchesTag, Tag} from '../../models/tag.model';
 import {reduceTagToSearchableString} from '../../shared/reducer';
 import {AuthService} from '../auth.service';
 import {toObservable} from '@angular/core/rxjs-interop';
-import {map, skipWhile} from 'rxjs';
-import {Change} from '../../models/history.model';
+import {from, map, skipWhile} from 'rxjs';
 
 interface DatabaseTag {
   key: string;
   description: string;
-  history?: Change<DatabaseTag>[]
 }
 
 @Injectable({
@@ -51,16 +49,23 @@ export class FirestoreTagService {
   public getTag(uuid: string) {
     return toObservable(this.#state).pipe(
       skipWhile(state => state.status !== 'loaded'),
-      map(state => state.tags.find(tag => tag.uuid === uuid))
+      map(state => state.tags.find(tag => tag.uuid === uuid)),
     );
   }
 
   public createNew(key: string, description: string) {
-    return addDoc(this.collectionRef, {key, description} as any) //todo why is this needed??
+    const tag: Tag = {
+      key,
+      description,
+      searchString: '',
+      uuid: '',
+    };
+
+    return from(addDoc(this.collectionRef, tag))
   }
 
-  public update(id: string, key: string, description: string) {
-    return updateDoc(doc(this.collectionRef, id), {description, key})
+  public update(tag: Tag) {
+    return from(updateDoc(doc(this.collectionRef, tag.uuid), {...tag}))
   }
 
   private subscribeToTags() {
@@ -75,12 +80,8 @@ export class FirestoreTagService {
     this.unsub = onSnapshot(this.collectionRef,
       (doc) => {
         console.debug(`Received update for ${doc.size} tag(s)`);
-        if (doc.empty) {
-          this.#state.update(state => ({...state, status: 'loaded', tags: []}))
-        } else {
-          const tags = doc.docs.map(doc => converter.fromFirestore(doc));
-          this.#state.update(state => ({...state, status: 'loaded', tags: tags}))
-        }
+        const tags = doc.docs.map(doc => converter.fromFirestore(doc));
+        this.#state.update(state => ({...state, status: 'loaded', tags: tags}))
       },
     );
   }
@@ -98,7 +99,6 @@ const converter: FirestoreDataConverter<Tag> = {
     return {
       key: tag.key,
       description: tag.description,
-      history: tag.history,
     };
   },
   fromFirestore(snapshot: QueryDocumentSnapshot<DatabaseTag>): Tag {
@@ -108,7 +108,6 @@ const converter: FirestoreDataConverter<Tag> = {
       description: documentData.description,
       uuid: snapshot.id,
       searchString: reduceTagToSearchableString(documentData.key, documentData.description),
-      history: documentData.history ?? [],
     }
   },
 }

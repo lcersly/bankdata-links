@@ -1,7 +1,6 @@
 import {ChangeDetectionStrategy, Component, HostListener, OnDestroy, OnInit} from '@angular/core';
 import {ReactiveFormsModule, UntypedFormControl} from '@angular/forms';
 import {LinkService} from '../../../../services/link.service';
-import {NotificationService} from '../../../../services/notification.service';
 import {Link} from '../../../../models/link.model';
 import {Subject, takeUntil} from 'rxjs';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
@@ -14,6 +13,15 @@ import {MatButtonModule} from '@angular/material/button';
 import {LinkFieldsFormComponent} from '../link-fields-form/link-fields-form.component';
 import {MatIconModule} from '@angular/material/icon';
 import {SAVE_SHORTCUT} from '../../../../models/shortcuts';
+import {DatePipe} from '@angular/common';
+import {
+  MatAccordion,
+  MatExpansionPanel,
+  MatExpansionPanelDescription,
+  MatExpansionPanelHeader,
+  MatExpansionPanelTitle,
+} from '@angular/material/expansion';
+import {ChangesPipe} from '../../../../pipes/changes.pipe';
 
 @Component({
   selector: 'app-create-link',
@@ -27,6 +35,13 @@ import {SAVE_SHORTCUT} from '../../../../models/shortcuts';
     LinkFieldsFormComponent,
     ReactiveFormsModule,
     MatIconModule,
+    DatePipe,
+    MatAccordion,
+    MatExpansionPanel,
+    MatExpansionPanelTitle,
+    MatExpansionPanelHeader,
+    MatExpansionPanelDescription,
+    ChangesPipe,
   ],
 })
 export class EditLinkComponent implements OnInit, OnDestroy {
@@ -38,7 +53,6 @@ export class EditLinkComponent implements OnInit, OnDestroy {
   public orgLink: Link | undefined;
 
   constructor(private linkService: LinkService,
-              private notifications: NotificationService,
               private route: ActivatedRoute,
               private router: Router,
               private dialog: MatDialog,
@@ -69,6 +83,7 @@ export class EditLinkComponent implements OnInit, OnDestroy {
     }
 
     let link: Link = {
+      ...this.orgLink,
       ...this.link.value,
       uuid: this.uuid,
     };
