@@ -1,0 +1,32 @@
+<mat-accordion>
+  @for (item of history(); track item.change.date; let i = $index) {
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <span class="single-line">{{ item.change.details }} - {{ item.link.name.substring(0, 30) }}</span>
+          @if (item.link.name.length > 30) {
+            ...
+          }
+        </mat-panel-title>
+        <mat-panel-description>
+          {{ (item.change.changeDetails | changes).length }} Change(s) by {{ item.change.name }}
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <table class="changes">
+        @for (change of item.change.changeDetails | changes; track change.key) {
+          <tr class="change">
+            <th class="key">{{ change.key }}</th>
+            <td class="value-changes">
+              <div class="single-line">{{ change.to }}</div>
+              <div class="single-line striked-text">{{ change.from }}</div>
+            </td>
+          </tr>
+        }
+      </table>
+
+      <div class="actions">
+        <button mat-flat-button (click)="goToLink(item.link)">Go to link</button>
+      </div>
+    </mat-expansion-panel>
+  }
+</mat-accordion>

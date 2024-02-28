@@ -1,0 +1,23 @@
+@import "../../../constants";
+
+mat-table {
+  .mat-column-edit {
+    flex: 0 0 $editButtonWidth;
+  }
+
+  .mat-column-copy {
+    flex: 0 0 $copyButtonWidth;
+  }
+
+  .mat-column-icons {
+    flex: 0 0 50px;
+  }
+
+  .mat-column-url, .mat-column-name, .mat-column-link {
+    flex-grow: 1;
+  }
+
+  .mat-column-tags {
+    flex-grow: 1;
+  }
+}

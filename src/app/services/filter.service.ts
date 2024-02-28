@@ -1,7 +1,6 @@
-import {Injectable} from '@angular/core';
-import {BehaviorSubject, combineLatestWith, distinctUntilChanged, map, Observable, shareReplay, startWith} from 'rxjs';
+import {computed, inject, Injectable, signal} from '@angular/core';
 import {LinkService} from './link.service';
-import {Link, linkMatches} from '../models/link.model';
+import {linkMatches} from '../models/link.model';
 import {Tag, tagMatches} from '../models/tag.model';
 import {FirestoreTagService} from './firestore/firestore-tag.service';
 
@@ -15,57 +14,59 @@ export type LinkFilters = {
   providedIn: 'root',
 })
 export class FilterService {
-  public readonly linkFilters$ = new BehaviorSubject<Partial<LinkFilters>>({
+  #linkService = inject(LinkService);
+  #tagService = inject(FirestoreTagService);
+
+  linkFilters = signal<LinkFilters>({
     searchString: '',
     searchTags: '',
     selectedTagsUUID: [],
   });
 
-  public readonly filteredTags$ = this.linkFilters$.pipe(
-    combineLatestWith(this.tagService.tags$),
-    map(([filters, tags]) => {
-      let filteredTags:Tag[] = []
+  #searchString = computed(() => this.linkFilters().searchString ?? '');
 
-      if (filters.searchString || filters.searchTags || (filters.selectedTagsUUID && filters.selectedTagsUUID.length > 0)) {
-        filteredTags = tags.filter(tag => tagMatches(tag, filters))
-      }
+  filteredTags = computed(() => {
+    const filters = this.linkFilters();
+    const tags = this.#tagService.tags();
 
-      return filteredTags;
-    }),
-    distinctUntilChanged(),
-    shareReplay(1)
-  );
+    if (filters.searchString || filters.searchTags || filters.selectedTagsUUID.length > 0) {
+      return tags.filter(tag => tagMatches(tag, filters))
+    }
 
-  public readonly searchString$ = this.linkFilters$.pipe(
-    map(filters => filters.searchString),
-    distinctUntilChanged(),
-    shareReplay(1),
-  )
+    return [];
+  })
 
-  public readonly searchTagUUIDs$:Observable<string[]> = this.linkFilters$.pipe(
-    map(filters => filters.selectedTagsUUID || []),
-    startWith([]),
-    distinctUntilChanged(),
-    shareReplay(1),
-  )
+  filteredLinks = computed(() => {
+    const links = this.#linkService.links();
+    const searchString = this.#searchString();
+    const filteredTags = this.filteredTags();
 
-  public readonly filteredLinks$:Observable<Link[]> = this.filteredTags$.pipe(
-    combineLatestWith(this.linkService.links$, this.searchString$),
-    map(([matchedTags, links, searchString]) => {
-      if(matchedTags.length == 0 && !searchString){
-        return links;
-      }
-      return links.filter(link => linkMatches(link, matchedTags, searchString));
-    }),
-    distinctUntilChanged(),
-    startWith([]),
-    shareReplay(1),
-  )
+    if (filteredTags.length > 0 || searchString) {
+      return links.filter(link => linkMatches(link, filteredTags, searchString));
+    }
+    return links;
+  })
 
-  constructor(private linkService: LinkService, private tagService: FirestoreTagService) {
+  setLinkFilters(filters: LinkFilters) {
+    this.linkFilters.set(filters);
   }
 
-  setLinkFilters(filters: Partial<LinkFilters>) {
-    this.linkFilters$.next(filters);
+  addSelectedTag(tag: Tag) {
+    this.linkFilters.update(filters => ({...filters, selectedTagsUUID: [...filters.selectedTagsUUID, tag.uuid]}))
+  }
+
+  removeSelectedTag(tag: Tag) {
+    this.linkFilters.update(filters => ({
+      ...filters,
+      selectedTagsUUID: filters.selectedTagsUUID.filter(selectedTag => selectedTag !== tag.uuid),
+    }));
+  }
+
+  setSearchFilter(filter: string) {
+    this.linkFilters.update(filters => ({...filters, searchString: filter}))
+  }
+
+  setTagFilter(filter: string) {
+    this.linkFilters.update(filters => ({...filters, searchTags: filter}))
   }
 }

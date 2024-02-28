@@ -51,7 +51,7 @@ $dark-theme: mat.define-dark-theme((
 //@include mat.button-toggle-theme($dark-theme);
 //@include mat.datepicker-theme($dark-theme);
 //@include mat.divider-theme($dark-theme);
-//@include mat.expansion-theme($dark-theme);
+@include mat.expansion-theme($dark-theme);
 //@include mat.grid-list-theme($dark-theme);
 @include mat.icon-theme($dark-theme);
 //@include mat.sidenav-theme($dark-theme);
@@ -106,7 +106,13 @@ mat-row:hover .hide-until-hover {
 }
 
 app-create-button{
-  position: absolute;
+  position: fixed;
   bottom: 2em;
   right: 2em;
+}
+
+.single-line{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

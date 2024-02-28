@@ -1,0 +1,11 @@
+@import "../../../form-style";
+
+div.single-line-field {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  mat-form-field {
+    flex: 1;
+  }
+}

@@ -1,0 +1,33 @@
+<mat-form-field appearance="outline">
+  <mat-label>Search everything (name, url, description, tags, etc...)</mat-label>
+  <input [formControl]="searchControl" matInput type="text">
+  @if (searchControl.value) {
+    <button (click)="searchControl.setValue('')"
+            aria-label="Clear"
+            mat-icon-button
+            matSuffix>
+      <mat-icon>close</mat-icon>
+    </button>
+  }
+  <mat-hint align="end">
+    <span matTooltip="Links found with current filters">{{ filteredLinksCount() }} </span> /
+    <span matTooltip="Total amount of links">{{ linkCount() }}</span>
+  </mat-hint>
+</mat-form-field>
+
+<mat-form-field appearance="outline">
+  <mat-label>Search tags only</mat-label>
+  <input [formControl]="searchTagControl" matInput type="text">
+  @if (searchTagControl.value) {
+    <button (click)="searchTagControl.setValue('')"
+            aria-label="Clear"
+            mat-icon-button
+            matSuffix>
+      <mat-icon>close</mat-icon>
+    </button>
+  }
+  <mat-hint align="end">
+    <span matTooltip="Tags found with current filters">{{ filteredTags() }} </span> /
+    <span matTooltip="Total amount of tags">{{ tagCount() }}</span>
+  </mat-hint>
+</mat-form-field>

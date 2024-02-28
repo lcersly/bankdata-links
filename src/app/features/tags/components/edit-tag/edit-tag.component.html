@@ -1,0 +1,30 @@
+<div class="simple-form">
+  <h2>Edit tag</h2>
+
+  <form>
+    <mat-form-field class="single-line-field">
+      <mat-label>Key</mat-label>
+      <input matInput placeholder="The key..." [formControl]="keyControl">
+      @if (hasError(keyControl, 'required')) {
+        <mat-error>Required</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field class="single-line-field">
+      <mat-label>Description</mat-label>
+      <textarea matInput placeholder="Extra description" [formControl]="descriptionControl" cdkTextareaAutosize></textarea>
+      @if (hasError(descriptionControl, 'required')) {
+        <mat-error>Required</mat-error>
+      }
+    </mat-form-field>
+
+    <button mat-button (click)="navigateBack()">
+      Cancel
+      <mat-icon>backspace</mat-icon>
+    </button>
+    <button mat-button (click)="save()">
+      Save
+      <mat-icon>save</mat-icon>
+    </button>
+  </form>
+</div>

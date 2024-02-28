@@ -1,4 +1,4 @@
-import {APP_INITIALIZER, enableProdMode, importProvidersFrom, LOCALE_ID} from '@angular/core';
+import {enableProdMode, importProvidersFrom, LOCALE_ID} from '@angular/core';
 import {environment} from './environments/environment';
 import {bootstrapApplication} from '@angular/platform-browser';
 import {AppComponent} from './app/app.component';
@@ -23,18 +23,7 @@ bootstrapApplication(AppComponent, {
       MatSnackBarModule,
       MatDialogModule,
     ),
-    {
-      provide: APP_INITIALIZER,
-      useFactory: initializeApp2,
-      deps: []
-    },
     {provide: LOCALE_ID, useValue: 'da'},
-    {provide: Window, useValue: window}
-  ]
-}).catch(e => console.error("Bootstrap error", e));
-
-function initializeApp2(): Promise<any> {
-  return new Promise<void>((resolve) => {
-    resolve();
-  });
-}
+    {provide: Window, useValue: window},
+  ],
+}).catch(e => console.error('Bootstrap error', e));

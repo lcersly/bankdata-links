@@ -5,7 +5,7 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatIconModule} from '@angular/material/icon';
 import {User} from '@angular/fire/auth';
 import {Observable, Subject} from 'rxjs';
-import {AsyncPipe, NgForOf, NgIf} from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import {DisplayNameInitialsPipe} from '../../../pipes/display-name-initials-pipe.pipe';
 import {UserPhotoUrlPipe} from '../../../pipes/user-photo-url.pipe';
 import {AuthService} from '../../../services/auth.service';
@@ -22,11 +22,9 @@ import {AuthService} from '../../../services/auth.service';
     MatTooltipModule,
     MatMenuModule,
     AsyncPipe,
-    NgIf,
-    NgForOf,
     DisplayNameInitialsPipe,
-    UserPhotoUrlPipe,
-  ],
+    UserPhotoUrlPipe
+],
 })
 export class UserAvatarComponent implements OnDestroy {
   user$: Observable<User | null> = this.authService.user$

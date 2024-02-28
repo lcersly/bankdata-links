@@ -1,0 +1,55 @@
+<div class="simple-form">
+  <h2>Edit link</h2>
+
+  <form>
+    <app-link-form [formControl]="link"></app-link-form>
+  </form>
+
+  <div class="actions">
+    <button mat-button (click)="navigateBack()">
+      Cancel
+      <mat-icon>backspace</mat-icon>
+    </button>
+    <button mat-button (click)="save()">
+      Save
+      <mat-icon>save</mat-icon>
+    </button>
+    <button color="warn" mat-button (click)="delete()">
+      Delete
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
+
+</div>
+
+@if (history().length) {
+  <div id="history">
+    <h2>History ({{history().length}})</h2>
+    <mat-accordion>
+      @for (item of history(); track item.date; let i = $index) {
+        <mat-expansion-panel [expanded]="i === 0">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              {{ item.date | date:'short' }}
+            </mat-panel-title>
+            <mat-panel-description>
+              <div>{{item.details}} by {{ item.name }} </div>
+              <div>{{ (item.changeDetails | changes).length }} Change(s)</div>
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <table class="changes">
+            @for (change of item.changeDetails | changes; track change.key) {
+              <tr class="change">
+                <th class="key">{{ change.key }}</th>
+                <td class="value-changes">
+                  <div class="single-line">{{ change.to }}</div>
+                  <div class="single-line striked-text">{{ change.from }}</div>
+                </td>
+              </tr>
+            }
+          </table>
+        </mat-expansion-panel>
+      }
+    </mat-accordion>
+  </div>
+}

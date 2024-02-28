@@ -4,7 +4,9 @@ export const PATHS_URLS = {
   tags: 'tags',
   createTag: 'tags/create',
   help: 'hints',
-  login: 'login'
+  login: 'login',
+  export: 'export',
+  history: 'history'
 } as const;
 
 export const FULL_PATHS_URLS = {
@@ -13,5 +15,7 @@ export const FULL_PATHS_URLS = {
   tags: '/' + PATHS_URLS.tags,
   createTag: '/' + PATHS_URLS.createTag,
   help: '/' + PATHS_URLS.help,
-  login: '/' + PATHS_URLS.login
+  login: '/' + PATHS_URLS.login,
+  export: '/' + PATHS_URLS.export,
+  history: '/' + PATHS_URLS.history
 } as const

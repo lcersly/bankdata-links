@@ -1,19 +1,11 @@
-import {inject, Injectable} from '@angular/core';
-import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  Firestore,
-  onSnapshot,
-  Unsubscribe,
-  updateDoc,
-} from '@angular/fire/firestore';
-import {first, map, Observable, ReplaySubject} from 'rxjs';
+import {computed, inject, Injectable, signal} from '@angular/core';
+import {addDoc, collection, doc, Firestore, onSnapshot, Unsubscribe, updateDoc} from '@angular/fire/firestore';
 import {FirestoreDataConverter, QueryDocumentSnapshot} from 'firebase/firestore';
 import {keyMatchesTag, Tag} from '../../models/tag.model';
 import {reduceTagToSearchableString} from '../../shared/reducer';
 import {AuthService} from '../auth.service';
+import {toObservable} from '@angular/core/rxjs-interop';
+import {from, map, skipWhile} from 'rxjs';
 
 interface DatabaseTag {
   key: string;
@@ -26,25 +18,31 @@ interface DatabaseTag {
 export class FirestoreTagService {
   private firestore: Firestore = inject(Firestore);
   private unsub: Unsubscribe | undefined;
-  private _data$ = new ReplaySubject<Tag[]>(1);
-  public tags$ = this._data$.asObservable();
+
+  #state = signal<{ tags: Tag[], status: 'init' | 'loading' | 'loaded' }>({
+    tags: [],
+    status: 'init',
+  })
+
+  public tags = computed(() => this.#state().tags);
+  public status = computed(() => this.#state().status);
+  public status$ = toObservable(this.status);
+  public state$ = toObservable(this.#state);
 
   constructor(private authService: AuthService) {
     this.authService.isSignedIn$.subscribe(signedIn => {
       if (signedIn) {
-        this.subscribeToTags();
+        if(!this.unsub){
+          this.subscribeToTags();
+        }
       } else {
         this.disconnect();
       }
     })
-    // this.tags$.subscribe(t => console.debug(`Service - Tags updated (${t.length})`, t));
   }
 
-  public hasMatchingTag(key: string): Observable<Tag | undefined> {
-    return this.tags$.pipe(
-      first(),
-      map(tags => tags.find(existingTag => keyMatchesTag(key, existingTag))),
-    );
+  public hasMatchingTag(key: string): Tag | undefined {
+    return this.tags().find(existingTag => keyMatchesTag(key, existingTag));
   }
 
   private get collectionRef() {
@@ -53,27 +51,41 @@ export class FirestoreTagService {
   }
 
   public getTag(uuid: string) {
-    return this.tags$.pipe(map(tags => tags.find(tag => tag.uuid === uuid)));
+    return toObservable(this.#state).pipe(
+      skipWhile(state => state.status !== 'loaded'),
+      map(state => state.tags.find(tag => tag.uuid === uuid)),
+    );
   }
 
   public createNew(key: string, description: string) {
-    return addDoc(this.collectionRef, {key, description} as any) //todo why is this needed??
+    const tag: Tag = {
+      key,
+      description,
+      searchString: '',
+      uuid: '',
+    };
+
+    return from(addDoc(this.collectionRef, tag))
   }
 
-  public update(id: string, key: string, description: string) {
-    return updateDoc(doc(this.collectionRef, id), {description, key})
+  public update(tag: Tag) {
+    return from(updateDoc(doc(this.collectionRef, tag.uuid), {...tag}))
   }
 
   private subscribeToTags() {
-    console.debug("Subscribing to tags");
+    console.debug('Subscribing to tags');
+
+    if (this.unsub) {
+      throw new Error('Already subscribed to tags');
+    }
+
+    this.#state.update(state => ({...state, status: 'loading'}))
+
     this.unsub = onSnapshot(this.collectionRef,
       (doc) => {
-        if (doc.empty) {
-          this._data$.next([]);
-        } else {
-          const tags = doc.docs.map(doc => converter.fromFirestore(doc));
-          this._data$.next(tags);
-        }
+        console.debug(`Received update for ${doc.size} tag(s)`);
+        const tags = doc.docs.map(doc => converter.fromFirestore(doc));
+        this.#state.update(state => ({...state, status: 'loaded', tags: tags}))
       },
     );
   }
@@ -81,12 +93,8 @@ export class FirestoreTagService {
   disconnect() {
     if (this.unsub) {
       this.unsub();
+      this.unsub = undefined;
     }
-  }
-
-  deleteTagFromId(tagId: string) {
-    //todo check if any links still use it before delete
-    return deleteDoc(doc(this.collectionRef, tagId))
   }
 }
 

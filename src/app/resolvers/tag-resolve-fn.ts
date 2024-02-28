@@ -6,15 +6,17 @@ import {Tag} from '../models/tag.model';
 
 export const TagResolveFn: ResolveFn<Tag> = (route: ActivatedRouteSnapshot): Observable<Tag> => {
   const id = route.paramMap.get('id')!;
+  const firestoreTagService = inject(FirestoreTagService);
+  const router = inject(Router);
 
-  return inject(FirestoreTagService).getTag(id).pipe(
+  return firestoreTagService.getTag(id).pipe(
     first(),
     mergeMap(tag => {
       if (tag) {
         return of(tag);
       } else { // id not found
         console.warn('Tag not found - redirecting')
-        inject(Router).navigate(['/tag']);
+        router.navigate(['/tag']);
         return EMPTY;
       }
     }),

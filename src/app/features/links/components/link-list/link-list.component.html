@@ -1,0 +1,74 @@
+<mat-table [dataSource]="dataSource" class="mat-elevation-z8"
+           matSort
+           matSortActive="name"
+           matSortDirection="asc"
+>
+
+  <ng-container matColumnDef="url">
+    <mat-header-cell *matHeaderCellDef mat-sort-header="url"> URL</mat-header-cell>
+    <mat-cell *matCellDef="let element">{{element.url}}</mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="link">
+    <mat-header-cell *matHeaderCellDef>Link</mat-header-cell>
+    <mat-cell *matCellDef="let element"><a [href]="element.url" target="_blank">{{element.name}}</a></mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="name">
+    <mat-header-cell *matHeaderCellDef mat-sort-header="name"> Name</mat-header-cell>
+    <mat-cell *matCellDef="let element" [matTooltip]="element.description">
+      <a [href]="element.url" class="no-link-style single-line" (click)="$event.preventDefault()">
+        {{element.name}}
+      </a>
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="tags">
+    <mat-header-cell *matHeaderCellDef>Tags</mat-header-cell>
+    <mat-cell *matCellDef="let element">
+      <mat-chip-listbox [multiple]="true">
+        @for (tag of element.tags; track tag.key) {
+          <mat-chip-option
+            [matTooltip]="tag.description"
+            [selectable]="true"
+            [selected]="selectedTags().includes(tag)"
+            (selectionChange)="tagClicked(tag, $event)"
+            (click)="cancelClick($event)"
+          >
+            {{tag.key}}
+          </mat-chip-option>
+        }
+      </mat-chip-listbox>
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="edit">
+    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+    <mat-cell *matCellDef="let element">
+      <button (click)="edit($event, element)" mat-icon-button class="hide-until-hover">
+        <mat-icon>edit</mat-icon>
+      </button>
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="copy">
+    <mat-header-cell *matHeaderCellDef></mat-header-cell>
+    <mat-cell *matCellDef="let element">
+      <button (click)="copy($event, element)" mat-icon-button class="hide-until-hover" matTooltip="Copy URL" matTooltipPosition="before">
+        <mat-icon>content_copy</mat-icon>
+      </button>
+    </mat-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: displayedColumns; let i = index" class="clickable"
+           (click)="rowClicked($event,row)"
+  >
+
+  </mat-row>
+</mat-table>
+
+<mat-paginator [pageSizeOptions]="[10,25,50,100,200,500]"
+               [pageSize]="pageSize"
+>
+</mat-paginator>

@@ -5,9 +5,8 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatIconModule} from '@angular/material/icon';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatTabsModule} from '@angular/material/tabs';
-import {FormControl, ReactiveFormsModule} from '@angular/forms';
-import {AuthService} from './services/auth.service';
-import {NgForOf, NgIf} from '@angular/common';
+import {ReactiveFormsModule} from '@angular/forms';
+
 import {FULL_PATHS_URLS} from './urls';
 import {IfLoggedInDirective} from './directives/if-logged-in.directive';
 import {UserPhotoUrlPipe} from './pipes/user-photo-url.pipe';
@@ -30,28 +29,23 @@ import {UserAvatarComponent} from './shared/components/avatar/user-avatar.compon
     MatTabsModule,
     ReactiveFormsModule,
     RouterLink,
-    NgForOf,
     RouterLinkActive,
     IfLoggedInDirective,
     UserPhotoUrlPipe,
     MatButtonModule,
     DisplayNameInitialsPipe,
-    NgIf,
-    UserAvatarComponent,
-  ],
+    UserAvatarComponent
+],
 })
 export class AppComponent {
   @HostBinding('class') className = '';
 
-  toggleControl = new FormControl(false);
   links = [
     {route: FULL_PATHS_URLS.links, display: 'Links'},
     {route: FULL_PATHS_URLS.tags, display: 'Tags'},
+    {route: FULL_PATHS_URLS.history, display: 'History'},
+    {route: FULL_PATHS_URLS.export, display: 'Export'},
     {route: FULL_PATHS_URLS.help, display: 'Help'},
   ];
-  title = 'BD Links';
-
-  constructor(public authService: AuthService) {
-  }
-
+  title = 'OBB Links';
 }

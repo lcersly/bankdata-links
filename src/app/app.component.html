@@ -6,12 +6,14 @@
       <div class="spacer"></div>
 
       <nav mat-tab-nav-bar [tabPanel]="tabPanel" *appIfLoggedIn>
-        <a mat-tab-link *ngFor="let link of links"
-           [routerLink]="link.route"
-           routerLinkActive=""
-           #rla="routerLinkActive"
-           [active]="rla.isActive"
-        > {{link.display}} </a>
+        @for (link of links; track link) {
+          <a mat-tab-link
+            [routerLink]="link.route"
+            routerLinkActive=""
+            #rla="routerLinkActive"
+            [active]="rla.isActive"
+          > {{link.display}} </a>
+        }
       </nav>
 
       <div class="spacer"></div>

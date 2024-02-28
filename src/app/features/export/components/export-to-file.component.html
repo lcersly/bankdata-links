@@ -1,0 +1,18 @@
+<div id="actions">
+  <button mat-flat-button (click)="exportToJSON()" [disabled]="links().length === 0">Export all links to JSON</button>
+</div>
+
+<table>
+  <tr>
+    @for (header of headers(); track header) {
+      <th>{{ header }}</th>
+    }
+  </tr>
+  @for (link of links(); track link.uuid) {
+    <tr>
+      @for (header of headers(); track header) {
+        <td class="single-line">{{ link[header] }}</td>
+      }
+    </tr>
+  }
+</table>

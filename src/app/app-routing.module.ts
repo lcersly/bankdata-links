@@ -1,16 +1,21 @@
 import {Routes} from '@angular/router';
-import {LinkListComponent} from './components/link/link-list/link-list.component';
-import {EditLinkComponent} from './components/link/edit-link/edit-link.component';
-import {CreateNewLinkComponent} from './components/link/create-new-link/create-new-link.component';
-import {TagListComponent} from './components/tag/tag-list/tag-list.component';
-import {CreateTagComponent} from './components/tag/create-tag/create-tag.component';
-import {EditTagComponent} from './components/tag/edit-tag/edit-tag.component';
+import {LinkListViewComponent} from './features/links/components/link-list-view.component';
+import {EditLinkComponent} from './features/links/forms/edit-link/edit-link.component';
+import {CreateNewLinkComponent} from './features/links/forms/create-new-link/create-new-link.component';
+import {TagListViewComponent} from './features/tags/components/tag-list-view.component';
+import {CreateTagComponent} from './features/tags/components/create-tag/create-tag.component';
+import {EditTagComponent} from './features/tags/components/edit-tag/edit-tag.component';
 import {TagResolveFn} from './resolvers/tag-resolve-fn';
 import {LinkResolveFn} from './resolvers/link-resolve-fn';
-import {LoginComponent} from './components/login/login/login.component';
+import {LoginComponent} from './features/login/components/login/login.component';
 import {canActivate, redirectLoggedInTo, redirectUnauthorizedTo} from '@angular/fire/auth-guard';
 import {PATHS_URLS} from './urls';
-import {HelpComponent} from './components/help/help.component';
+import {HelpComponent} from './features/help/help.component';
+import {ExportToFileComponent} from './features/export/components/export-to-file.component';
+import {HistoryComponent} from './features/history/history.component';
+import {waitForLoggedInGuard} from './guards/wait-for-logged-in.guard';
+import {waitForDataHasLoadedGuard} from './guards/wait-for-data-has-loaded.guard';
+import {waitForTagsHasLoadedGuard} from './guards/wait-for-tags-has-loaded.guard';
 
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo([PATHS_URLS.login]);
 const redirectLoggedInToItems = () => redirectLoggedInTo([PATHS_URLS.links]);
@@ -18,8 +23,10 @@ const redirectLoggedInToItems = () => redirectLoggedInTo([PATHS_URLS.links]);
 export const routes: Routes = [
   {path: '', pathMatch: 'full', redirectTo: PATHS_URLS.links},
   {
-    path: PATHS_URLS.links, children: [
-      {path: '', pathMatch: 'full', component: LinkListComponent},
+    path: PATHS_URLS.links,
+    canActivateChild: [waitForLoggedInGuard, waitForDataHasLoadedGuard],
+    children: [
+      {path: '', pathMatch: 'full', component: LinkListViewComponent},
       {
         path: 'create',
         component: CreateNewLinkComponent,
@@ -35,8 +42,10 @@ export const routes: Routes = [
     ...canActivate(redirectUnauthorizedToLogin),
   },
   {
-    path: PATHS_URLS.tags, children: [
-      {path: '', pathMatch: 'full', component: TagListComponent},
+    path: PATHS_URLS.tags,
+    canActivateChild: [waitForLoggedInGuard, waitForTagsHasLoadedGuard],
+    children: [
+      {path: '', pathMatch: 'full', component: TagListViewComponent},
       {
         path: 'create',
         component: CreateTagComponent,
@@ -50,6 +59,26 @@ export const routes: Routes = [
     ],
     ...canActivate(redirectUnauthorizedToLogin),
   },
-  {path: PATHS_URLS.help, component: HelpComponent, ...canActivate(redirectUnauthorizedToLogin)},
-  {path: PATHS_URLS.login, component: LoginComponent, ...canActivate(redirectLoggedInToItems)},
+  {
+    path: PATHS_URLS.export,
+    component: ExportToFileComponent,
+    canActivateChild: [waitForLoggedInGuard, waitForDataHasLoadedGuard],
+    ...canActivate(redirectUnauthorizedToLogin),
+  },
+  {
+    path: PATHS_URLS.history,
+    component: HistoryComponent,
+    canActivateChild: [waitForLoggedInGuard, waitForDataHasLoadedGuard],
+    ...canActivate(redirectUnauthorizedToLogin),
+  },
+  {
+    path: PATHS_URLS.help,
+    component: HelpComponent,
+    ...canActivate(redirectUnauthorizedToLogin),
+  },
+  {
+    path: PATHS_URLS.login,
+    component: LoginComponent,
+    ...canActivate(redirectLoggedInToItems),
+  },
 ];

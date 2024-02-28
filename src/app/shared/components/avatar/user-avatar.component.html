@@ -1,12 +1,16 @@
-<button *ngIf="user$ | async as user"
-        [matMenuTriggerFor]="posXMenu"
-        [matTooltip]="user?.displayName || ''"
-        [style.background-image]="user | userPhotoUrl:true"
-        mat-mini-fab
-        style="background-size: cover"
->
-  <span *ngIf="!user.photoURL">{{user | displayNameInitials}}</span>
-</button>
+@if (user$ | async; as user) {
+  <button
+    [matMenuTriggerFor]="posXMenu"
+    [matTooltip]="user?.displayName || ''"
+    [style.background-image]="user | userPhotoUrl:true"
+    mat-mini-fab
+    style="background-size: cover"
+    >
+    @if (!user.photoURL) {
+      <span>{{user | displayNameInitials}}</span>
+    }
+  </button>
+}
 
 <mat-menu #posXMenu="matMenu" xPosition="before">
   <div class="user-menu-popout">
@@ -16,8 +20,8 @@
     </div>
 
     <button (click)="signOut()"
-            color="warn"
-            mat-raised-button>
+      color="warn"
+      mat-raised-button>
       Sign out
     </button>
   </div>

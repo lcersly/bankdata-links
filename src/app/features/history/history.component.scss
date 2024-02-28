@@ -1,0 +1,19 @@
+table{
+  width: 100%;
+  border-spacing: 10px;
+}
+
+
+th{
+  text-align: left;
+  width: 100px;
+}
+
+.striked-text{
+  text-decoration: line-through;
+}
+
+.actions{
+  display: flex;
+  justify-content: space-evenly;
+}

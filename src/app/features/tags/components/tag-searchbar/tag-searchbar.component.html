@@ -1,0 +1,4 @@
+<mat-form-field appearance="outline">
+  <mat-label>Search tags</mat-label>
+  <input matInput #input (keyup)="changeFilters.emit(input.value)" (paste)="changeFilters.emit(input.value)">
+</mat-form-field>

@@ -1,0 +1,15 @@
+<app-tag-searchbar (changeFilters)="filters.set($event)"
+/>
+
+<app-tag-list
+  [filters]="filters()"
+  [tags]="fireTagService.tags()"
+  [pageSize]="localStorageService.getPaginatorSize('tags')"
+
+  (showLinksUsing)="showLinksUsing($event)"
+  (pageSizeChange)="localStorageService.setPaginatorSize('tags', $event.pageSize)"
+  (editLink)="edit($event)"
+/>
+
+
+<app-create-button icon="new_label" [navigateTo]="createUrl"></app-create-button>
