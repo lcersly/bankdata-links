@@ -1,5 +1,5 @@
 import {Tag} from './tag.model';
-import {Change} from './history.model';
+import {Change} from './change.model';
 
 export interface LinkBase {
   url: string;

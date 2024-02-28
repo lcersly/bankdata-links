@@ -4,15 +4,20 @@
   margin-top: 30px;
 }
 
-.change-table{
-  width: 100%;
-
-}
-
 .mat-expansion-panel-header-description{
   justify-content: space-between;
 }
 
-tr > th:first-of-type{
+table{
+  width: 100%;
+  border-spacing: 10px;
+}
+
+
+th{
   text-align: left;
+}
+
+.striked-text{
+  text-decoration: line-through;
 }

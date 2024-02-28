@@ -12,6 +12,7 @@ import {canActivate, redirectLoggedInTo, redirectUnauthorizedTo} from '@angular/
 import {PATHS_URLS} from './urls';
 import {HelpComponent} from './features/help/help.component';
 import {ExportToFileComponent} from './features/export/components/export-to-file.component';
+import {HistoryComponent} from './features/history/history.component';
 
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo([PATHS_URLS.login]);
 const redirectLoggedInToItems = () => redirectLoggedInTo([PATHS_URLS.links]);
@@ -52,6 +53,7 @@ export const routes: Routes = [
     ...canActivate(redirectUnauthorizedToLogin),
   },
   {path: PATHS_URLS.export, component: ExportToFileComponent, ...canActivate(redirectUnauthorizedToLogin)},
+  {path: PATHS_URLS.history, component: HistoryComponent, ...canActivate(redirectUnauthorizedToLogin)},
   {path: PATHS_URLS.help, component: HelpComponent, ...canActivate(redirectUnauthorizedToLogin)},
   {path: PATHS_URLS.login, component: LoginComponent, ...canActivate(redirectLoggedInToItems)},
 ];

@@ -24,35 +24,30 @@
 
 @if (orgLink?.history?.length) {
   <div id="history">
-    <h2>History</h2>
+    <h2>History ({{orgLink?.history?.length}})</h2>
     <mat-accordion>
-      @for (item of orgLink?.history; track item.date) {
-        <mat-expansion-panel>
+      @for (item of orgLink?.history; track item.date; let i = $index) {
+        <mat-expansion-panel [expanded]="i === 0">
           <mat-expansion-panel-header>
             <mat-panel-title>
               {{ item.date | date:'short' }}
             </mat-panel-title>
             <mat-panel-description>
-              <div>{{ item.name }} </div>
+              <div>{{item.details}} by {{ item.name }} </div>
               <div>{{ (item.changeDetails | changes).length }} Change(s)</div>
             </mat-panel-description>
           </mat-expansion-panel-header>
-          <div>
-            <table class="change-table">
-              <tr>
-                <th></th>
-                <th>From</th>
-                <th>To</th>
+          <table class="changes">
+            @for (change of item.changeDetails | changes; track change.key) {
+              <tr class="change">
+                <th class="key">{{ change.key }}</th>
+                <td class="value-changes">
+                  <div class="single-line">{{ change.to }}</div>
+                  <div class="single-line striked-text">{{ change.from }}</div>
+                </td>
               </tr>
-              @for (change of item.changeDetails | changes; track change.key) {
-                <tr class="change-row">
-                  <th>{{ change.key }}</th>
-                  <td>{{ change.from }}</td>
-                  <td>{{ change.to }}</td>
-                </tr>
-              }
-            </table>
-          </div>
+            }
+          </table>
         </mat-expansion-panel>
       }
     </mat-accordion>

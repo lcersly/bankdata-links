@@ -3,7 +3,7 @@ import {addDoc, collection, doc, Firestore, onSnapshot, Unsubscribe, updateDoc} 
 import {Link, LinkBase, LinkHistoryType} from '../../models/link.model';
 import {DocumentData, FirestoreDataConverter, QueryDocumentSnapshot} from 'firebase/firestore';
 import {AuthService} from '../auth.service';
-import {Change, ChangeDetails} from '../../models/history.model';
+import {Change, ChangeDetails} from '../../models/change.model';
 
 export interface LinkDatabase extends LinkBase {
   tags: string[];
@@ -88,30 +88,10 @@ export class FirestoreLinkService {
   }
 
   private addChange(details: ChangeDetails, link: Link): Link {
-    let diff = {};
-    const orgLink = this.state().links.find(l => l.uuid === link.uuid)?.link;
-    if (orgLink) {
-      const orgSimpleLink: LinkBase = {
-        url: orgLink.url,
-        name: orgLink.name,
-        deleted: orgLink.deleted,
-        description: orgLink.description,
-      }
-
-      const updatedDbLink: LinkBase = {
-        url: link.url,
-        name: link.name,
-        deleted: link.deleted,
-        description: link.description,
-      };
-
-      diff = diffBetweenLinkBases(orgSimpleLink, updatedDbLink)
-    }
-
     const user = this.authService.user();
 
     const change: LinkHistoryType = {
-      changeDetails: diff,
+      changeDetails: this.diffBetweenLinkBases(link),
       date: new Date(),
       details: details,
       name: user?.displayName ?? '',
@@ -128,6 +108,56 @@ export class FirestoreLinkService {
       this.unsub();
       this.unsub = undefined;
     }
+  }
+
+  private diffBetweenLinkBases(link: Link)  {
+    let from:LinkBase = {
+      url: '',
+      name: "",
+      deleted: false,
+      description: ''
+    }
+
+    const orgLink = this.state().links.find(l => l.uuid === link.uuid)?.link;
+    if(orgLink){
+      from = {
+        url: orgLink.url,
+        name: orgLink.name,
+        deleted: orgLink.deleted,
+        description: orgLink.description,
+      }
+    }
+
+    const to: LinkBase = {
+      url: link.url,
+      name: link.name,
+      deleted: link.deleted ?? false,
+      description: link.description,
+    };
+
+    let difference: { [key: string]: [string, string] } = {};
+
+    const allKeys = new Set([...Object.keys(from), ...Object.keys(to)]);
+    const sortedKeys = [...allKeys.keys()].sort((a, b) => a.localeCompare(b))
+
+    let hasChanges = false;
+    for (const key of sortedKeys) {
+      let orgValue = convertValue(from[key as keyof LinkBase]);
+      let newValue = convertValue(to[key as keyof LinkBase]);
+
+      // mark as difference if either values are not the same or
+      // key is not present in either objects
+      if (orgValue !== newValue) {
+        difference[key] = [orgValue, newValue];
+        hasChanges = true;
+      }
+    }
+
+    if(!hasChanges){
+      throw new Error("No changes");
+    }
+
+    return difference;
   }
 }
 
@@ -165,29 +195,14 @@ const converter: FirestoreDataConverter<LinkDatabase> = {
   },
 };
 
-function diffBetweenLinkBases(from: LinkBase, to: LinkBase)  {
-  let difference: { [key: string]: [unknown, unknown] } = {};
 
-  const allKeys = new Set([...Object.keys(from), ...Object.keys(to)]);
-  const sortedKeys = [...allKeys.keys()].sort()
 
-  for (const key of sortedKeys) {
-    let orgValue = from[key as keyof LinkBase];
-    let newValue = to[key as keyof LinkBase];
-
-    if(orgValue === undefined){
-      orgValue = "";
-    }
-    if(newValue === undefined){
-      newValue = "";
-    }
-
-    // mark as difference if either values are not the same or
-    // key is not present in either objects
-    if (JSON.stringify(orgValue) !== JSON.stringify(newValue)) {
-      difference[key] = [orgValue, newValue];
-    }
+function convertValue(value: string | boolean | undefined) {
+  if (value === undefined) {
+    return '';
   }
-
-  return difference;
+  if (typeof value === 'boolean') {
+    return value ? 'true' : 'false'
+  }
+  return value;
 }

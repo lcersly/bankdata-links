@@ -110,3 +110,9 @@ app-create-button{
   bottom: 2em;
   right: 2em;
 }
+
+.single-line{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
