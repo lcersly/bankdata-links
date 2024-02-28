@@ -11,7 +11,7 @@
   @for (link of links(); track link.uuid) {
     <tr>
       @for (header of headers(); track header) {
-        <td>{{ link[header] }}</td>
+        <td class="single-line">{{ link[header] }}</td>
       }
     </tr>
   }
