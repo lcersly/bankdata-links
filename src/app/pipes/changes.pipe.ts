@@ -4,7 +4,7 @@ import {LinkHistoryType} from '../models/link.model';
 @Pipe({
   name: 'changes',
   standalone: true,
-  pure: true,
+  pure: true
 })
 export class ChangesPipe implements PipeTransform {
 
@@ -12,7 +12,7 @@ export class ChangesPipe implements PipeTransform {
     const result:{ key: string, from: string, to: string }[] = [];
     const keys = Object.keys(change);
     for (const key of keys) {
-      const changeValue = change[key];
+      const changeValue = change[key as keyof LinkHistoryType['changeDetails']];
       result.push({
         key,
         from: changeValue[0] + '',

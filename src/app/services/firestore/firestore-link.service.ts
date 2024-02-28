@@ -4,6 +4,8 @@ import {Link, LinkBase, LinkHistoryType} from '../../models/link.model';
 import {DocumentData, FirestoreDataConverter, QueryDocumentSnapshot} from 'firebase/firestore';
 import {AuthService} from '../auth.service';
 import {Change, ChangeDetails} from '../../models/change.model';
+import {Tag} from '../../models/tag.model';
+import {toObservable} from '@angular/core/rxjs-interop';
 
 export interface LinkDatabase extends LinkBase {
   tags: string[];
@@ -27,11 +29,14 @@ export class FirestoreLinkService {
   })
   public links = computed(() => this.#state().links);
   public state = this.#state.asReadonly();
+  public state$ = toObservable(this.#state);
 
   constructor() {
     this.authService.isSignedIn$.subscribe(signedIn => {
       if (signedIn) {
-        this.subscribeToLinks();
+        if(!this.unsub){
+          this.subscribeToLinks();
+        }
       } else {
         this.disconnect();
       }
@@ -42,7 +47,7 @@ export class FirestoreLinkService {
     return collection(this.firestore, `links`).withConverter(converter);
   }
 
-  subscribeToLinks() {
+  private subscribeToLinks() {
     console.debug('Subscribing to links');
 
     if (this.unsub) {
@@ -110,32 +115,35 @@ export class FirestoreLinkService {
     }
   }
 
-  private diffBetweenLinkBases(link: Link)  {
+  private diffBetweenLinkBases(updatedLink: Link) {
     let from:LinkBase = {
       url: '',
       name: "",
       deleted: false,
-      description: ''
+      description: '',
+      tags: [],
     }
 
-    const orgLink = this.state().links.find(l => l.uuid === link.uuid)?.link;
+    const orgLink = this.state().links.find(l => l.uuid === updatedLink.uuid)?.link;
     if(orgLink){
       from = {
         url: orgLink.url,
         name: orgLink.name,
         deleted: orgLink.deleted,
         description: orgLink.description,
+        tags: [],
       }
     }
 
     const to: LinkBase = {
-      url: link.url,
-      name: link.name,
-      deleted: link.deleted ?? false,
-      description: link.description,
+      url: updatedLink.url,
+      name: updatedLink.name,
+      deleted: updatedLink.deleted ?? false,
+      description: updatedLink.description,
+      tags: [],
     };
 
-    let difference: { [key: string]: [string, string] } = {};
+    let difference: Record<string, [string, string]> = {};
 
     const allKeys = new Set([...Object.keys(from), ...Object.keys(to)]);
     const sortedKeys = [...allKeys.keys()].sort((a, b) => a.localeCompare(b))
@@ -150,6 +158,20 @@ export class FirestoreLinkService {
       if (orgValue !== newValue) {
         difference[key] = [orgValue, newValue];
         hasChanges = true;
+      }
+    }
+
+    //handle tags specially
+    let updatedLinkTagUuids = updatedLink.tags.map(tag => tag.uuid);
+    let allTagUuids = new Set([...updatedLinkTagUuids, ...orgLink?.tags ?? []]);
+    for (const tagUuid of allTagUuids) {
+      let isInUpdatedLink = updatedLinkTagUuids.includes(tagUuid);
+      let isInOldLink = orgLink?.tags.includes(tagUuid) ?? false;
+
+      if ((isInOldLink && !isInUpdatedLink) || (!isInOldLink && isInUpdatedLink)) {
+        hasChanges = true;
+        difference['tags'] = [(orgLink?.tags ?? []).join(","), updatedLinkTagUuids.join(",")];
+        break;
       }
     }
 
@@ -197,12 +219,15 @@ const converter: FirestoreDataConverter<LinkDatabase> = {
 
 
 
-function convertValue(value: string | boolean | undefined) {
+function convertValue(value: string | boolean | undefined | string[] | Tag[]) {
   if (value === undefined) {
     return '';
   }
   if (typeof value === 'boolean') {
     return value ? 'true' : 'false'
+  }
+  if(Array.isArray(value)){
+    return JSON.stringify(value);
   }
   return value;
 }

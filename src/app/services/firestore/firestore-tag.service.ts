@@ -26,11 +26,15 @@ export class FirestoreTagService {
 
   public tags = computed(() => this.#state().tags);
   public status = computed(() => this.#state().status);
+  public status$ = toObservable(this.status);
+  public state$ = toObservable(this.#state);
 
   constructor(private authService: AuthService) {
     this.authService.isSignedIn$.subscribe(signedIn => {
       if (signedIn) {
-        this.subscribeToTags();
+        if(!this.unsub){
+          this.subscribeToTags();
+        }
       } else {
         this.disconnect();
       }

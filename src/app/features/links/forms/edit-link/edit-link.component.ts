@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, HostListener, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component, computed, HostListener, OnDestroy, OnInit} from '@angular/core';
 import {ReactiveFormsModule, UntypedFormControl} from '@angular/forms';
 import {LinkService} from '../../../../services/link.service';
 import {Link} from '../../../../models/link.model';
@@ -22,6 +22,8 @@ import {
   MatExpansionPanelTitle,
 } from '@angular/material/expansion';
 import {ChangesPipe} from '../../../../pipes/changes.pipe';
+import {FirestoreTagService} from '../../../../services/firestore/firestore-tag.service';
+import {convertHistoryTagUuids} from '../../../../shared/util';
 
 @Component({
   selector: 'app-create-link',
@@ -52,7 +54,12 @@ export class EditLinkComponent implements OnInit, OnDestroy {
   public link = new UntypedFormControl()
   public orgLink: Link | undefined;
 
+  public history = computed(() =>
+    convertHistoryTagUuids(this.orgLink?.history, this.tagService.tags())
+  )
+
   constructor(private linkService: LinkService,
+              private tagService: FirestoreTagService,
               private route: ActivatedRoute,
               private router: Router,
               private dialog: MatDialog,

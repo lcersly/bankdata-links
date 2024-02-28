@@ -13,6 +13,9 @@ import {PATHS_URLS} from './urls';
 import {HelpComponent} from './features/help/help.component';
 import {ExportToFileComponent} from './features/export/components/export-to-file.component';
 import {HistoryComponent} from './features/history/history.component';
+import {waitForLoggedInGuard} from './guards/wait-for-logged-in.guard';
+import {waitForDataHasLoadedGuard} from './guards/wait-for-data-has-loaded.guard';
+import {waitForTagsHasLoadedGuard} from './guards/wait-for-tags-has-loaded.guard';
 
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo([PATHS_URLS.login]);
 const redirectLoggedInToItems = () => redirectLoggedInTo([PATHS_URLS.links]);
@@ -20,7 +23,9 @@ const redirectLoggedInToItems = () => redirectLoggedInTo([PATHS_URLS.links]);
 export const routes: Routes = [
   {path: '', pathMatch: 'full', redirectTo: PATHS_URLS.links},
   {
-    path: PATHS_URLS.links, children: [
+    path: PATHS_URLS.links,
+    canActivateChild: [waitForLoggedInGuard, waitForDataHasLoadedGuard],
+    children: [
       {path: '', pathMatch: 'full', component: LinkListViewComponent},
       {
         path: 'create',
@@ -37,7 +42,9 @@ export const routes: Routes = [
     ...canActivate(redirectUnauthorizedToLogin),
   },
   {
-    path: PATHS_URLS.tags, children: [
+    path: PATHS_URLS.tags,
+    canActivateChild: [waitForLoggedInGuard, waitForTagsHasLoadedGuard],
+    children: [
       {path: '', pathMatch: 'full', component: TagListViewComponent},
       {
         path: 'create',
@@ -52,8 +59,26 @@ export const routes: Routes = [
     ],
     ...canActivate(redirectUnauthorizedToLogin),
   },
-  {path: PATHS_URLS.export, component: ExportToFileComponent, ...canActivate(redirectUnauthorizedToLogin)},
-  {path: PATHS_URLS.history, component: HistoryComponent, ...canActivate(redirectUnauthorizedToLogin)},
-  {path: PATHS_URLS.help, component: HelpComponent, ...canActivate(redirectUnauthorizedToLogin)},
-  {path: PATHS_URLS.login, component: LoginComponent, ...canActivate(redirectLoggedInToItems)},
+  {
+    path: PATHS_URLS.export,
+    component: ExportToFileComponent,
+    canActivateChild: [waitForLoggedInGuard, waitForDataHasLoadedGuard],
+    ...canActivate(redirectUnauthorizedToLogin),
+  },
+  {
+    path: PATHS_URLS.history,
+    component: HistoryComponent,
+    canActivateChild: [waitForLoggedInGuard, waitForDataHasLoadedGuard],
+    ...canActivate(redirectUnauthorizedToLogin),
+  },
+  {
+    path: PATHS_URLS.help,
+    component: HelpComponent,
+    ...canActivate(redirectUnauthorizedToLogin),
+  },
+  {
+    path: PATHS_URLS.login,
+    component: LoginComponent,
+    ...canActivate(redirectLoggedInToItems),
+  },
 ];

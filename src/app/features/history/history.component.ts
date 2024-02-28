@@ -13,6 +13,8 @@ import {ChangesPipe} from '../../pipes/changes.pipe';
 import {MatButton} from '@angular/material/button';
 import {Router} from '@angular/router';
 import {PATHS_URLS} from '../../urls';
+import {convertHistoryTagUuids} from '../../shared/util';
+import {FirestoreTagService} from '../../services/firestore/firestore-tag.service';
 
 @Component({
   selector: 'app-history',
@@ -33,15 +35,22 @@ import {PATHS_URLS} from '../../urls';
 })
 export class HistoryComponent {
   linkService = inject(LinkService)
+  tagService = inject(FirestoreTagService)
   router = inject(Router)
 
   history = computed(()=>{
-    let changeHistory = this.linkService.links().reduce((previousValue, currentValue) => {
+    return this.linkService.links().reduce((previousValue, currentValue) => {
       previousValue.push(...currentValue.history.map(item => ({link: currentValue, change: item})))
       return previousValue;
     }, [] as {change: LinkHistoryType, link: Link}[])
-      .sort((a, b) => b.change.date.getTime() - a.change.date.getTime());
-    return changeHistory.slice(0, 100);
+      .sort((a, b) => b.change.date.getTime() - a.change.date.getTime())
+      .slice(0, 100)
+      .map(details => {
+        return ({
+          ...details,
+          change: convertHistoryTagUuids([details.change], this.tagService.tags())[0],
+        });
+      });
   })
 
   goToLink(link: Link) {

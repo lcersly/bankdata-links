@@ -22,11 +22,11 @@
 
 </div>
 
-@if (orgLink?.history?.length) {
+@if (history().length) {
   <div id="history">
-    <h2>History ({{orgLink?.history?.length}})</h2>
+    <h2>History ({{history().length}})</h2>
     <mat-accordion>
-      @for (item of orgLink?.history; track item.date; let i = $index) {
+      @for (item of history(); track item.date; let i = $index) {
         <mat-expansion-panel [expanded]="i === 0">
           <mat-expansion-panel-header>
             <mat-panel-title>

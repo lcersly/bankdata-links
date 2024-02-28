@@ -1,6 +1,6 @@
 import {inject, Injectable} from '@angular/core';
 import {Auth, GithubAuthProvider, GoogleAuthProvider, signInWithPopup, signOut, user} from '@angular/fire/auth';
-import {from, map, shareReplay} from 'rxjs';
+import {distinctUntilChanged, from, map, shareReplay} from 'rxjs';
 import {NotificationService} from './notification.service';
 import {Router} from '@angular/router';
 import {PATHS_URLS} from '../urls';
@@ -12,7 +12,10 @@ import {toSignal} from '@angular/core/rxjs-interop';
 export class AuthService {
   private auth: Auth = inject(Auth);
   user$ = user(this.auth);
-  public isSignedIn$ = this.user$.pipe(map((status => !!status)), shareReplay(1))
+  public isSignedIn$ = this.user$.pipe(map((status => !!status)),
+    distinctUntilChanged(),
+    shareReplay(1)
+  )
   public isSignedIn: boolean | undefined;
   user = toSignal(this.user$, {initialValue: null});
 

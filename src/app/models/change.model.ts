@@ -5,5 +5,5 @@ export interface Change<T, D = Date> {
   name: string;
   date: D;
   details: ChangeDetails;
-  changeDetails: Record<string, [string, string]>;
+  changeDetails: Record<Partial<keyof T>, [string, string]>;
 }

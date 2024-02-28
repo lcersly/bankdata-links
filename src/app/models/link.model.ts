@@ -6,6 +6,7 @@ export interface LinkBase {
   name: string;
   deleted?: boolean;
   description?: string;
+  tags: Tag[] | string[];
 }
 
 export type LinkHistoryType = Change<LinkBase>;

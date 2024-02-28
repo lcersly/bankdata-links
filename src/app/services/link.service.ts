@@ -5,8 +5,8 @@ import {Link} from '../models/link.model';
 import {NotificationService} from './notification.service';
 import {Tag} from '../models/tag.model';
 import {reduceLinkToSearchableString} from '../shared/reducer';
-import {map, skipWhile, switchMap} from 'rxjs';
-import {toObservable} from '@angular/core/rxjs-interop';
+import {combineLatestWith, map, shareReplay, skipWhile} from 'rxjs';
+import {toSignal} from '@angular/core/rxjs-interop';
 
 @Injectable({
   providedIn: 'root',
@@ -16,14 +16,20 @@ export class LinkService {
   #firestoreTagService= inject(FirestoreTagService);
   #notificationService= inject(NotificationService);
 
-  links = computed(()=>{
-    return this.#fireLinkService.links()
-      .map(link => convertDatabaseObjectToLink(link, this.#firestoreTagService.tags()))
-      .filter(link => !link.deleted)
+  links$ = this.#fireLinkService.state$.pipe(
+    combineLatestWith(this.#firestoreTagService.state$),
+    skipWhile(([linkState, tagState])=>
+      linkState.status !== 'loaded' || tagState.status !== 'loaded'
+    ),
+    map(([linkState, tagState]) =>
+      linkState.links
+        .map(link => convertDatabaseObjectToLink(link, tagState.tags))
+        .filter(link => !link.deleted)
+    ),
+    shareReplay(1),
+  );
 
-  })
-
-  links$ = toObservable(this.links);
+  links = toSignal(this.links$, {initialValue: []});
 
   tagUsageCounts = computed(() => {
     const links = this.links();
@@ -38,15 +44,9 @@ export class LinkService {
   })
 
   public getLink$(uuid: string) {
-    return toObservable(this.#fireLinkService.state).pipe(
-      skipWhile(state => state.status !== 'loaded'),
-      switchMap(() => this.links$),
+    return this.links$.pipe(
       map(state => state.find(link => link.uuid === uuid)),
     );
-  }
-
-  public getLink(uuid: string) {
-    return this.links().find(link => link.uuid === uuid)
   }
 
   public async createLinkAndTags(link: Link): Promise<void> {
@@ -69,7 +69,12 @@ function convertDatabaseObjectToLink(object: LinkDatabaseAndId, tags: Tag[]): Li
   const link = object.link;
   let mappedTags = link.tags
     .map(uuid => tags.find(tag => tag.uuid === uuid)!)
-    .filter(tag => !!tag)
+    .filter(tag => {
+      if(!tag){
+        console.warn("Unknown tag", object.link, tags);
+      }
+      return !!tag;
+    })
     .sort((a, b) => a.key.localeCompare(b.key));
 
   const {url, deleted, description, name, history} = link;
