@@ -61,7 +61,8 @@ export class TagSelectorComponent implements ControlValueAccessor, Validator {
 
   filteredTags = computed(() => {
     const tags = this.#tagService.tags().map(t => ({...t, exists: true} as TagWithExistingStatus));
-    return this._filter(this.tagCtrlValue(), tags);
+    return this._filter(this.tagCtrlValue(), tags)
+      .sort((a, b) => a.key.localeCompare(b.key));
     }
   )
 
