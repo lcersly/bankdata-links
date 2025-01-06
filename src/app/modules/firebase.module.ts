@@ -12,7 +12,7 @@ import {connectFunctionsEmulator, getFunctions, provideFunctions} from '@angular
 
 @NgModule({
   declarations: [],
-  imports: [
+  providers: [
     // firebase init
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => {
