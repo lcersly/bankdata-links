@@ -7,7 +7,7 @@
     "indexes": "firestore.indexes.json"
   },
   "hosting": {
-    "public": "dist/bankdata-links",
+    "public": "dist/bankdata-links/browser",
     "ignore": [
       "firebase.json",
       "**/.*",
